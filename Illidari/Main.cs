@@ -19,6 +19,7 @@ using U = Illidari.Core.Unit;
 using TM = Illidari.Core.Managers.TalentManager;
 using D = Illidari.Rotation.Death;
 using L = Illidari.Core.Utilities.Log;
+using C = Illidari.Core.Helpers.Common;
 using System.Diagnostics;
 #endregion
 
@@ -38,6 +39,8 @@ namespace Illidari
         {
             get
             {
+               // if (DateTime.Now.Second % 5 == 0)
+                    //L.debugLog("Calling PreCombatBuffBehavior");
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
                     return new ActionRunCoroutine(ctx => H.PreCombatBuffing());
@@ -49,6 +52,8 @@ namespace Illidari
         {
             get
             {
+                //if (DateTime.Now.Second % 5 == 0)
+                   // L.debugLog("Calling CombatBuffBehavior");
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
                     return new ActionRunCoroutine(ctx => H.CombatBuffing());
@@ -60,6 +65,8 @@ namespace Illidari
         {
             get
             {
+               // if (DateTime.Now.Second % 5 == 0)
+                    //L.debugLog("Calling CombatBehavior");
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
                     return new ActionRunCoroutine(ctx => H.RotationSelector());
@@ -73,6 +80,8 @@ namespace Illidari
         {
             get
             {
+                //if (DateTime.Now.Second % 5 == 0)
+                    //L.debugLog("Calling PullBehavior");
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
                     return new ActionRunCoroutine(ctx => H.Pull());
@@ -80,6 +89,34 @@ namespace Illidari
                 return new ActionRunCoroutine(ctx => V.Pull());
             }
         }
+        public override Composite RestBehavior
+        {
+            get
+            {
+                //if (DateTime.Now.Second % 5 == 0)
+                   // L.debugLog("Calling RestBehavior");
+                return base.RestBehavior;
+            }
+        }
+        public override Composite MoveToTargetBehavior
+        {
+            get
+            {
+                //if (DateTime.Now.Second % 5 == 0)
+                   // L.debugLog("Calling MoveToTargetBehavior");
+                return new ActionRunCoroutine(ctx => C.EnsureMeleeRange(Me.CurrentTarget));
+            }
+        }
+        public override Composite PullBuffBehavior
+        {
+            get
+            {
+                //if (DateTime.Now.Second % 5 == 0)
+                   // L.debugLog("Calling PullBuffBehavior");
+                return base.PullBuffBehavior;
+            }
+        }
+
         public override Composite DeathBehavior { get { return new ActionRunCoroutine(ctx => D.DeathBehavor()); } }
         public override bool NeedDeath { get { return Me.IsDead; } }
         public override bool NeedRest
@@ -98,7 +135,7 @@ namespace Illidari
             }
         }
         public override bool NeedCombatBuffs { get { return base.NeedCombatBuffs; } }
-
+        
         #region Hidden Overrides
         public override void Initialize()
         {
@@ -128,7 +165,9 @@ namespace Illidari
                 return;
             if (!Me.Combat)
                 return;
-            //U.Cache();
+            //if (DateTime.Now.Second % 5 == 0)
+               // L.debugLog("Calling Pulse");
+            C.Cache();
             
             U.enemyAnnex(50f);
             if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowTaunt)
@@ -137,24 +176,35 @@ namespace Illidari
 
                 if (U.activeEnemiesToTaunt(Me.Location, 40f).Any())
                 {
-                    WoWUnit tauntEnemy = U.activeEnemiesToTaunt(Me.Location, 40f).OrderBy(u => u.Distance).FirstOrDefault();
-                    if (tauntEnemy != null)
+                    IEnumerable<WoWUnit> tauntEnemies = U.activeEnemiesToTaunt(Me.Location, 40f);
+                    if (tauntEnemies != null)
                     {
-                        L.pullMobLog(string.Format($"Switch taunt target to {tauntEnemy.SafeName} at {tauntEnemy.Distance.ToString("F0")} yds @ {tauntEnemy.HealthPercent.ToString("F0")}% HP"), Core.Helpers.Common.TargetColor);
-                        tauntEnemy.Target();
-                        return;
+                        var tauntEnemy = tauntEnemies.OrderBy(u => u.Distance).FirstOrDefault();
+                        if (tauntEnemy != null)
+                        {
+                            L.pullMobLog(string.Format($"Switch taunt target to {tauntEnemy.SafeName} at {tauntEnemy.Distance.ToString("F0")} yds @ {tauntEnemy.HealthPercent.ToString("F0")}% HP"), Core.Helpers.Common.TargetColor);
+                            tauntEnemy.Target();
+                            return;
+                        }
+                        
                     }
                 }
             }
             if (!Me.CurrentTarget.IsValidCombatUnit())
             {
-                //L.infoLog("Need a new target");
+                //L.debugLog("Need a new target");
                 var newUnits = U.activeEnemies(Me.Location, 50f).OrderBy(u => u.Distance).ThenBy(u => u.HealthPercent);
-                //L.infoLog("Number of new units: " + newUnits.Count());
-                var newUnit = newUnits.FirstOrDefault();
-                L.pullMobLog(string.Format($"Switch target to {newUnit.SafeName} at {newUnit.Distance.ToString("F0")} yds @ {newUnit.HealthPercent.ToString("F0")}% HP"), Core.Helpers.Common.TargetColor);
-                if (newUnit != null) newUnit.Target();
-                //L.infoLog(string.Format($"New Target: {Me.CurrentTarget.SafeName}.{Me.CurrentTarget.Guid}"));
+                L.debugLog("Number of new units: " + newUnits.Count());
+                if (newUnits != null)
+                {
+                    var newUnit = newUnits.FirstOrDefault();
+                    if (newUnit != null)
+                    {
+                        L.pullMobLog(string.Format($"Switch target to {newUnit.SafeName} at {newUnit.Distance.ToString("F0")} yds @ {newUnit.HealthPercent.ToString("F0")}% HP"), Core.Helpers.Common.TargetColor);
+                        newUnit.Target();
+                    }
+                    //L.infoLog(string.Format($"New Target: {Me.CurrentTarget.SafeName}.{Me.CurrentTarget.Guid}"));
+                }
             }
 
         }

@@ -65,8 +65,12 @@ namespace Illidari.Rotation
         #region Pull Logic
         public static async Task<bool> Pull()
         {
+            
+
             if (CurrentTarget.IsValidCombatUnit())
             {
+
+
                 if (!CurrentTarget.IsWithinMeleeRangeOf(Me) && M.IS.GeneralMovement)
                 {
                     //L.infoLog("Tried to pull");
@@ -83,7 +87,7 @@ namespace Illidari.Rotation
                 if (await S.Cast(SB.ThrowGlaive, C.CombatColor, CurrentTarget.Distance <= 30)) { return true; }
 
                 // use to engage if you have the charges to do so
-                return await S.CastGround(SB.InfernalStrike, C.CombatColor, CurrentTarget.Distance <= 30
+                return await S.CastGround(SB.InfernalStrike, C.CombatColor, CurrentTarget.Distance <= infernalStrikeRange
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me));
             }
             return true;
@@ -139,6 +143,7 @@ namespace Illidari.Rotation
                 M.IS.VengeanceAllowDemonSpikes
                 && CurrentPain >= 20
                 && Me.HealthPercent <= M.IS.VengeanceDemonSpikesHp
+                && !Me.HasAura(SB.AuraDemonSpikes)
                 && U.activeEnemies(Me.Location, 8f).Any(),
                 string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceDemonSpikesHp}")
             ))

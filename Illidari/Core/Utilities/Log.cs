@@ -2,6 +2,7 @@
 using Styx.Common;
 using Styx.WoWInternals.WoWObjects;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -110,6 +111,34 @@ namespace Illidari.Core.Utilities
             lastInformationMSG = Message;
         }
 
+        protected static ConcurrentDictionary<string, DateTime> m_messages = new ConcurrentDictionary<string, DateTime>();
+        public static void debugLog(string Message, params object[] args)
+        {
+            // check to see if we already have a message like this recently.  If so, then we will move on.
+            bool alreadyHasEntry = m_messages.Any(p => p.Key.Equals(Message, StringComparison.OrdinalIgnoreCase) && ((DateTime.Now - p.Value).TotalMilliseconds < 1000));
+            if (alreadyHasEntry) { return; }
+
+            DateTime dt = DateTime.Now;
+            // we don't already have an entry, so let's add the entry to the log window and set the concurrent dictionary.
+            m_messages.AddOrUpdate(Message, dt, (key, rsc) => dt);
+
+            Logging.WriteQuiet("[Illidari:Debug]: " + Message, args);
+
+            TryRemoveOldEntries();
+        }
+
+        private static void TryRemoveOldEntries()
+        {
+            foreach (var m in m_messages)
+            {
+                // check to see if the value can be removed.
+                // we will remove if more than double the time has passed since it's been updated.
+                if ((DateTime.Now - m.Value).TotalMilliseconds >= (2000))
+                {
+                    m_messages.TryRemove(m.Key);
+                }
+            }
+        }
         #endregion
 
         #region [Method] - Diagnostics Log

@@ -9,6 +9,8 @@ using Styx.Common;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 
+using L = Illidari.Core.Utilities.Log;
+using C = Illidari.Core.Helpers.Common;
 namespace Illidari.Core.Managers
 {
     public class TalentManager
@@ -322,14 +324,15 @@ namespace Illidari.Core.Managers
         }
         private static void printTalent(string name, int tier)
         {
-            Logging.Write("Tier {0}: {1}", tier, name);
+            L.infoLog("Tier {0}: {1}", C.InfoColor, tier, name);
         }
 
         private static void updateTalentManager(object sender, LuaEventArgs args)
         {
-            Logging.Write("------------------");
-            Logging.Write("Talents changed...");
+            L.infoLog("------------------", C.InfoColor);
+            L.infoLog("Talents changed...", C.InfoColor);
             initTalents();
+            printTalents();
         }
     }
 }

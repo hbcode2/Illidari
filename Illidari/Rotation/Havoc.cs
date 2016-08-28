@@ -30,7 +30,7 @@ namespace Illidari.Rotation
         private static int openingRotationSkillsUsed = 0;
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
         private static WoWUnit CurrentTarget { get { return StyxWoW.Me.CurrentTarget; } }
-        private static uint CurrentFury => StyxWoW.Me.GetPowerInfo(WoWPowerType.Fury).Current;
+        //private static uint CurrentFury => StyxWoW.Me.GetPowerInfo(WoWPowerType.Fury).Current;
 
         #region Precombat Buffing
         public static async Task<bool> PreCombatBuffing()
@@ -276,7 +276,7 @@ namespace Illidari.Rotation
             // use it if we have Prepared talent differently
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
                 !S.OnCooldown(SB.FelRush)                                   // we can cast fel rush
-                && CurrentFury <= 85                                        // and Fury <= 85
+                && C.CurrentPower <= 85                                        // and Fury <= 85
                 && T.HavocPrepared                                          // We took prepared so use 85 or less
                 && (S.CooldownTimeLeft(SB.FelRush) < 500), "AoE"))          // and cooldown timer < 500ms (2nd one)
             { return true; }
@@ -284,7 +284,7 @@ namespace Illidari.Rotation
             // use it different if we DO NOT have Prepared talent
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
                 !S.OnCooldown(SB.FelRush)                                       // we can cast fel rush
-               && CurrentFury <= 70                                             // and Fury <= 70
+               && C.CurrentPower <= 70                                             // and Fury <= 70
                && !T.HavocPrepared                                              // We took prepared so use 85 or less
                && (S.CooldownTimeLeft(SB.FelRush) < 500), "AoE"))               // and cooldown timer < 500ms (2nd one)
             { return true; }
@@ -293,7 +293,7 @@ namespace Illidari.Rotation
             if (await S.GCD(SB.EyeBeam, C.CombatColor, true, "AoE")) { return true; }
             if (await S.Cast(SB.ChaosStrike, C.CombatColor, T.HavocChaosCleave, "AoE")) { return true; }
             if (await S.GCD(SB.BladeDance, C.CombatColor, true, "AoE")) { return true; }
-            if (await S.Cast(SB.ChaosStrike, C.CombatColor, CurrentFury >= 70, "AoE")) { return true; }
+            if (await S.Cast(SB.ChaosStrike, C.CombatColor, C.CurrentPower >= 70, "AoE")) { return true; }
             if (await S.Cast(SB.DemonsBite, C.CombatColor, true, "AoE")) { return true; }
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor, !CurrentTarget.IsWithinMeleeRange, "AoE")) { return true; }
 
@@ -308,7 +308,7 @@ namespace Illidari.Rotation
             // use this in combination with vengeful retreat
             if (await S.GCD(SB.FelRush, C.CombatColor,
                 T.HavocFelMastery                               // we took the talent for fel mastery
-                && CurrentFury <= 70                            // make sure we have 70 or less Fury
+                && C.CurrentPower <= 70                            // make sure we have 70 or less Fury
                 && CurrentTarget.Distance >= 10                 // make sure we aren't too close
                 && CurrentTarget.Distance <= 30, "AoED"))               // make sure we aren't too far
             { return true; }
@@ -384,13 +384,13 @@ namespace Illidari.Rotation
 
             // chaos strike Fury dump
             if (await S.Cast(SB.ChaosStrike, C.CombatColor, 
-                CurrentFury >= 70
+                C.CurrentPower >= 70
                 && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST"))
             { return true; }
 
             // use it if we have Prepared talent differently
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor, 
-                CurrentFury <= 85
+                C.CurrentPower <= 85
                 && !S.OnCooldown(SB.FelRush)
                 && S.CooldownTimeLeft(SB.FelRush) < 500
                 && T.HavocPrepared
@@ -435,14 +435,14 @@ namespace Illidari.Rotation
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor, 
                 T.HavocDemonBlades
                 && Me.IsWithinMeleeRangeOf(CurrentTarget)
-                && CurrentFury < 70, "ST"))
+                && C.CurrentPower < 70, "ST"))
             { return true; }
 
             // nothing else to do so let's throw a glaive
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor, 
                 T.HavocDemonBlades
                 && !Me.IsWithinMeleeRangeOf(CurrentTarget)
-                && CurrentFury < 70, "ST"))
+                && C.CurrentPower < 70, "ST"))
             { return true; }
 
             return false;

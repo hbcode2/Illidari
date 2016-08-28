@@ -47,6 +47,31 @@ namespace Illidari.Core.Helpers
             await Coroutine.Yield();
             return true;
         }
+        #region Cache
+        public static double CurrentPower;
+        public static bool shouldBarrier;
+        public static bool shouldBlock;
 
+        public static void Cache()
+        {
+            //shouldBlock = (!auraExists(Me, SB.auraDemoralizingShout, true) || !auraExists(Me, SB.auraShieldWall, true) || !auraExists(Me, SB.auraLastStand) || !auraExists(Me, SB.auraEnragedRegeneration, true) || !auraExists(Me, SB.auraShieldBlock, true));
+            //shouldBarrier = WoWSpell.FromId(SB.spellShieldBlock).GetChargeInfo().ChargesLeft < 1 && WoWSpell.FromId(SB.spellShieldBlock).GetChargeInfo().TimeUntilNextCharge.TotalMilliseconds < 9000;
+            CurrentPower = luaGetPower();
+        }
+
+
+        public static double luaGetPower()
+        {
+            try
+            {
+                using (StyxWoW.Memory.AcquireFrame()) { return Lua.GetReturnVal<int>("return UnitPower(\"player\");", 0); }
+            }
+            catch (Exception xException)
+            {
+                L.diagnosticsLog("Exception in playerPower(); ", xException);
+                return Me.CurrentPower;
+            }
+        }
+        #endregion
     }
 }

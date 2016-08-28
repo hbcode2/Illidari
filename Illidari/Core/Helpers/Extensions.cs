@@ -1,5 +1,6 @@
 ﻿using Styx.WoWInternals.WoWObjects;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,5 +60,14 @@ namespace Illidari
         {
             return !me.GotTarget ? 0f : Math.Max(5f, me.CombatReach + 1.3333334f + Unit.CombatReach);
         }
+
+
+        public static bool TryRemove<TKey, TValue>(
+          this ConcurrentDictionary<TKey, TValue> self, TKey key)
+        {
+            TValue ignored;
+            return self.TryRemove(key, out ignored);
+        }
+
     }
 }

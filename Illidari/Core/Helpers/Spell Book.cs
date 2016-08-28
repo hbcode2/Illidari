@@ -11,6 +11,7 @@ namespace Illidari.Core.Helpers
         public const int
         #region Aura List    
             AuraMetemorphisis = 111,
+            AuraDemonSpikes = 203819,
         #endregion
 
         #region Spell List        
