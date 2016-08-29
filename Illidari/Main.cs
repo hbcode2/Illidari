@@ -165,11 +165,24 @@ namespace Illidari
                 return;
             if (!Me.Combat)
                 return;
-            //if (DateTime.Now.Second % 5 == 0)
-               // L.debugLog("Calling Pulse");
+            
+            // cache a few things like my fury/pain
             C.Cache();
             
+            // grab all enemies within 50 yards to find a valid target
             U.enemyAnnex(50f);
+            
+            // get a taunt target, if any
+            if (GetTauntTarget()) { return; }
+
+            // get a new target, if any
+            if (GetNewTarget()) { return; }
+           
+
+        }
+        
+        private bool GetTauntTarget()
+        {
             if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowTaunt)
             {
                 U.enemiesToTauntAnnex(50f);
@@ -184,12 +197,17 @@ namespace Illidari
                         {
                             L.pullMobLog(string.Format($"Switch taunt target to {tauntEnemy.SafeName} at {tauntEnemy.Distance.ToString("F0")} yds @ {tauntEnemy.HealthPercent.ToString("F0")}% HP"), Core.Helpers.Common.TargetColor);
                             tauntEnemy.Target();
-                            return;
+                            return true;
                         }
-                        
+
                     }
                 }
             }
+            return false;
+        }
+
+        private bool GetNewTarget()
+        {
             if (!Me.CurrentTarget.IsValidCombatUnit())
             {
                 //L.debugLog("Need a new target");
@@ -202,12 +220,14 @@ namespace Illidari
                     {
                         L.pullMobLog(string.Format($"Switch target to {newUnit.SafeName} at {newUnit.Distance.ToString("F0")} yds @ {newUnit.HealthPercent.ToString("F0")}% HP"), Core.Helpers.Common.TargetColor);
                         newUnit.Target();
+                        return true;
                     }
                     //L.infoLog(string.Format($"New Target: {Me.CurrentTarget.SafeName}.{Me.CurrentTarget.Guid}"));
                 }
             }
-
+            return false;
         }
+
         #endregion
 
         #endregion

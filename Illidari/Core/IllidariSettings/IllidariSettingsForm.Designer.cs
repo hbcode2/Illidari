@@ -91,6 +91,15 @@
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.VengeanceInterruptConsumeMagic = new System.Windows.Forms.CheckBox();
+            this.VengeanceInterruptSigilOfSilence = new System.Windows.Forms.CheckBox();
+            this.VengeanceInterruptSigilOfMisery = new System.Windows.Forms.CheckBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.VengeanceStunSigilOfMiseryCount = new System.Windows.Forms.NumericUpDown();
+            this.VengeanceStunSigilOfMisery = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -112,6 +121,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.VengeanceSoulCleaveHp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VengeanceDemonSpikesHP)).BeginInit();
             this.groupBox4.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceStunSigilOfMiseryCount)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -490,6 +502,8 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox8);
+            this.tabPage3.Controls.Add(this.groupBox7);
             this.tabPage3.Controls.Add(this.groupBox6);
             this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Controls.Add(this.groupBox4);
@@ -506,9 +520,9 @@
             this.groupBox6.Controls.Add(this.label19);
             this.groupBox6.Controls.Add(this.VengeanceCombatSoulCleavePain);
             this.groupBox6.Controls.Add(this.VengeanceCombatUseSoulCleave);
-            this.groupBox6.Location = new System.Drawing.Point(17, 226);
+            this.groupBox6.Location = new System.Drawing.Point(17, 78);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(254, 100);
+            this.groupBox6.Size = new System.Drawing.Size(293, 85);
             this.groupBox6.TabIndex = 3;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Combat";
@@ -516,7 +530,7 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(197, 20);
+            this.label18.Location = new System.Drawing.Point(243, 20);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(28, 13);
             this.label18.TabIndex = 12;
@@ -525,7 +539,7 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(127, 20);
+            this.label19.Location = new System.Drawing.Point(173, 20);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(18, 13);
             this.label19.TabIndex = 11;
@@ -533,7 +547,7 @@
             // 
             // VengeanceCombatSoulCleavePain
             // 
-            this.VengeanceCombatSoulCleavePain.Location = new System.Drawing.Point(147, 16);
+            this.VengeanceCombatSoulCleavePain.Location = new System.Drawing.Point(193, 16);
             this.VengeanceCombatSoulCleavePain.Name = "VengeanceCombatSoulCleavePain";
             this.VengeanceCombatSoulCleavePain.Size = new System.Drawing.Size(48, 20);
             this.VengeanceCombatSoulCleavePain.TabIndex = 10;
@@ -565,9 +579,9 @@
             this.groupBox5.Controls.Add(this.label12);
             this.groupBox5.Controls.Add(this.VengeanceDemonSpikesHP);
             this.groupBox5.Controls.Add(this.VengeanceUseDemonSpikes);
-            this.groupBox5.Location = new System.Drawing.Point(17, 103);
+            this.groupBox5.Location = new System.Drawing.Point(316, 14);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(254, 117);
+            this.groupBox5.Size = new System.Drawing.Size(254, 125);
             this.groupBox5.TabIndex = 2;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Mitigation";
@@ -702,7 +716,7 @@
             this.groupBox4.Controls.Add(this.VengeanceAllowTaunt);
             this.groupBox4.Location = new System.Drawing.Point(17, 14);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(254, 83);
+            this.groupBox4.Size = new System.Drawing.Size(293, 57);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "General";
@@ -757,6 +771,101 @@
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.VengeanceInterruptSigilOfMisery);
+            this.groupBox7.Controls.Add(this.VengeanceInterruptSigilOfSilence);
+            this.groupBox7.Controls.Add(this.VengeanceInterruptConsumeMagic);
+            this.groupBox7.Location = new System.Drawing.Point(17, 169);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(293, 94);
+            this.groupBox7.TabIndex = 4;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Interrupt";
+            // 
+            // VengeanceInterruptConsumeMagic
+            // 
+            this.VengeanceInterruptConsumeMagic.AutoSize = true;
+            this.VengeanceInterruptConsumeMagic.Location = new System.Drawing.Point(15, 19);
+            this.VengeanceInterruptConsumeMagic.Name = "VengeanceInterruptConsumeMagic";
+            this.VengeanceInterruptConsumeMagic.Size = new System.Drawing.Size(124, 17);
+            this.VengeanceInterruptConsumeMagic.TabIndex = 17;
+            this.VengeanceInterruptConsumeMagic.Text = "Use Consume Magic";
+            this.VengeanceInterruptConsumeMagic.UseVisualStyleBackColor = true;
+            this.VengeanceInterruptConsumeMagic.CheckedChanged += new System.EventHandler(this.VengeanceInterruptConsumeMagic_CheckedChanged);
+            // 
+            // VengeanceInterruptSigilOfSilence
+            // 
+            this.VengeanceInterruptSigilOfSilence.AutoSize = true;
+            this.VengeanceInterruptSigilOfSilence.Location = new System.Drawing.Point(15, 42);
+            this.VengeanceInterruptSigilOfSilence.Name = "VengeanceInterruptSigilOfSilence";
+            this.VengeanceInterruptSigilOfSilence.Size = new System.Drawing.Size(117, 17);
+            this.VengeanceInterruptSigilOfSilence.TabIndex = 18;
+            this.VengeanceInterruptSigilOfSilence.Text = "Use Sigil of Silence";
+            this.VengeanceInterruptSigilOfSilence.UseVisualStyleBackColor = true;
+            this.VengeanceInterruptSigilOfSilence.CheckedChanged += new System.EventHandler(this.VengeanceInterruptSigilOfSilence_CheckedChanged);
+            // 
+            // VengeanceInterruptSigilOfMisery
+            // 
+            this.VengeanceInterruptSigilOfMisery.AutoSize = true;
+            this.VengeanceInterruptSigilOfMisery.Location = new System.Drawing.Point(15, 65);
+            this.VengeanceInterruptSigilOfMisery.Name = "VengeanceInterruptSigilOfMisery";
+            this.VengeanceInterruptSigilOfMisery.Size = new System.Drawing.Size(112, 17);
+            this.VengeanceInterruptSigilOfMisery.TabIndex = 19;
+            this.VengeanceInterruptSigilOfMisery.Text = "Use Sigil of Misery";
+            this.VengeanceInterruptSigilOfMisery.UseVisualStyleBackColor = true;
+            this.VengeanceInterruptSigilOfMisery.CheckedChanged += new System.EventHandler(this.VengeanceInterruptSigilOfMisery_CheckedChanged);
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.label20);
+            this.groupBox8.Controls.Add(this.label21);
+            this.groupBox8.Controls.Add(this.VengeanceStunSigilOfMiseryCount);
+            this.groupBox8.Controls.Add(this.VengeanceStunSigilOfMisery);
+            this.groupBox8.Location = new System.Drawing.Point(17, 269);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(293, 58);
+            this.groupBox8.TabIndex = 5;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Stun";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(243, 20);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(31, 13);
+            this.label20.TabIndex = 12;
+            this.label20.Text = "Units";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(173, 20);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(18, 13);
+            this.label21.TabIndex = 11;
+            this.label21.Text = "@";
+            // 
+            // VengeanceStunSigilOfMiseryCount
+            // 
+            this.VengeanceStunSigilOfMiseryCount.Location = new System.Drawing.Point(193, 16);
+            this.VengeanceStunSigilOfMiseryCount.Name = "VengeanceStunSigilOfMiseryCount";
+            this.VengeanceStunSigilOfMiseryCount.Size = new System.Drawing.Size(48, 20);
+            this.VengeanceStunSigilOfMiseryCount.TabIndex = 10;
+            this.VengeanceStunSigilOfMiseryCount.ValueChanged += new System.EventHandler(this.VengeanceStunSigilOfMiseryCount_ValueChanged);
+            // 
+            // VengeanceStunSigilOfMisery
+            // 
+            this.VengeanceStunSigilOfMisery.AutoSize = true;
+            this.VengeanceStunSigilOfMisery.Location = new System.Drawing.Point(15, 19);
+            this.VengeanceStunSigilOfMisery.Name = "VengeanceStunSigilOfMisery";
+            this.VengeanceStunSigilOfMisery.Size = new System.Drawing.Size(112, 17);
+            this.VengeanceStunSigilOfMisery.TabIndex = 9;
+            this.VengeanceStunSigilOfMisery.Text = "Use Sigil of Misery";
+            this.VengeanceStunSigilOfMisery.UseVisualStyleBackColor = true;
+            this.VengeanceStunSigilOfMisery.CheckedChanged += new System.EventHandler(this.VengeanceStunSigilOfMisery_CheckedChanged);
+            // 
             // IllidariSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -796,6 +905,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.VengeanceDemonSpikesHP)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceStunSigilOfMiseryCount)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -864,5 +978,14 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.NumericUpDown VengeanceCombatSoulCleavePain;
         private System.Windows.Forms.CheckBox VengeanceCombatUseSoulCleave;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.CheckBox VengeanceInterruptConsumeMagic;
+        private System.Windows.Forms.CheckBox VengeanceInterruptSigilOfSilence;
+        private System.Windows.Forms.CheckBox VengeanceInterruptSigilOfMisery;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.NumericUpDown VengeanceStunSigilOfMiseryCount;
+        private System.Windows.Forms.CheckBox VengeanceStunSigilOfMisery;
     }
 }

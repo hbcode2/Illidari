@@ -159,6 +159,58 @@ namespace Illidari.Core
             await CommonCoroutines.SleepForLagDuration();
             return true;
         }
+
+        /// <summary>
+        /// Does not specify a target when casting a spell and sleeps for lag
+        /// </summary>
+        /// <param name="Spell">The spell you wish to cast.</param>
+        /// <param name="reqs">The requirements to cast the spell.</param>
+        /// <returns></returns>
+        public static async Task<bool> GcdOnTarget(int Spell, WoWUnit target, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "")
+        {
+
+            if (!reqs)
+            {
+                //L.combatLog("Trying to cast: " + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) ? "" : " - " + addLog));
+                return false;
+            }
+            //if (SpellManager.GlobalCooldown || !SpellManager.CanCast(Spell))
+            //    return false;
+            if (OnCooldown(Spell))
+                return false;
+            if (!SpellManager.Cast(Spell,target))
+                return false;
+            lastSpellCast = Spell;
+            L.combatLog("*" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !Main.IS.GeneralDebug ? "" : " - " + addLog), newColor);
+            await CommonCoroutines.SleepForRandomReactionTime();
+            return true;
+        }
+        /// <summary>
+        /// Casts spell on the ground at current target's location.
+        /// </summary>
+        /// <param name="Spell">The spell you wish to cast.</param>
+        /// <param name="reqs">The requirements to cast the spell.</param>
+        /// <returns></returns>
+        public static async Task<bool> CastGround(int Spell, WoWUnit target, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "")
+        {
+
+            if (!reqs) { return false; }
+            //L.combatLog("Trying to cast: " + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) ? "" : " - " + addLog));
+            if (!target.IsValidCombatUnit()) { return false; }
+            if (!SpellManager.CanCast(WoWSpell.FromId(Spell), target, false, false, false)) { return false; }
+
+            if (await GCD(Spell, newColor, true, "CastGround")
+                && !await Coroutine.Wait(1000, () => Me.CurrentPendingCursorSpell != null))
+            {
+                L.diagnosticsLog("No Cursor Detected");
+                return false;
+            }
+            lastSpellCast = Spell;
+            SpellManager.ClickRemoteLocation(target.Location);
+            await CommonCoroutines.SleepForLagDuration();
+
+            return true;
+        }
         /// <summary>
         /// Casts spell on the ground at current target's location.
         /// </summary>
@@ -169,21 +221,8 @@ namespace Illidari.Core
         {
 
             if (!reqs) { return false; }
-            //L.combatLog("Trying to cast: " + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) ? "" : " - " + addLog));
-            if (!currentTarget.IsValidCombatUnit()) { return false; }
-            if (!SpellManager.CanCast(WoWSpell.FromId(Spell), currentTarget, false, false, false)) { return false; }
-
-            if (await GCD(Spell, newColor, true, "CastGround")
-                && !await Coroutine.Wait(1000, () => Me.CurrentPendingCursorSpell != null))
-            {
-                L.diagnosticsLog("No Cursor Detected");
-                return false;
-            }
-            lastSpellCast = Spell;
-            SpellManager.ClickRemoteLocation(currentTarget.Location);
-            await CommonCoroutines.SleepForLagDuration();
-
-            return true;
+            if (await CastGround(Spell, currentTarget, newColor, reqs, addLog)) { return true; }
+            return false;
         }
         #endregion
     }

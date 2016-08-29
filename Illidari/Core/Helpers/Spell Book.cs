@@ -38,6 +38,8 @@ namespace Illidari.Core.Helpers
             FieryBrand = 204021,
             ImmolationAura = 178740,
             SigilOfFlame = 204596,
+            SigilOfSilence = 202137,
+            SigilOfMisery = 207684,
             End = 0;
             
         #endregion

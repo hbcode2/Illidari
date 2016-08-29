@@ -118,7 +118,17 @@ namespace Illidari.Core.IllidariSettings
         public bool VengeanceCombatAllowSoulCleave { get; set; }
         [Setting, DefaultValue(80)]
         public int VengeanceCombatSoulCleavePain { get; set; }
-
+        
+        [Setting, DefaultValue(false)]
+        public bool VengeanceAllowInterruptConsumeMagic { get; set; }
+        [Setting, DefaultValue(false)]
+        public bool VengeanceAllowInterruptSigilOfSilence { get; set; }
+        [Setting, DefaultValue(false)]
+        public bool VengeanceAllowInterruptSigilOfMisery { get; set; }
+        [Setting, DefaultValue(false)]
+        public bool VengeanceAllowStunSigilOfMisery { get; set; }
+        [Setting, DefaultValue(0)]
+        public int VengeanceStunSigilOfMiseryCount { get; set; }
         #endregion
     }
 }

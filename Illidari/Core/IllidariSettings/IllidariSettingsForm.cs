@@ -66,7 +66,17 @@ namespace Illidari
             VengeanceCombatUseSoulCleave.Checked = S.VengeanceCombatAllowSoulCleave;
             VengeanceCombatSoulCleavePain.Value = S.VengeanceCombatSoulCleavePain;
             VengeanceCombatSoulCleavePain.Enabled = S.VengeanceCombatAllowSoulCleave;
-            
+
+            VengeanceInterruptConsumeMagic.Checked = S.VengeanceAllowInterruptConsumeMagic;
+
+            VengeanceInterruptSigilOfSilence.Checked = S.VengeanceAllowInterruptSigilOfSilence;
+
+            VengeanceInterruptSigilOfMisery.Checked = S.VengeanceAllowInterruptSigilOfMisery;
+
+            VengeanceStunSigilOfMisery.Checked = S.VengeanceAllowStunSigilOfMisery;
+            VengeanceStunSigilOfMiseryCount.Value = S.VengeanceStunSigilOfMiseryCount;
+            VengeanceStunSigilOfMiseryCount.Enabled = S.VengeanceAllowStunSigilOfMisery;
+
             #endregion
         }
 
@@ -285,6 +295,32 @@ namespace Illidari
         {
             S.VengeanceCombatAllowSoulCleave = VengeanceCombatUseSoulCleave.Checked;
             VengeanceCombatSoulCleavePain.Enabled = VengeanceCombatUseSoulCleave.Checked;
+        }
+
+        private void VengeanceInterruptConsumeMagic_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceAllowInterruptConsumeMagic = VengeanceInterruptConsumeMagic.Checked;
+        }
+
+        private void VengeanceInterruptSigilOfSilence_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceAllowInterruptSigilOfSilence = VengeanceInterruptSigilOfSilence.Checked;
+        }
+
+        private void VengeanceInterruptSigilOfMisery_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceAllowInterruptSigilOfMisery = VengeanceInterruptSigilOfMisery.Checked;
+        }
+
+        private void VengeanceStunSigilOfMisery_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceAllowStunSigilOfMisery = VengeanceStunSigilOfMisery.Checked;
+            VengeanceStunSigilOfMiseryCount.Enabled = VengeanceStunSigilOfMisery.Checked;
+        }
+
+        private void VengeanceStunSigilOfMiseryCount_ValueChanged(object sender, EventArgs e)
+        {
+            S.VengeanceStunSigilOfMiseryCount = (int)VengeanceStunSigilOfMiseryCount.Value;
         }
     }
 }
