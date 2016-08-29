@@ -44,14 +44,14 @@ namespace Illidari.Core.Helpers
 
         public static IEnumerable<int> FlaskList = new int[]
         {
-            156079,     //Greater Draenic Intellect Flask
+            //156079,     //Greater Draenic Intellect Flask
             156064,     //Greater Draenic Agility 
-            156080,     //Greater Draenic Strength 
-            156084,     //Greater Draenic Stamina 
+            //156080,     //Greater Draenic Strength 
+            //156084,     //Greater Draenic Stamina 
             156073,     //Draenic Agility Flask
-            156070,     //Draenic Intellect Flask
-            109152,     //Draenic Stamina Flask
-            156071      //Draenic Strength Flask
+            //156070,     //Draenic Intellect Flask
+            //109152,     //Draenic Stamina Flask
+            //156071      //Draenic Strength Flask
         };
         
     }
