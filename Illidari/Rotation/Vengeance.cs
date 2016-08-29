@@ -24,7 +24,7 @@ namespace Illidari.Rotation
     {
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
         private static WoWUnit CurrentTarget { get { return StyxWoW.Me.CurrentTarget; } }
-        private static uint CurrentPain => StyxWoW.Me.GetPowerInfo(WoWPowerType.Pain).Current;
+        //private static uint CurrentPain => StyxWoW.Me.GetPowerInfo(WoWPowerType.Pain).Current;
         private static int infernalStrikeRange
         {
             get
@@ -141,7 +141,7 @@ namespace Illidari.Rotation
             // cast Demon Spikes if we have 
             if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
                 M.IS.VengeanceAllowDemonSpikes
-                && CurrentPain >= 20
+                && C.CurrentPower >= 20
                 && Me.HealthPercent <= M.IS.VengeanceDemonSpikesHp
                 && !Me.HasAura(SB.AuraDemonSpikes)
                 && U.activeEnemies(Me.Location, 8f).Any(),
@@ -151,7 +151,7 @@ namespace Illidari.Rotation
 
             if (await S.Cast(SB.SoulCleave, C.DefensiveColor,
                 M.IS.VengeanceAllowSoulCleave
-                && CurrentPain >= 30
+                && C.CurrentPower >= 30
                 && Me.CurrentHealth <= M.IS.VengeanceSoulCleaveHp
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
                 string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulCleaveHp}")
@@ -176,9 +176,9 @@ namespace Illidari.Rotation
 
         public static async Task<bool> SingleTarget()
         {
-            if (await S.Cast(SB.SoulCleave, C.CombatColor, 
-                CurrentPain >= M.IS.VengeanceCombatSoulCleavePain, 
-                string.Format($"ST: CP:{CurrentPain}>={M.IS.VengeanceCombatSoulCleavePain}")
+            if (await S.Cast(SB.SoulCleave, C.CombatColor,
+                C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain, 
+                string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
             ))
             { return true; }
             if (await S.CastGround(SB.InfernalStrike, C.CombatColor, 
@@ -195,18 +195,19 @@ namespace Illidari.Rotation
 
         public static async Task<bool> MultipleTarget()
         {
-            if (await S.Cast(SB.SoulCleave, C.CombatColor, 
-                CurrentPain >= M.IS.VengeanceCombatSoulCleavePain, 
-                string.Format($"ST: CP:{CurrentPain}>={M.IS.VengeanceCombatSoulCleavePain}")
+            if (await S.Cast(SB.SoulCleave, C.CombatColor,
+                C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain, 
+                string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
             ))
             { return true; }
             if (await S.CastGround(SB.InfernalStrike, C.CombatColor, 
                 S.MaxChargesAvailable(SB.InfernalStrike), 
                 "AoE Max Charges Available"))
             { return true; }
-            if (await S.Cast(SB.ImmolationAura, C.CombatColor, true, "AoE")) { return true; }
-            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, T.VengeanceBurningAlive, "AoE has Burning Alive Talent")) { return true; }
-            if (await S.Cast(SB.Shear, C.CombatColor, true, "AoE")) { return true; }
+            if (await S.Cast(SB.ImmolationAura, C.CombatColor, addLog: "AoE")) { return true; }
+            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, addLog:"AoE")) { return true; }
+            if (await S.Cast(SB.FieryBrand, C.CombatColor, T.VengeanceBurningAlive, addLog: "AoE has Burning Alive Talent"))
+            if (await S.Cast(SB.Shear, C.CombatColor, addLog: "AoE")) { return true; }
 
             return false;
         }

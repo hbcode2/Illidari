@@ -33,7 +33,7 @@ namespace Illidari
         public override WoWClass Class { get { return WoWClass.DemonHunter; } }
         public static string CRName { get { return "Illidari"; } }
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
-
+        
         #region Implementations
         public override Composite PreCombatBuffBehavior
         {
