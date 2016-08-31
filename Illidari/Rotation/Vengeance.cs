@@ -120,21 +120,24 @@ namespace Illidari.Rotation
                     !CurrentTarget.IsTargetingMeOrPet,
                     string.Format($"CT:{CurrentTarget.SafeName} not targeting me. Taunting!"));
             }
-
-            if (await FindInterrupt()) { return true; }
-
-            if (await ActiveMitigation()) { return true; }
-
-            if ((HK.AoEOn || U.activeEnemies(Me.Location, 8f).Count() >= 3))
+            if (CurrentTarget.IsValidCombatUnit())
             {
-                if (await MultipleTarget())
-                {
-                    return true;
-                }
-            }
+                await FindInterrupt();
 
-            // default to single target if nothing else
-            return await SingleTarget();
+                if (await ActiveMitigation()) { return true; }
+
+                if ((HK.AoEOn || U.activeEnemies(Me.Location, 8f).Count() >= 3))
+                {
+                    if (await MultipleTarget())
+                    {
+                        return true;
+                    }
+                }
+
+                // default to single target if nothing else
+                return await SingleTarget();
+            }
+            return false;
         }
         public static async Task<bool> FindInterrupt()
         {
@@ -142,7 +145,7 @@ namespace Illidari.Rotation
             WoWUnit interruptTarget = GetInterruptTarget(20f);
             if (interruptTarget != null)
             {
-                L.debugLog(string.Format($"Interrupt target 20yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell.Name}"));
+                L.debugLog(string.Format($"Interrupt target 20yd: {interruptTarget.SafeName}"));
                 if (await S.GcdOnTarget(SB.ConsumeMagic, interruptTarget, C.DefensiveColor, M.IS.VengeanceAllowInterruptConsumeMagic,
                     string.Format($"Interrupt: {interruptTarget.SafeName}")))
                 { return true; }
@@ -152,7 +155,7 @@ namespace Illidari.Rotation
             interruptTarget = GetInterruptTarget(30f);
             if (interruptTarget != null)
             {
-                L.debugLog(string.Format($"Interrupt target 30yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell.Name}"));
+                L.debugLog(string.Format($"Interrupt target 30yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell?.Name}"));
                 // now look for sigil of silence
                 if (await S.CastGround(SB.SigilOfSilence, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfSilence,
                     string.Format($"Interrupt: {interruptTarget.SafeName}")))
