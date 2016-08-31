@@ -186,7 +186,7 @@ namespace Illidari
                 {
                     if (oldItem.Key == newItem.Key && oldItem.Value.ToString() != newItem.Value.ToString())
                     {
-                        MessageBox.Show(string.Format($"oldItem.Key:'{oldItem.Key}'='{newItem.Key}' && '{oldItem.Value.ToString()}' == '{newItem.Value.ToString()}'"));
+                        //MessageBox.Show(string.Format($"oldItem.Key:'{oldItem.Key}'='{newItem.Key}' && '{oldItem.Value.ToString()}' == '{newItem.Value.ToString()}'"));
                         changedProperties.Add(oldItem, newItem);
                     }
                 }
