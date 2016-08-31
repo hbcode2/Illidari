@@ -176,6 +176,15 @@ namespace Illidari
 
         }
         public override bool WantButton { get { return true; } }
+
+        public override CapabilityFlags SupportedCapabilities
+        {
+            get
+            {
+                return CapabilityFlags.Aoe | CapabilityFlags.DefensiveCooldowns | CapabilityFlags.Facing | CapabilityFlags.GapCloser | CapabilityFlags.Interrupting | CapabilityFlags.Movement | CapabilityFlags.OffensiveCooldowns | CapabilityFlags.Targeting | CapabilityFlags.Taunting;
+            }
+        }
+
         public override void OnButtonPress() { IllidariSettingsForm setForm = new IllidariSettingsForm(); setForm.Show(); }
         public override void ShutDown() { HK.removeHotkeys(); }
         #endregion

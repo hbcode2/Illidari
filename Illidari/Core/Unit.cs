@@ -6,6 +6,7 @@ using Styx.WoWInternals.WoWObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,15 +23,15 @@ namespace Illidari.Core
         private static WoWUnit currentTarget { get { return StyxWoW.Me.CurrentTarget; } }
 
         #region Active Enemies
-        public static IEnumerable<WoWUnit> activeEnemies(WoWPoint fromLocation, double Range)
+        public static IEnumerable<WoWUnit> activeEnemies(Vector3 fromLocation, double Range)
         {
             var Hostile = enemyCount;
-            return Hostile != null ? Hostile.Where(x => x.Location.DistanceSqr(fromLocation) <= Range * Range) : null;
+            return Hostile != null ? Hostile.Where(x => x.DistanceSqr <= Range * Range) : null;
         }
-        public static IEnumerable<WoWUnit> activeEnemiesToTaunt(WoWPoint fromLocation, double Range)
+        public static IEnumerable<WoWUnit> activeEnemiesToTaunt(Vector3 fromLocation, double Range)
         {
             var Hostile = enemiesToTaunt;
-            return Hostile != null ? Hostile.Where(x => x.Location.DistanceSqr(fromLocation) <= Range * Range) : null;
+            return Hostile != null ? Hostile.Where(x => x.DistanceSqr <= Range * Range) : null;
         }
         private static List<WoWUnit> enemyCount { get; set; }
         private static List<WoWUnit> enemiesToTaunt { get; set; }
