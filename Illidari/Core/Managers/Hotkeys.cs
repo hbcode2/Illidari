@@ -22,7 +22,7 @@ namespace Illidari.Core.Managers
         {
             if (keysRegistered)
                 return;
-            HotkeysManager.Register("AoEOn", (Keys)char.ToUpper('q'), ModifierKeys.Alt, ret =>
+            HotkeysManager.Register("AoEOn", (Keys)char.ToUpper('q'), (ModifierKeys)3, ret =>
                 {
                     AoEOn = !AoEOn;
                     StyxWoW.Overlay.AddToast((AoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);

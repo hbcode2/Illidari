@@ -23,7 +23,7 @@ namespace Illidari.Core.Helpers
         public static System.Windows.Media.Color ItemColor { get { return System.Windows.Media.Colors.Gold; } }
         public static async Task<bool> EnsureMeleeRange(WoWUnit target)
         {
-            if (target == null || Me.IsWithinMeleeRangeOf(target)) { return false; }
+            if (target == null || Me.IsWithinMeleeRangeOf(target) || !target.IsValidCombatUnit()) { return false; }
             L.infoLog("Getting in melee range", InfoColor);
             if (Me.IsWithinMeleeRangeOf(target) && Me.IsMoving) { return await CommonCoroutines.StopMoving(); }
             if (!Me.IsWithinMeleeRangeOf(target))
@@ -37,7 +37,7 @@ namespace Illidari.Core.Helpers
         private static Stopwatch lastTimeFaced = new Stopwatch();
         public static async Task<bool> FaceTarget(WoWUnit target)
         {
-            if (target == null || Me.IsSafelyFacing(target)) { return false; }
+            if (target == null || Me.IsSafelyFacing(target) || !target.IsValidCombatUnit()) { return false; }
 
             if (!lastTimeFaced.IsRunning || (target.Guid == lastUnitGuid && lastTimeFaced.ElapsedMilliseconds > 500))
             L.infoLog("Not facing target; will attempt to", InfoColor);
@@ -48,7 +48,7 @@ namespace Illidari.Core.Helpers
             return true;
         }
         #region Cache
-        public static double CurrentPower;
+        public static uint CurrentPower;
         public static bool shouldBarrier;
         public static bool shouldBlock;
 
@@ -60,11 +60,11 @@ namespace Illidari.Core.Helpers
         }
 
 
-        public static double luaGetPower()
+        public static uint luaGetPower()
         {
             try
             {
-                using (StyxWoW.Memory.AcquireFrame()) { return Lua.GetReturnVal<int>("return UnitPower(\"player\");", 0); }
+                using (StyxWoW.Memory.AcquireFrame()) { return Lua.GetReturnVal<uint>("return UnitPower(\"player\");", 0); }
             }
             catch (Exception xException)
             {

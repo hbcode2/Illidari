@@ -21,13 +21,14 @@ using D = Illidari.Rotation.Death;
 using L = Illidari.Core.Utilities.Log;
 using C = Illidari.Core.Helpers.Common;
 using System.Diagnostics;
+using System.Reflection;
 #endregion
 
 namespace Illidari
 {
     public class Main : CombatRoutine
     {
-        public static Illidari.Core.IllidariSettings.IllidariSettings IS = new Core.IllidariSettings.IllidariSettings();
+        public static Core.IllidariSettings.IllidariSettings IS;
         private static readonly Version version = new Version(08, 28, 2016);
         public override string Name { get { return string.Format($"{CRName} v{version}"); } }
         public override WoWClass Class { get { return WoWClass.DemonHunter; } }
@@ -148,7 +149,30 @@ namespace Illidari
             Logging.Write(Colors.Fuchsia, "-- by SpeshulK926 --");
             Logging.Write(Colors.Fuchsia, "-- A Demon Hunter's Combat Routine --");
             HK.registerHotkeys();
+            
+            IS = new Core.IllidariSettings.IllidariSettings();
+
             TM.initTalents();
+            Type type = IS.GetType();
+            PropertyInfo[] properties = type.GetProperties();
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.Name == "SettingsPath") { continue; }
+                if (property.PropertyType == typeof(List<uint>))
+                {
+                    List<uint> uintList = (List<uint>)property.GetValue(IS, null);
+                    foreach (var uintItem in uintList)
+                    {
+                        L.debugLog(string.Format($"{property.Name}: {uintItem}"));
+                    }
+                }
+                else
+                {
+                    L.debugLog(string.Format($"{property.Name}: {property.GetValue(IS, null)}"));
+                }
+
+            }
 
         }
         public override bool WantButton { get { return true; } }

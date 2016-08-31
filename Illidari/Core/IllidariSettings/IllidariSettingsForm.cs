@@ -1,4 +1,5 @@
-﻿using Styx.WoWInternals.WoWObjects;
+﻿using Illidari.Core.IllidariSettings;
+using Styx.WoWInternals.WoWObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,12 +16,22 @@ namespace Illidari
 
     public partial class IllidariSettingsForm : Form
     {
-        private Illidari.Core.IllidariSettings.IllidariSettings S = new Core.IllidariSettings.IllidariSettings();
+        private bool _isLoading = true;
+        private IllidariSettings S = new IllidariSettings();
+        private IllidariSettings originalSettings = Main.IS;
+        //private IllidariSettings S => S;
 
         public IllidariSettingsForm()
         {
+            _isLoading = true;
+
             InitializeComponent();
-            
+
+            #region Load Comboboxes
+            HavocUseAgilityPotionCooldown.DataSource = Enum.GetValues(typeof(IllidariSettings.CooldownTypes));
+            HavocUseMetamorphosisCooldown.DataSource = Enum.GetValues(typeof(IllidariSettings.CooldownTypes));
+            #endregion
+
             #region General Settings load
             GeneralEnableDebug.Checked = S.GeneralDebug;
             GeneralEnableFacing.Checked = S.GeneralFacing;
@@ -29,6 +40,9 @@ namespace Illidari
             #endregion
 
             #region Havoc Settings load
+
+            #region Defensive
+            HavocUseAgilityFlask.Checked = S.HavocUseAgilityFlask;
             HavocBlurHp.Value = S.HavocBlurHp;
             HavocBlurOperator.Text = S.HavocBlurOperator;
             HavocBlurUnits.Value = S.HavocBlurUnits;
@@ -43,6 +57,17 @@ namespace Illidari
             {
                 HavocPotionsHpList.Text += pot.ToString() + Environment.NewLine;
             }
+            #endregion
+
+            #region Combat
+            HavocFelRushOnPull.Checked = S.HavocFelRushOnPull;
+            HavocFelRushSingleTarget.Checked = S.HavocFelRushSingleTarget;
+            HavocFelRushAoe.Checked = S.HavocFelRushAoe;
+            HavocVengefulReatreatSingleTarget.Checked = S.HavocVengefulReatreatSingleTarget;
+            HavocVengefulReatreatAoe.Checked = S.HavocVengefulReatreatAoe;
+
+            #endregion
+
             #endregion
 
             #region Vengeance Settings load
@@ -78,6 +103,8 @@ namespace Illidari
             VengeanceStunSigilOfMiseryCount.Enabled = S.VengeanceAllowStunSigilOfMisery;
 
             #endregion
+
+
         }
 
         #region General Setting events
@@ -103,7 +130,7 @@ namespace Illidari
 
         private void btnListSettings_Click(object sender, EventArgs e)
         {
-            Type type = Main.IS.GetType();
+            Type type = S.GetType();
             PropertyInfo[] properties = type.GetProperties();
 
             foreach (PropertyInfo property in properties)
@@ -111,7 +138,7 @@ namespace Illidari
                 if (property.Name == "SettingsPath") { continue; }
                 if (property.PropertyType == typeof(List<uint>))
                 {
-                    List<uint> uintList = (List<uint>)property.GetValue(Main.IS, null);
+                    List<uint> uintList = (List<uint>)property.GetValue(S, null);
                     foreach (var uintItem in uintList)
                     {
                         Illidari.Core.Utilities.Log.infoLog(string.Format($"{property.Name}: {uintItem}"), Core.Helpers.Common.InfoColor);
@@ -119,7 +146,7 @@ namespace Illidari
                 }
                 else
                 {
-                    Illidari.Core.Utilities.Log.infoLog(string.Format($"{property.Name}: {property.GetValue(Main.IS, null)}"), Core.Helpers.Common.InfoColor);
+                    Illidari.Core.Utilities.Log.infoLog(string.Format($"{property.Name}: {property.GetValue(S, null)}"), Core.Helpers.Common.InfoColor);
                 }
 
             }
@@ -144,13 +171,68 @@ namespace Illidari
         #region Save, Cancel, Export and Import events
         private void btnSaveAndClose_Click(object sender, EventArgs e)
         {
+            Dictionary<string, object> oldProperties = GetPropertiesOfSettings(Main.IS);
+            Dictionary<KeyValuePair<string, object>, KeyValuePair<string, object>> changedProperties = new Dictionary<KeyValuePair<string, object>, KeyValuePair<string, object>>();
             // grab the list of potions and save them
             string[] havocPotionsHp = HavocPotionsHpList.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             S.HavocHealthPotionListSetting = String.Join("|", havocPotionsHp);
-            
             S.Save();
-            Main.IS = new Core.IllidariSettings.IllidariSettings();
+
+            Dictionary<string, object> newProperties = GetPropertiesOfSettings(S);
+            
+            foreach (var oldItem in oldProperties)
+            {
+                foreach (var newItem in newProperties)
+                {
+                    if (oldItem.Key == newItem.Key && oldItem.Value.ToString() != newItem.Value.ToString())
+                    {
+                        MessageBox.Show(string.Format($"oldItem.Key:'{oldItem.Key}'='{newItem.Key}' && '{oldItem.Value.ToString()}' == '{newItem.Value.ToString()}'"));
+                        changedProperties.Add(oldItem, newItem);
+                    }
+                }
+            }
+
+            if (changedProperties.Count > 0)
+            {
+                Core.Utilities.Log.debugLog("Properties Changed:");
+            }
+            foreach (var changedItem in changedProperties)
+            {
+                Core.Utilities.Log.debugLog(string.Format($"{changedItem.Key.Key}: from '{changedItem.Key.Value}' to '{changedItem.Value.Value}'"));
+            }
+
+            Main.IS = new IllidariSettings();
+
+
+            
             this.Close();
+        }
+
+        private Dictionary<string, object> GetPropertiesOfSettings(IllidariSettings settings)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            Type type = settings.GetType();
+            PropertyInfo[] properties = type.GetProperties();
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.Name == "SettingsPath") { continue; }
+                if (property.PropertyType == typeof(List<uint>))
+                {
+                    List<uint> uintList = (List<uint>)property.GetValue(settings, null);
+                    foreach (var uintItem in uintList)
+                    {
+                        //Core.Utilities.Log.infoLog(string.Format($"{property.Name}: {uintItem}"), Core.Helpers.Common.InfoColor);
+                    }
+                }
+                else
+                {
+                    //Core.Utilities.Log.infoLog(string.Format($"{property.Name}: {property.GetValue(settings, null)}"), Core.Helpers.Common.InfoColor);
+                    dict.Add(property.Name, property.GetValue(settings, null));
+                }
+
+            }
+            return dict;
         }
 
         private void btnCancelAndClose_Click(object sender, EventArgs e)
@@ -174,6 +256,12 @@ namespace Illidari
         #endregion
 
         #region Havoc Events
+
+        #region Defensive
+        private void HavocUseAgilityFlask_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HavocUseAgilityFlask = HavocUseAgilityFlask.Checked;
+        }
         private void HavocDarknessHp_ValueChanged(object sender, EventArgs e)
         {
             S.HavocDarknessHp = (int)HavocDarknessHp.Value;
@@ -231,12 +319,43 @@ namespace Illidari
             }
         }
 
-      
+
 
         private void HavocPotionsHp_ValueChanged(object sender, EventArgs e)
         {
             S.HavocHealthPotionHp = (int)HavocPotionsHp.Value;
         }
+
+        #endregion
+
+        #region Combat
+
+        private void HavocFelRushOnPull_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HavocFelRushOnPull = HavocFelRushOnPull.Checked;
+        }
+
+        private void HavocFelRushSingleTarget_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HavocFelRushSingleTarget = HavocFelRushSingleTarget.Checked;
+        }
+
+        private void HavocVengefulReatreatSingleTarget_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HavocVengefulReatreatSingleTarget = HavocVengefulReatreatSingleTarget.Checked;
+        }
+
+        private void HavocFelRushAoe_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HavocFelRushAoe = HavocFelRushAoe.Checked;
+        }
+
+        private void HavocVengefulReatreatAoe_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HavocVengefulReatreatAoe = HavocVengefulReatreatAoe.Checked;
+        }
+        #endregion
+
         #endregion
 
         #region Vengeance Events
@@ -256,8 +375,6 @@ namespace Illidari
         {
             S.VengeanceEmpowerWards = VengeanceUseEmpowerWards.Checked;
         }
-
-        #endregion
 
         private void VengeanceUseSoulCleave_CheckedChanged(object sender, EventArgs e)
         {
@@ -322,5 +439,45 @@ namespace Illidari
         {
             S.VengeanceStunSigilOfMiseryCount = (int)VengeanceStunSigilOfMiseryCount.Value;
         }
+
+
+
+
+
+        #endregion
+
+        private void HavocUseAgilityPotionCooldown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isLoading)
+            {
+                IllidariSettings.CooldownTypes potionCooldown;
+                //MessageBox.Show(HavocUseAgilityPotionCooldown.SelectedValue.ToString() + "\r\n" + HavocUseAgilityPotionCooldown.SelectedText + "\r\n" + HavocUseAgilityPotionCooldown.SelectedItem.ToString());
+                Enum.TryParse(HavocUseAgilityPotionCooldown.SelectedValue.ToString(), out potionCooldown);
+                //MessageBox.Show(potionCooldown.ToString());
+                S.HavocUseAgilityPotionCooldown = potionCooldown;
+            }
+        }
+
+        private void HavocUseMetamorphosisCooldown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isLoading)
+            {
+                IllidariSettings.CooldownTypes metamorphosiscd;
+                Enum.TryParse(HavocUseMetamorphosisCooldown.SelectedValue.ToString(), out metamorphosiscd);
+                S.HavocUseMetamorphosisCooldown = metamorphosiscd;
+            }
+        }
+
+        private void IllidariSettingsForm_Load(object sender, EventArgs e)
+        {
+            //IllidariSettings sett = new IllidariSettings();
+
+            // must set these on form load as the initialization process populates the dropdowns with data
+            HavocUseAgilityPotionCooldown.SelectedItem = S.HavocUseAgilityPotionCooldown;
+            HavocUseMetamorphosisCooldown.SelectedItem = S.HavocUseMetamorphosisCooldown;
+
+            _isLoading = false;
+        }
+
     }
 }

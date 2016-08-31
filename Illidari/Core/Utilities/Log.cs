@@ -15,17 +15,7 @@ namespace Illidari.Core.Utilities
     {
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
         private static WoWUnit CurrentTarget { get { return StyxWoW.Me.CurrentTarget; } }
-        private static uint CurrentPower
-        {
-            get
-            {
-                if (Me.Specialization == WoWSpec.DemonHunterHavoc)
-                {
-                   return Me.GetPowerInfo(WoWPowerType.Fury).Current;
-                }
-                return Me.GetPowerInfo(WoWPowerType.Pain).Current;
-            }
-        }
+
         private static string CurrentPowerDescription
         {
             get
@@ -54,11 +44,11 @@ namespace Illidari.Core.Utilities
             {
                 if (CurrentTarget != null)
                 {
-                    Logging.Write(logColor, "[Illidari]: {0}" + string.Format($" on {CurrentTarget.SafeName} @ {CurrentTarget.HealthPercent.ToString("F2")}% at {CurrentTarget.Distance.ToString("F2")} yds with {CurrentPower} {CurrentPowerDescription}"), Message, args);
+                    Logging.Write(logColor, "[Illidari]: {0}" + string.Format($" on {CurrentTarget.SafeName} @ {CurrentTarget.HealthPercent.ToString("F2")}% at {CurrentTarget.Distance.ToString("F2")} yds with {Helpers.Common.CurrentPower} {CurrentPowerDescription}"), Message, args);
                 }
                 else
                 {
-                    Logging.Write(logColor, "[Illidari]: {0}" + string.Format($" on [no target] with {CurrentPower} {CurrentPowerDescription}"), Message, args);
+                    Logging.Write(logColor, "[Illidari]: {0}" + string.Format($" on [no target] with {Helpers.Common.CurrentPower} {CurrentPowerDescription}"), Message, args);
                 }
             }
             else

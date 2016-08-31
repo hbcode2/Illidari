@@ -39,7 +39,7 @@ namespace Illidari.Core.IllidariSettings
 
         #region Havoc
 
-        #region HealthPotion
+        #region Potion / Flask
         [Setting, DefaultValue(40)]
         public int HavocHealthPotionHp { get; set; }
         [Setting, DefaultValue("")]
@@ -61,6 +61,10 @@ namespace Illidari.Core.IllidariSettings
             }
         }
 
+        [Setting, DefaultValue(false)]
+        public bool HavocUseAgilityFlask { get; set; }
+        [Setting, DefaultValue(CooldownTypes.Manual)]
+        public CooldownTypes HavocUseAgilityPotionCooldown { get; set; }
         #endregion
 
         #region Blur Settings
@@ -88,6 +92,24 @@ namespace Illidari.Core.IllidariSettings
         public string HavocChaosNovaOperator { get; set; }
         [Setting, DefaultValue(3)]
         public int HavocChaosNovaUnits { get; set; }
+        #endregion
+
+        #region Fel Rush / Vengeful Retreat
+        [Setting, DefaultValue(true)]
+        public bool HavocFelRushOnPull { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HavocFelRushSingleTarget { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HavocFelRushAoe { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HavocVengefulReatreatSingleTarget { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HavocVengefulReatreatAoe { get; set; }
+        #endregion
+
+        #region DPS cooldowns
+        [Setting, DefaultValue(CooldownTypes.Cooldown)]
+        public CooldownTypes HavocUseMetamorphosisCooldown { get; set; }
         #endregion
 
         #endregion
@@ -130,5 +152,13 @@ namespace Illidari.Core.IllidariSettings
         [Setting, DefaultValue(0)]
         public int VengeanceStunSigilOfMiseryCount { get; set; }
         #endregion
+
+        public enum CooldownTypes
+        {
+            Manual,
+            EliteBoss,
+            BossOnly,
+            Cooldown
+        }
     }
 }

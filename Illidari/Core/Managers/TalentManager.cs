@@ -324,7 +324,7 @@ namespace Illidari.Core.Managers
         }
         private static void printTalent(string name, int tier)
         {
-            L.infoLog("Tier {0}: {1}", C.InfoColor, tier, name);
+            L.infoLog(string.Format("Tier {0}: {1}", tier, name), C.InfoColor);
         }
 
         private static void updateTalentManager(object sender, LuaEventArgs args)

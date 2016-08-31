@@ -142,6 +142,7 @@ namespace Illidari.Rotation
             WoWUnit interruptTarget = GetInterruptTarget(20f);
             if (interruptTarget != null)
             {
+                L.debugLog(string.Format($"Interrupt target 20yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell.Name}"));
                 if (await S.GcdOnTarget(SB.ConsumeMagic, interruptTarget, C.DefensiveColor, M.IS.VengeanceAllowInterruptConsumeMagic,
                     string.Format($"Interrupt: {interruptTarget.SafeName}")))
                 { return true; }
@@ -151,6 +152,7 @@ namespace Illidari.Rotation
             interruptTarget = GetInterruptTarget(30f);
             if (interruptTarget != null)
             {
+                L.debugLog(string.Format($"Interrupt target 30yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell.Name}"));
                 // now look for sigil of silence
                 if (await S.CastGround(SB.SigilOfSilence, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfSilence,
                     string.Format($"Interrupt: {interruptTarget.SafeName}")))
@@ -171,7 +173,7 @@ namespace Illidari.Rotation
             var units = U.activeEnemies(Me.Location, 20f); // get all enemies within 20 yards
             if (units != null)
             {
-                var interruptTarget = units.Where(u => u.IsCastingHealingSpell && u.CanInterruptCurrentSpellCast).OrderBy(d => d.Distance).FirstOrDefault();
+                var interruptTarget = units.Where(u => u.CanInterruptCurrentSpellCast).OrderBy(d => d.Distance).FirstOrDefault();
                 if (interruptTarget != null)
                 {
                     return interruptTarget;
