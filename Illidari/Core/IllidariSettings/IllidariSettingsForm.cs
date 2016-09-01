@@ -102,9 +102,34 @@ namespace Illidari
             VengeanceStunSigilOfMiseryCount.Value = S.VengeanceStunSigilOfMiseryCount;
             VengeanceStunSigilOfMiseryCount.Enabled = S.VengeanceAllowStunSigilOfMisery;
 
+            VengeanceUseMetamorphosis.Checked = S.VengeanceAllowMetamorphosis;
+            VengeanceMetamorphosisHp.Value = S.VengeanceMetamorphosisHp;
+            VengeanceMetamorphosisHp.Enabled = S.VengeanceAllowMetamorphosis;
+
+            VengeanceUseSoulBarrier.Checked = S.VengeanceAllowSoulBarrier;
+            VengeanceSoulBarrierHp.Value = S.VengeanceSoulBarrierHp;
+            VengeanceSoulBarrierHp.Enabled = S.VengeanceAllowSoulBarrier;
+
+            VengeanceUseSoulCarver.Checked = S.VengeanceAllowSoulCarver;
+            VengeanceSoulCarverHp.Value = S.VengeanceSoulCarverHp;
+            VengeanceSoulCarverHp.Enabled = S.VengeanceAllowSoulCarver;
+
+            VengeancePreferPullWithFelblade.Checked = S.VengeancePreferPullWithFelblade;
+
             #endregion
 
 
+        }
+
+        private void IllidariSettingsForm_Load(object sender, EventArgs e)
+        {
+            //IllidariSettings sett = new IllidariSettings();
+
+            // must set these on form load as the initialization process populates the dropdowns with data
+            HavocUseAgilityPotionCooldown.SelectedItem = S.HavocUseAgilityPotionCooldown;
+            HavocUseMetamorphosisCooldown.SelectedItem = S.HavocUseMetamorphosisCooldown;
+
+            _isLoading = false;
         }
 
         #region General Setting events
@@ -355,11 +380,51 @@ namespace Illidari
             S.HavocVengefulReatreatAoe = HavocVengefulReatreatAoe.Checked;
         }
         #endregion
+        
+        private void HavocUseAgilityPotionCooldown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isLoading)
+            {
+                IllidariSettings.CooldownTypes potionCooldown;
+                //MessageBox.Show(HavocUseAgilityPotionCooldown.SelectedValue.ToString() + "\r\n" + HavocUseAgilityPotionCooldown.SelectedText + "\r\n" + HavocUseAgilityPotionCooldown.SelectedItem.ToString());
+                Enum.TryParse(HavocUseAgilityPotionCooldown.SelectedValue.ToString(), out potionCooldown);
+                //MessageBox.Show(potionCooldown.ToString());
+                S.HavocUseAgilityPotionCooldown = potionCooldown;
+            }
+        }
+
+        private void HavocUseMetamorphosisCooldown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isLoading)
+            {
+                IllidariSettings.CooldownTypes metamorphosiscd;
+                Enum.TryParse(HavocUseMetamorphosisCooldown.SelectedValue.ToString(), out metamorphosiscd);
+                S.HavocUseMetamorphosisCooldown = metamorphosiscd;
+            }
+        }
 
         #endregion
 
         #region Vengeance Events
 
+        private void VengeanceMetamorphosisHp_ValueChanged(object sender, EventArgs e)
+        {
+            S.VengeanceMetamorphosisHp = (int)VengeanceMetamorphosisHp.Value;
+        }
+
+        private void VengeanceSoulBarrierHp_ValueChanged(object sender, EventArgs e)
+        {
+            S.VengeanceSoulBarrierHp = (int)VengeanceSoulBarrierHp.Value;
+        }
+
+        private void VengeanceSoulCarverHp_ValueChanged(object sender, EventArgs e)
+        {
+            S.VengeanceSoulCarverHp = (int)VengeanceSoulCarverHp.Value;
+        }
+        private void VengeancePreferPullWithFelblade_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeancePreferPullWithFelblade = VengeancePreferPullWithFelblade.Checked;
+        }
         private void VengeanceAllowTaunt_CheckedChanged(object sender, EventArgs e)
         {
             S.VengeanceAllowTaunt = VengeanceAllowTaunt.Checked;
@@ -440,44 +505,28 @@ namespace Illidari
             S.VengeanceStunSigilOfMiseryCount = (int)VengeanceStunSigilOfMiseryCount.Value;
         }
 
+        private void VengeanceUseMetamorphosis_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceAllowMetamorphosis = VengeanceUseMetamorphosis.Checked;
+            VengeanceMetamorphosisHp.Enabled = VengeanceUseMetamorphosis.Checked;
+        }
+
+        private void VengeanceUseSoulBarrier_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceAllowSoulBarrier = VengeanceUseSoulBarrier.Checked;
+            VengeanceSoulBarrierHp.Enabled = VengeanceUseSoulBarrier.Checked;
+        }
+
+        private void VengeanceUseSoulCarver_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceAllowSoulCarver = VengeanceUseSoulCarver.Checked;
+            VengeanceSoulCarverHp.Enabled = VengeanceUseSoulCarver.Checked;
+        }
 
 
 
 
         #endregion
-
-        private void HavocUseAgilityPotionCooldown_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!_isLoading)
-            {
-                IllidariSettings.CooldownTypes potionCooldown;
-                //MessageBox.Show(HavocUseAgilityPotionCooldown.SelectedValue.ToString() + "\r\n" + HavocUseAgilityPotionCooldown.SelectedText + "\r\n" + HavocUseAgilityPotionCooldown.SelectedItem.ToString());
-                Enum.TryParse(HavocUseAgilityPotionCooldown.SelectedValue.ToString(), out potionCooldown);
-                //MessageBox.Show(potionCooldown.ToString());
-                S.HavocUseAgilityPotionCooldown = potionCooldown;
-            }
-        }
-
-        private void HavocUseMetamorphosisCooldown_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!_isLoading)
-            {
-                IllidariSettings.CooldownTypes metamorphosiscd;
-                Enum.TryParse(HavocUseMetamorphosisCooldown.SelectedValue.ToString(), out metamorphosiscd);
-                S.HavocUseMetamorphosisCooldown = metamorphosiscd;
-            }
-        }
-
-        private void IllidariSettingsForm_Load(object sender, EventArgs e)
-        {
-            //IllidariSettings sett = new IllidariSettings();
-
-            // must set these on form load as the initialization process populates the dropdowns with data
-            HavocUseAgilityPotionCooldown.SelectedItem = S.HavocUseAgilityPotionCooldown;
-            HavocUseMetamorphosisCooldown.SelectedItem = S.HavocUseMetamorphosisCooldown;
-
-            _isLoading = false;
-        }
 
     }
 }

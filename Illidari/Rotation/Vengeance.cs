@@ -65,12 +65,8 @@ namespace Illidari.Rotation
         #region Pull Logic
         public static async Task<bool> Pull()
         {
-
-
             if (CurrentTarget.IsValidCombatUnit())
             {
-
-
                 if (!CurrentTarget.IsWithinMeleeRangeOf(Me) && M.IS.GeneralMovement)
                 {
                     //L.infoLog("Tried to pull");
@@ -87,10 +83,27 @@ namespace Illidari.Rotation
                 if (await S.Cast(SB.ThrowGlaive, C.CombatColor, CurrentTarget.Distance <= 30)) { return true; }
 
                 // use to engage if you have the charges to do so
-                return await S.CastGround(SB.InfernalStrike, C.CombatColor, CurrentTarget.Distance <= infernalStrikeRange
-                    && !CurrentTarget.IsWithinMeleeRangeOf(Me));
+                if (await S.CastGround(SB.InfernalStrike, C.CombatColor, 
+                    CurrentTarget.Distance <= infernalStrikeRange
+                    && !CurrentTarget.IsWithinMeleeRangeOf(Me)
+                    && !M.IS.VengeancePreferPullWithFelblade
+                ))
+                { return true; }
+
+                // need to change this to check to see if we want to pull with Fel Blade or Infernal Strike (or which we prefer)
+                if (await S.Cast(SB.FelBlade, C.CombatColor, T.VengeanceFelblade
+                    && !CurrentTarget.IsWithinMeleeRangeOf(Me)
+                    && CurrentTarget.Distance <= 15))
+                { return true; }
+
+                // now use in case felblade was on cd, but don't check prefer
+                if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
+                    CurrentTarget.Distance <= infernalStrikeRange
+                    && !CurrentTarget.IsWithinMeleeRangeOf(Me)
+                ))
+                { return true; }
             }
-            return true;
+            return false;
         }
         #endregion
 
@@ -126,6 +139,8 @@ namespace Illidari.Rotation
 
                 if (await ActiveMitigation()) { return true; }
 
+                if (await GapCloser()) { return true; }
+
                 if ((HK.AoEOn || U.activeEnemies(Me.Location, 8f).Count() >= 3))
                 {
                     if (await MultipleTarget())
@@ -139,6 +154,138 @@ namespace Illidari.Rotation
             }
             return false;
         }
+
+        public static async Task<bool> GapCloser()
+        {
+            if (await S.Cast(SB.FelBlade, C.CombatColor,
+               T.VengeanceFelblade
+               && !CurrentTarget.IsWithinMeleeRangeOf(Me)
+               && CurrentTarget.Distance <= 15
+               && CurrentTarget.Distance > 8,
+               "ST Gap Closer"))
+            { return true; }
+
+            if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
+                !CurrentTarget.IsWithinMeleeRangeOf(Me)
+                && CurrentTarget.Distance > 8
+                && CurrentTarget.Distance <= infernalStrikeRange
+                && (S.GetSpellChargeInfo(SB.InfernalStrike).ChargesLeft > 0),
+                "ST Gap Closer"))
+            { return true; }
+
+            return false;
+        }
+
+        public static async Task<bool> ActiveMitigation()
+        {
+            WoWUnit stunTarget = GetStunTarget(CurrentTarget, 8f);
+            if (await S.CastGround(SB.SigilOfMisery, stunTarget, C.DefensiveColor, stunTarget != null
+                && M.IS.VengeanceAllowStunSigilOfMisery))
+            { return true; }
+            //L.infoLog(string.Format($"CP:{CurrentPain},DS:{M.IS.VengeanceAllowDemonSpikes},HP:{Me.HealthPercent},DSHP:{M.IS.VengeanceDemonSpikesHp}"),C.ItemColor);
+            // cast Demon Spikes if we have 
+            if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
+                M.IS.VengeanceAllowDemonSpikes
+                && C.CurrentPower >= 20
+                && Me.HealthPercent <= M.IS.VengeanceDemonSpikesHp
+                && !Me.HasAura(SB.AuraDemonSpikes)
+                && U.activeEnemies(Me.Location, 8f).Any(),
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceDemonSpikesHp}")
+            ))
+            { return true; }
+
+            if (await S.Cast (SB.SoulBarrier, C.DefensiveColor, T.VengeanceSoulBarrier
+                && M.IS.VengeanceAllowSoulBarrier
+                && Me.HealthPercent <= M.IS.VengeanceSoulBarrierHp,
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulBarrierHp}")
+            ))
+            { return true; }
+
+            // make sure we have tank weapons equipped (for lower level stuff)
+            if (Me.HasTankWarglaivesEquipped())
+            {
+                if (await S.Cast(SB.SoulCarver, C.DefensiveColor,
+                    M.IS.VengeanceAllowSoulCarver
+                    && Me.HealthPercent <= M.IS.VengeanceSoulCarverHp,
+                    string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulCarverHp}")
+                ))
+                { return true; }
+            }
+
+            if (await S.Cast(SB.SoulCleave, C.DefensiveColor,
+                M.IS.VengeanceAllowSoulCleave
+                && C.CurrentPower >= 30
+                && Me.CurrentHealth <= M.IS.VengeanceSoulCleaveHp
+                && CurrentTarget.IsWithinMeleeRangeOf(Me),
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulCleaveHp}")
+            ))
+            { return true; }
+
+            if (await S.Cast(SB.EmpowerWards, C.DefensiveColor,
+                M.IS.VengeanceEmpowerWards
+                && U.activeEnemies(Me.Location, 50f).Where(u =>
+                    u.IsTargetingMeOrPet && u.IsCasting)
+                .Any()
+            ))
+            { return true; }
+
+            if (await S.Cast(SB.FieryBrand, C.DefensiveColor,
+                M.IS.VengeanceAllowFieryBrand
+                && Me.HealthPercent <= M.IS.VengeanceFieryBrandHp))
+            { return true; }
+
+            return false;
+        }
+
+        public static async Task<bool> SingleTarget()
+        {
+            if (await S.Cast(SB.SoulCleave, C.CombatColor,
+                C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain
+                && CurrentTarget.IsWithinMeleeRangeOf(Me),
+                string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
+            ))
+            { return true; }
+
+            // cast infernal strike in melee only if we have max chargets
+            if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
+                S.MaxChargesAvailable(SB.InfernalStrike)
+                && CurrentTarget.IsWithinMeleeRangeOf(Me),
+                "ST Max Charges Available"))
+            { return true; }
+
+            if (await S.Cast(SB.ImmolationAura, C.CombatColor, true, "ST")) { return true; }
+            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, true, "ST")) { return true; }
+            if (await S.Cast(SB.FelEruption, C.CombatColor, T.VengeanceFelEruption, "ST")) { return true; }
+            if (await S.Cast(SB.Fracture, C.CombatColor, T.VengeanceFracture, "ST")) { return true; }
+            if (await S.Cast(SB.Shear, C.CombatColor, true, "ST")) { return true; }
+
+
+            return true;
+        }
+
+        public static async Task<bool> MultipleTarget()
+        {
+            if (await S.Cast(SB.SoulCleave, C.CombatColor,
+                C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain,
+                string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
+            ))
+            { return true; }
+
+            if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
+                S.MaxChargesAvailable(SB.InfernalStrike),
+                "AoE Max Charges Available"))
+            { return true; }
+
+            if (await S.Cast(SB.ImmolationAura, C.CombatColor, addLog: "AoE")) { return true; }
+            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, addLog: "AoE")) { return true; }
+            if (await S.Cast(SB.FieryBrand, C.CombatColor, T.VengeanceBurningAlive, addLog: "AoE has Burning Alive Talent")) { return true; }
+            if (await S.Cast(SB.FelDevastation, C.CombatColor, T.VengeanceFelDevastation, addLog: "AoE Fel Devastation")) { return true; }
+            if (await S.Cast(SB.Shear, C.CombatColor, addLog: "AoE")) { return true; }
+
+            return false;
+        }
+
+        #region Interrupt and Stun
         public static async Task<bool> FindInterrupt()
         {
             // use consume magic at 20 yards first
@@ -188,7 +335,7 @@ namespace Illidari.Rotation
 
         private static WoWUnit GetStunTarget(WoWUnit unit, double range)
         {
-            var units = U.activeEnemies(unit.Location, 8f); 
+            var units = U.activeEnemies(unit.Location, 8f);
             if (units != null && units.Count() >= M.IS.VengeanceStunSigilOfMiseryCount)
             {
                 return unit;
@@ -197,86 +344,6 @@ namespace Illidari.Rotation
             return null;
         }
 
-        public static async Task<bool> ActiveMitigation()
-        {
-            WoWUnit stunTarget = GetStunTarget(CurrentTarget, 8f);
-            if (await S.CastGround(SB.SigilOfMisery, stunTarget, C.DefensiveColor, stunTarget != null 
-                && M.IS.VengeanceAllowStunSigilOfMisery))
-            { return true; }
-            //L.infoLog(string.Format($"CP:{CurrentPain},DS:{M.IS.VengeanceAllowDemonSpikes},HP:{Me.HealthPercent},DSHP:{M.IS.VengeanceDemonSpikesHp}"),C.ItemColor);
-            // cast Demon Spikes if we have 
-            if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
-                M.IS.VengeanceAllowDemonSpikes
-                && C.CurrentPower >= 20
-                && Me.HealthPercent <= M.IS.VengeanceDemonSpikesHp
-                && !Me.HasAura(SB.AuraDemonSpikes)
-                && U.activeEnemies(Me.Location, 8f).Any(),
-                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceDemonSpikesHp}")
-            ))
-            { return true; }
-
-            if (await S.Cast(SB.SoulCleave, C.DefensiveColor,
-                M.IS.VengeanceAllowSoulCleave
-                && C.CurrentPower >= 30
-                && Me.CurrentHealth <= M.IS.VengeanceSoulCleaveHp
-                && CurrentTarget.IsWithinMeleeRangeOf(Me),
-                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulCleaveHp}")
-            ))
-            { return true; }
-
-            if (await S.Cast(SB.EmpowerWards, C.DefensiveColor,
-                M.IS.VengeanceEmpowerWards
-                && U.activeEnemies(Me.Location, 50f).Where(u =>
-                    u.IsTargetingMeOrPet && u.IsCasting)
-                .Any()
-            ))
-            { return true; }
-
-            if (await S.Cast(SB.FieryBrand, C.DefensiveColor,
-                M.IS.VengeanceAllowFieryBrand
-                && Me.HealthPercent <= M.IS.VengeanceFieryBrandHp))
-            { return true; }
-
-            return false;
-        }
-
-        public static async Task<bool> SingleTarget()
-        {
-            if (await S.Cast(SB.SoulCleave, C.CombatColor,
-                C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain,
-                string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
-            ))
-            { return true; }
-            if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
-                S.MaxChargesAvailable(SB.InfernalStrike),
-                "ST Max Charges Available"))
-            { return true; }
-            if (await S.Cast(SB.ImmolationAura, C.CombatColor, true, "ST")) { return true; }
-            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, true, "ST")) { return true; }
-            if (await S.Cast(SB.Shear, C.CombatColor, true, "ST")) { return true; }
-
-
-            return true;
-        }
-
-        public static async Task<bool> MultipleTarget()
-        {
-            if (await S.Cast(SB.SoulCleave, C.CombatColor,
-                C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain,
-                string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
-            ))
-            { return true; }
-            if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
-                S.MaxChargesAvailable(SB.InfernalStrike),
-                "AoE Max Charges Available"))
-            { return true; }
-            if (await S.Cast(SB.ImmolationAura, C.CombatColor, addLog: "AoE")) { return true; }
-            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, addLog: "AoE")) { return true; }
-            if (await S.Cast(SB.FieryBrand, C.CombatColor, T.VengeanceBurningAlive, addLog: "AoE has Burning Alive Talent"))
-                if (await S.Cast(SB.Shear, C.CombatColor, addLog: "AoE")) { return true; }
-
-            return false;
-        }
-
+        #endregion  
     }
 }

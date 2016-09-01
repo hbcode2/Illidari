@@ -47,7 +47,19 @@ namespace Illidari
                 return 0;
             }
         }
-
+        public static bool HasTankWarglaivesEquipped (this LocalPlayer player)
+        {
+            WoWItem mh = player.Inventory.Equipped.MainHand;
+            WoWItem oh = player.Inventory.Equipped.OffHand;
+            if (mh != null && oh != null)
+            {
+                if (mh.Name == "Aldrachi Warblades" && oh.Name == "Aldrachi Warblades")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public static bool IsValidCombatUnit(this WoWUnit Unit)
         {
             return Unit != null && Unit.IsValid && Unit.IsAlive && Unit.Attackable;

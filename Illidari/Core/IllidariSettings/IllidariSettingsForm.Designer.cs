@@ -114,6 +114,19 @@
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label24 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.VengeanceMetamorphosisHp = new System.Windows.Forms.NumericUpDown();
+            this.VengeanceUseMetamorphosis = new System.Windows.Forms.CheckBox();
+            this.VengeancePreferPullWithFelblade = new System.Windows.Forms.CheckBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.VengeanceSoulBarrierHp = new System.Windows.Forms.NumericUpDown();
+            this.VengeanceUseSoulBarrier = new System.Windows.Forms.CheckBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.VengeanceSoulCarverHp = new System.Windows.Forms.NumericUpDown();
+            this.VengeanceUseSoulCarver = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -141,6 +154,9 @@
             this.groupBox4.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceMetamorphosisHp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceSoulBarrierHp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceSoulCarverHp)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -670,9 +686,9 @@
             this.groupBox8.Controls.Add(this.label21);
             this.groupBox8.Controls.Add(this.VengeanceStunSigilOfMiseryCount);
             this.groupBox8.Controls.Add(this.VengeanceStunSigilOfMisery);
-            this.groupBox8.Location = new System.Drawing.Point(17, 269);
+            this.groupBox8.Location = new System.Drawing.Point(17, 268);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(293, 58);
+            this.groupBox8.Size = new System.Drawing.Size(293, 50);
             this.groupBox8.TabIndex = 5;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Stun";
@@ -719,7 +735,7 @@
             this.groupBox7.Controls.Add(this.VengeanceInterruptSigilOfMisery);
             this.groupBox7.Controls.Add(this.VengeanceInterruptSigilOfSilence);
             this.groupBox7.Controls.Add(this.VengeanceInterruptConsumeMagic);
-            this.groupBox7.Location = new System.Drawing.Point(17, 169);
+            this.groupBox7.Location = new System.Drawing.Point(17, 168);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(293, 94);
             this.groupBox7.TabIndex = 4;
@@ -761,11 +777,12 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.VengeancePreferPullWithFelblade);
             this.groupBox6.Controls.Add(this.label18);
             this.groupBox6.Controls.Add(this.label19);
             this.groupBox6.Controls.Add(this.VengeanceCombatSoulCleavePain);
             this.groupBox6.Controls.Add(this.VengeanceCombatUseSoulCleave);
-            this.groupBox6.Location = new System.Drawing.Point(17, 78);
+            this.groupBox6.Location = new System.Drawing.Point(17, 77);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(293, 85);
             this.groupBox6.TabIndex = 3;
@@ -811,6 +828,18 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.label28);
+            this.groupBox5.Controls.Add(this.label29);
+            this.groupBox5.Controls.Add(this.VengeanceSoulCarverHp);
+            this.groupBox5.Controls.Add(this.VengeanceUseSoulCarver);
+            this.groupBox5.Controls.Add(this.label26);
+            this.groupBox5.Controls.Add(this.label27);
+            this.groupBox5.Controls.Add(this.VengeanceSoulBarrierHp);
+            this.groupBox5.Controls.Add(this.VengeanceUseSoulBarrier);
+            this.groupBox5.Controls.Add(this.label24);
+            this.groupBox5.Controls.Add(this.label25);
+            this.groupBox5.Controls.Add(this.VengeanceMetamorphosisHp);
+            this.groupBox5.Controls.Add(this.VengeanceUseMetamorphosis);
             this.groupBox5.Controls.Add(this.label16);
             this.groupBox5.Controls.Add(this.label17);
             this.groupBox5.Controls.Add(this.VengeanceFieryBrandHp);
@@ -826,7 +855,7 @@
             this.groupBox5.Controls.Add(this.VengeanceUseDemonSpikes);
             this.groupBox5.Location = new System.Drawing.Point(316, 14);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(254, 125);
+            this.groupBox5.Size = new System.Drawing.Size(254, 191);
             this.groupBox5.TabIndex = 2;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Mitigation";
@@ -911,7 +940,7 @@
             // VengeanceUseEmpowerWards
             // 
             this.VengeanceUseEmpowerWards.AutoSize = true;
-            this.VengeanceUseEmpowerWards.Location = new System.Drawing.Point(15, 89);
+            this.VengeanceUseEmpowerWards.Location = new System.Drawing.Point(15, 157);
             this.VengeanceUseEmpowerWards.Name = "VengeanceUseEmpowerWards";
             this.VengeanceUseEmpowerWards.Size = new System.Drawing.Size(126, 17);
             this.VengeanceUseEmpowerWards.TabIndex = 4;
@@ -1046,6 +1075,128 @@
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(197, 90);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(33, 13);
+            this.label24.TabIndex = 16;
+            this.label24.Text = "% HP";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(127, 90);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(18, 13);
+            this.label25.TabIndex = 15;
+            this.label25.Text = "@";
+            // 
+            // VengeanceMetamorphosisHp
+            // 
+            this.VengeanceMetamorphosisHp.Location = new System.Drawing.Point(147, 86);
+            this.VengeanceMetamorphosisHp.Name = "VengeanceMetamorphosisHp";
+            this.VengeanceMetamorphosisHp.Size = new System.Drawing.Size(48, 20);
+            this.VengeanceMetamorphosisHp.TabIndex = 14;
+            this.VengeanceMetamorphosisHp.ValueChanged += new System.EventHandler(this.VengeanceMetamorphosisHp_ValueChanged);
+            // 
+            // VengeanceUseMetamorphosis
+            // 
+            this.VengeanceUseMetamorphosis.AutoSize = true;
+            this.VengeanceUseMetamorphosis.Location = new System.Drawing.Point(15, 89);
+            this.VengeanceUseMetamorphosis.Name = "VengeanceUseMetamorphosis";
+            this.VengeanceUseMetamorphosis.Size = new System.Drawing.Size(119, 17);
+            this.VengeanceUseMetamorphosis.TabIndex = 13;
+            this.VengeanceUseMetamorphosis.Text = "Use Metamorphosis";
+            this.VengeanceUseMetamorphosis.UseVisualStyleBackColor = true;
+            this.VengeanceUseMetamorphosis.CheckedChanged += new System.EventHandler(this.VengeanceUseMetamorphosis_CheckedChanged);
+            // 
+            // VengeancePreferPullWithFelblade
+            // 
+            this.VengeancePreferPullWithFelblade.AutoSize = true;
+            this.VengeancePreferPullWithFelblade.Location = new System.Drawing.Point(15, 43);
+            this.VengeancePreferPullWithFelblade.Name = "VengeancePreferPullWithFelblade";
+            this.VengeancePreferPullWithFelblade.Size = new System.Drawing.Size(142, 17);
+            this.VengeancePreferPullWithFelblade.TabIndex = 13;
+            this.VengeancePreferPullWithFelblade.Text = "Prefer Pull With Felblade";
+            this.VengeancePreferPullWithFelblade.UseVisualStyleBackColor = true;
+            this.VengeancePreferPullWithFelblade.CheckedChanged += new System.EventHandler(this.VengeancePreferPullWithFelblade_CheckedChanged);
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(197, 113);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(33, 13);
+            this.label26.TabIndex = 20;
+            this.label26.Text = "% HP";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(127, 113);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(18, 13);
+            this.label27.TabIndex = 19;
+            this.label27.Text = "@";
+            // 
+            // VengeanceSoulBarrierHp
+            // 
+            this.VengeanceSoulBarrierHp.Location = new System.Drawing.Point(147, 109);
+            this.VengeanceSoulBarrierHp.Name = "VengeanceSoulBarrierHp";
+            this.VengeanceSoulBarrierHp.Size = new System.Drawing.Size(48, 20);
+            this.VengeanceSoulBarrierHp.TabIndex = 18;
+            this.VengeanceSoulBarrierHp.ValueChanged += new System.EventHandler(this.VengeanceSoulBarrierHp_ValueChanged);
+            // 
+            // VengeanceUseSoulBarrier
+            // 
+            this.VengeanceUseSoulBarrier.AutoSize = true;
+            this.VengeanceUseSoulBarrier.Location = new System.Drawing.Point(15, 112);
+            this.VengeanceUseSoulBarrier.Name = "VengeanceUseSoulBarrier";
+            this.VengeanceUseSoulBarrier.Size = new System.Drawing.Size(102, 17);
+            this.VengeanceUseSoulBarrier.TabIndex = 17;
+            this.VengeanceUseSoulBarrier.Text = "Use Soul Barrier";
+            this.VengeanceUseSoulBarrier.UseVisualStyleBackColor = true;
+            this.VengeanceUseSoulBarrier.CheckedChanged += new System.EventHandler(this.VengeanceUseSoulBarrier_CheckedChanged);
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(197, 135);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(33, 13);
+            this.label28.TabIndex = 24;
+            this.label28.Text = "% HP";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(127, 135);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(18, 13);
+            this.label29.TabIndex = 23;
+            this.label29.Text = "@";
+            // 
+            // VengeanceSoulCarverHp
+            // 
+            this.VengeanceSoulCarverHp.Location = new System.Drawing.Point(147, 131);
+            this.VengeanceSoulCarverHp.Name = "VengeanceSoulCarverHp";
+            this.VengeanceSoulCarverHp.Size = new System.Drawing.Size(48, 20);
+            this.VengeanceSoulCarverHp.TabIndex = 22;
+            this.VengeanceSoulCarverHp.ValueChanged += new System.EventHandler(this.VengeanceSoulCarverHp_ValueChanged);
+            // 
+            // VengeanceUseSoulCarver
+            // 
+            this.VengeanceUseSoulCarver.AutoSize = true;
+            this.VengeanceUseSoulCarver.Location = new System.Drawing.Point(15, 134);
+            this.VengeanceUseSoulCarver.Name = "VengeanceUseSoulCarver";
+            this.VengeanceUseSoulCarver.Size = new System.Drawing.Size(103, 17);
+            this.VengeanceUseSoulCarver.TabIndex = 21;
+            this.VengeanceUseSoulCarver.Text = "Use Soul Carver";
+            this.VengeanceUseSoulCarver.UseVisualStyleBackColor = true;
+            this.VengeanceUseSoulCarver.CheckedChanged += new System.EventHandler(this.VengeanceUseSoulCarver_CheckedChanged);
+            // 
             // IllidariSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1095,6 +1246,9 @@
             this.groupBox4.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceMetamorphosisHp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceSoulBarrierHp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceSoulCarverHp)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1186,5 +1340,18 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.GroupBox groupBox10;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.NumericUpDown VengeanceMetamorphosisHp;
+        private System.Windows.Forms.CheckBox VengeanceUseMetamorphosis;
+        private System.Windows.Forms.CheckBox VengeancePreferPullWithFelblade;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.NumericUpDown VengeanceSoulBarrierHp;
+        private System.Windows.Forms.CheckBox VengeanceUseSoulBarrier;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.NumericUpDown VengeanceSoulCarverHp;
+        private System.Windows.Forms.CheckBox VengeanceUseSoulCarver;
     }
 }

@@ -40,6 +40,15 @@ namespace Illidari.Core.Helpers
             SigilOfFlame = 204596,
             SigilOfSilence = 202137,
             SigilOfMisery = 207684,
+            SoulCarver = 207407,
+            FelEruption = 211881,
+            FelBlade = 213241,
+            Fracture = 209795,
+            SigilOfChains = 202138,
+            FelDevastation = 212084,
+            SpiritBomb = 218679,
+            NetherBond = 207810,
+            SoulBarrier = 227225,
             End = 0;
             
         #endregion

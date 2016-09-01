@@ -118,9 +118,10 @@ namespace Illidari.Core.IllidariSettings
         [Setting, DefaultValue(false)]
         public bool VengeanceAllowTaunt { get; set; }
 
+        #region Mitigation
         [Setting, DefaultValue(true)]
         public bool VengeanceAllowDemonSpikes { get; set; }
-        [Setting, DefaultValue(100)]
+        [Setting, DefaultValue(90)]
         public int VengeanceDemonSpikesHp { get; set; }
 
         [Setting, DefaultValue(true)]
@@ -128,19 +129,42 @@ namespace Illidari.Core.IllidariSettings
 
         [Setting, DefaultValue(true)]
         public bool VengeanceAllowSoulCleave { get; set; }
-        [Setting, DefaultValue(100)]
+        [Setting, DefaultValue(80)]
         public int VengeanceSoulCleaveHp { get; set; }
 
         [Setting, DefaultValue(true)]
         public bool VengeanceAllowFieryBrand { get; set; }
-        [Setting, DefaultValue(100)]
+        [Setting, DefaultValue(70)]
         public int VengeanceFieryBrandHp { get; set; }
 
+        [Setting, DefaultValue(true)]
+        public bool VengeanceAllowMetamorphosis { get; set; }
+        [Setting, DefaultValue(60)]
+        public int VengeanceMetamorphosisHp { get; set; }
+
+        [Setting, DefaultValue(true)]
+        public bool VengeanceAllowSoulBarrier { get; set; }
+        [Setting, DefaultValue(40)]
+        public int VengeanceSoulBarrierHp { get; set; }
+
+        [Setting, DefaultValue(true)]
+        public bool VengeanceAllowSoulCarver { get; set; }
+        [Setting, DefaultValue(65)]
+        public int VengeanceSoulCarverHp { get; set; }
+
+        #endregion
+
+        #region Combat
         [Setting, DefaultValue(true)]
         public bool VengeanceCombatAllowSoulCleave { get; set; }
         [Setting, DefaultValue(80)]
         public int VengeanceCombatSoulCleavePain { get; set; }
-        
+
+        [Setting, DefaultValue(false)]
+        public bool VengeancePreferPullWithFelblade { get; set; }
+
+        #endregion  
+
         [Setting, DefaultValue(false)]
         public bool VengeanceAllowInterruptConsumeMagic { get; set; }
         [Setting, DefaultValue(false)]
