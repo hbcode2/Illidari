@@ -328,7 +328,7 @@ namespace Illidari.Rotation
             var units = U.activeEnemies(Me.Location, 20f); // get all enemies within 20 yards
             if (units != null)
             {
-                var interruptTarget = units.Where(u => u.CanInterruptCurrentSpellCast).OrderBy(d => d.Distance).FirstOrDefault();
+                var interruptTarget = units.Where(u => (u.IsCasting || u.IsCastingHealingSpell) && u.CanInterruptCurrentSpellCast).OrderBy(d => d.Distance).FirstOrDefault();
                 if (interruptTarget != null)
                 {
                     return interruptTarget;
