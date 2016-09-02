@@ -175,6 +175,32 @@ namespace Illidari.Core.IllidariSettings
         public bool VengeanceAllowStunSigilOfMisery { get; set; }
         [Setting, DefaultValue(0)]
         public int VengeanceStunSigilOfMiseryCount { get; set; }
+
+
+
+        #endregion
+
+        #region readonly properties
+        public bool VengeanceAllowInterrupt
+        {
+            get { return (VengeanceAllowInterruptConsumeMagic || VengeanceAllowInterruptSigilOfSilence || VengeanceAllowInterruptSigilOfMisery); }
+        }
+        public bool HavocDefensiveCooldowns
+        {
+            get
+            {
+                return (HavocBlurHp > 0 || HavocBlurUnits > 0)
+                    || (HavocChaosNovaHp > 0 || HavocChaosNovaUnits > 0)
+                    || (HavocDarknessHp > 0 || HavocDarknessUnits > 0);
+                }
+        }
+        public bool HavocOffensiveCooldowns
+        {
+            get
+            {
+                return (HavocUseMetamorphosisCooldown != CooldownTypes.Manual);
+            }
+        }
         #endregion
 
         public enum CooldownTypes

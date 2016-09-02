@@ -135,7 +135,10 @@ namespace Illidari.Rotation
             }
             if (CurrentTarget.IsValidCombatUnit())
             {
-                await FindInterrupt();
+                if (M.IS.VengeanceAllowInterrupt)
+                {
+                    await FindInterrupt();
+                }
 
                 if (await ActiveMitigation()) { return true; }
 
@@ -254,7 +257,8 @@ namespace Illidari.Rotation
             { return true; }
 
             if (await S.Cast(SB.ImmolationAura, C.CombatColor, true, "ST")) { return true; }
-            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, true, "ST")) { return true; }
+            if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, T.VengeanceConcentratedSigils, "ST - Contentrated Sigils")) { return true; }
+            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils, "ST")) { return true; }
             if (await S.Cast(SB.FelEruption, C.CombatColor, T.VengeanceFelEruption, "ST")) { return true; }
             if (await S.Cast(SB.Fracture, C.CombatColor, T.VengeanceFracture, "ST")) { return true; }
             if (await S.Cast(SB.Shear, C.CombatColor, true, "ST")) { return true; }
@@ -277,7 +281,8 @@ namespace Illidari.Rotation
             { return true; }
 
             if (await S.Cast(SB.ImmolationAura, C.CombatColor, addLog: "AoE")) { return true; }
-            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, addLog: "AoE")) { return true; }
+            if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, T.VengeanceConcentratedSigils, "AoE - Contentrated Sigils")) { return true; }
+            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils, "AoE")) { return true; }
             if (await S.Cast(SB.FieryBrand, C.CombatColor, T.VengeanceBurningAlive, addLog: "AoE has Burning Alive Talent")) { return true; }
             if (await S.Cast(SB.FelDevastation, C.CombatColor, T.VengeanceFelDevastation, addLog: "AoE Fel Devastation")) { return true; }
             if (await S.Cast(SB.Shear, C.CombatColor, addLog: "AoE")) { return true; }

@@ -38,6 +38,7 @@ namespace Illidari.Core.Helpers
             FieryBrand = 204021,
             ImmolationAura = 178740,
             SigilOfFlame = 204596,
+            SigilOfFlameTalented = 204513,
             SigilOfSilence = 202137,
             SigilOfMisery = 207684,
             SoulCarver = 207407,

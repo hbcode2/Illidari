@@ -9,6 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Styx.Common;
 
 #region [Method] - Class Redundancy
 using L = Illidari.Core.Utilities.Log;
@@ -26,12 +27,12 @@ namespace Illidari.Core
         public static IEnumerable<WoWUnit> activeEnemies(Vector3 fromLocation, double Range)
         {
             var Hostile = enemyCount;
-            return Hostile != null ? Hostile.Where(x => x.DistanceSqr <= Range * Range) : null;
+            return Hostile != null ? Hostile.Where(x => x.Location.DistanceSquared(fromLocation) <= Range * Range) : null;
         }
         public static IEnumerable<WoWUnit> activeEnemiesToTaunt(Vector3 fromLocation, double Range)
         {
             var Hostile = enemiesToTaunt;
-            return Hostile != null ? Hostile.Where(x => x.DistanceSqr <= Range * Range) : null;
+            return Hostile != null ? Hostile.Where(x => x.Location.DistanceSquared(fromLocation) <= Range * Range) : null;
         }
         private static List<WoWUnit> enemyCount { get; set; }
         private static List<WoWUnit> enemiesToTaunt { get; set; }
