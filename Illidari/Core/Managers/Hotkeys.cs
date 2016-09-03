@@ -1,12 +1,16 @@
 ﻿using Styx;
 using Styx.Common;
+using Styx.WoWInternals.WoWObjects;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
+
+using M = Illidari.Main;
 
 namespace Illidari.Core.Managers
 {
@@ -16,17 +20,26 @@ namespace Illidari.Core.Managers
         public static bool cooldownsOn { get; set; }
         public static bool manualOn { get; set; }
         public static bool keysRegistered { get; set; }
+        private static LocalPlayer Me { get { return StyxWoW.Me; } }
 
         #region [Method] - Hotkey Registration
         public static void registerHotkeys()
         {
             if (keysRegistered)
                 return;
-            HotkeysManager.Register("AoEOn", (Keys)char.ToUpper('q'), (ModifierKeys)3, ret =>
+            TypeConverter converter = TypeDescriptor.GetConverter(typeof(Keys));
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance)
+            {
+                if (!string.IsNullOrEmpty(M.IS.HotkeyVengeanceAoeKey) && M.IS.HotkeyVengeanceAoeModifier > 0)
                 {
-                    AoEOn = !AoEOn;
-                    StyxWoW.Overlay.AddToast((AoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);
-                });
+                    HotkeysManager.Register("AoEOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceAoeKey), (ModifierKeys)M.IS.HotkeyVengeanceAoeModifier, ret =>
+                    {
+                        AoEOn = !AoEOn;
+                        StyxWoW.Overlay.AddToast((AoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);
+                    });
+                }
+            }
+
             HotkeysManager.Register("cooldownsOn", Keys.E, ModifierKeys.Alt, ret =>
                 {
                     cooldownsOn = !cooldownsOn;

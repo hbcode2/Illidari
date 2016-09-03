@@ -180,6 +180,17 @@ namespace Illidari.Core.IllidariSettings
 
         #endregion
 
+        #region HotKeys
+        [Setting, DefaultValue(1)] // default Alt = 1
+        public int HotkeyVengeanceAoeModifier { get; set; }
+        [Setting, DefaultValue("Q")]
+        public string HotkeyVengeanceAoeKey { get; set; }
+        [Setting, DefaultValue(1)] // default Alt = 1
+        public int HotkeyVengeanceDefensiveModifier { get; set; }
+        [Setting, DefaultValue("D")]
+        public string HotkeyVengeanceDefensiveKey { get; set; }
+        #endregion
+
         #region readonly properties
         public bool VengeanceAllowInterrupt
         {

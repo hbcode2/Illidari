@@ -118,7 +118,39 @@ namespace Illidari
 
             #endregion
 
+            #region Hotkeys load
+            MessageBox.Show(S.HotkeyVengeanceAoeModifier.ToString() + ":" + S.HotkeyVengeanceAoeKey);
+            LoadButtonText(S.HotkeyVengeanceAoeModifier, S.HotkeyVengeanceAoeKey, btnHotkeysVengeanceAoe);
 
+
+
+            #endregion
+
+
+        }
+        private void LoadButtonText(int modifierKey, string key, Button btn)
+        {
+            if (modifierKey <= 0 || string.IsNullOrEmpty(key)) { btn.Text = "Click to Set"; return; }
+
+            bool shift = false;
+            bool alt = false;
+            bool ctrl = false;
+
+            // singles
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt) { alt = true; shift = false; ctrl = false; }
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Shift) { alt = false; shift = true; ctrl = false; }
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Control) { alt = false; shift = false; ctrl = true; }
+
+            // doubles
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Control) { alt = true; shift = false; ctrl = true; }
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Shift) { alt = true; shift = true; ctrl = false; }
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Control + (int)Styx.Common.ModifierKeys.Shift) { alt = false; shift = true; ctrl = true; }
+
+            // one triple
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Control + (int)Styx.Common.ModifierKeys.Shift) { alt = true; shift = true; ctrl = true; }
+            MessageBox.Show("shift:" + shift.ToString() + ", alt:" + alt.ToString() + ", ctrl:" + ctrl.ToString());
+            string btnText = GetKeyModifierText(alt, shift, ctrl, key);
+            btn.Text = btnText;
         }
 
         private void IllidariSettingsForm_Load(object sender, EventArgs e)
@@ -204,7 +236,7 @@ namespace Illidari
             S.Save();
 
             Dictionary<string, object> newProperties = GetPropertiesOfSettings(S);
-            
+
             foreach (var oldItem in oldProperties)
             {
                 foreach (var newItem in newProperties)
@@ -229,7 +261,7 @@ namespace Illidari
             Main.IS = new IllidariSettings();
 
 
-            
+
             this.Close();
         }
 
@@ -380,7 +412,7 @@ namespace Illidari
             S.HavocVengefulReatreatAoe = HavocVengefulReatreatAoe.Checked;
         }
         #endregion
-        
+
         private void HavocUseAgilityPotionCooldown_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!_isLoading)
@@ -528,5 +560,186 @@ namespace Illidari
 
         #endregion
 
+        #region Hotkey Methods
+
+        private bool captureKeyPress = false;
+        private bool controlPressed = false;
+        private bool altPressed = false;
+        private bool shiftPressed = false;
+        private string keyPressed = "";
+        private void CheckIfKeyPressed(KeyEventArgs e)
+        {
+            if (captureKeyPress)
+            {
+                if (e.Alt) { altPressed = true; }
+                if (e.Control) { controlPressed = true; }
+                if (e.Shift) { shiftPressed = true; }
+                bool isLetterOrDigit = char.IsLetterOrDigit((char)e.KeyCode);
+                if (isLetterOrDigit) { keyPressed = new KeysConverter().ConvertToString(e.KeyCode); }
+            }
+        }
+
+
+        private void ResetKeys()
+        {
+            captureKeyPress = false;
+            altPressed = false;
+            controlPressed = false;
+            shiftPressed = false;
+            keyPressed = "";
+        }
+        private string GetKeyModifierText()
+        {
+            string text = "";
+            if ((altPressed || controlPressed || shiftPressed) && !String.IsNullOrEmpty(keyPressed))
+            {
+                #region Control + other stuff
+                if (controlPressed && !altPressed && !shiftPressed)
+                {
+                    return string.Format($"Ctrl + {keyPressed.ToUpper()}");
+                }
+                if (controlPressed && altPressed && !shiftPressed)
+                {
+                    return string.Format($"Ctrl + Alt + {keyPressed.ToUpper()}");
+                }
+                if (controlPressed && !altPressed && shiftPressed)
+                {
+                    return string.Format($"Ctrl + Shift + {keyPressed.ToUpper()}");
+                }
+                if (controlPressed && altPressed && shiftPressed)
+                {
+                    return string.Format($"Ctrl + Alt + Shift + {keyPressed.ToUpper()}");
+                }
+                #endregion  
+
+                if (!controlPressed && altPressed && !shiftPressed)
+                {
+                    return string.Format($"Alt + {keyPressed.ToUpper()}");
+                }
+                if (!controlPressed && altPressed && shiftPressed)
+                {
+                    return string.Format($"Alt + Shift + {keyPressed.ToUpper()}");
+                }
+                if (!controlPressed && !altPressed && shiftPressed)
+                {
+                    return string.Format($"Shift + {keyPressed.ToUpper()}");
+                }
+            }
+            return text;
+        }
+
+        private string GetKeyModifierText(bool alt, bool shift, bool ctrl, string key)
+        {
+            string text = "";
+            if ((alt || ctrl || shift) && !String.IsNullOrEmpty(key))
+            {
+                #region Control + other stuff
+                if (ctrl && !alt && !shift)
+                {
+                    return string.Format($"Ctrl + {key.ToUpper()}");
+                }
+                if (ctrl && alt && !shift)
+                {
+                    return string.Format($"Ctrl + Alt + {key.ToUpper()}");
+                }
+                if (ctrl && !alt && shift)
+                {
+                    return string.Format($"Ctrl + Shift + {key.ToUpper()}");
+                }
+                if (ctrl && alt && shift)
+                {
+                    return string.Format($"Ctrl + Alt + Shift + {key.ToUpper()}");
+                }
+                #endregion  
+
+                if (!ctrl && alt && !shift)
+                {
+                    return string.Format($"Alt + {key.ToUpper()}");
+                }
+                if (!ctrl && alt && shift)
+                {
+                    return string.Format($"Alt + Shift + {key.ToUpper()}");
+                }
+                if (!ctrl && !alt && shift)
+                {
+                    return string.Format($"Shift + {key.ToUpper()}");
+                }
+            }
+            return text;
+        }
+
+        private bool DidPressCorrectKey()
+        {
+            if (captureKeyPress)
+            {
+                if ((altPressed || controlPressed || shiftPressed) && !string.IsNullOrEmpty(keyPressed))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private int GetKeyModifierPressed()
+        {
+            if (altPressed || controlPressed || shiftPressed)
+            {
+                int modifierKey = 0;
+                if (altPressed) { modifierKey += (int)Styx.Common.ModifierKeys.Alt; }
+                if (controlPressed) { modifierKey += (int)Styx.Common.ModifierKeys.Control; }
+                if (shiftPressed) { modifierKey += (int)Styx.Common.ModifierKeys.Shift; }
+                return modifierKey;
+            }
+            return 0;
+        }
+        #endregion
+
+        #region Hotkey - Vengeance - AoE
+
+        private void btnHotkeysVengeanceAoe_KeyDown(object sender, KeyEventArgs e)
+        {
+            CheckIfKeyPressed(e);
+            btnHotkeysVengeanceAoe.Text = GetKeyModifierText();
+        }
+
+
+        private void btnHotkeysVengeanceAoe_Click(object sender, EventArgs e)
+        {
+            captureKeyPress = true;
+            btnHotkeysVengeanceAoe.Text = "";
+        }
+
+        private void btnHotkeysVengeanceAoe_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (DidPressCorrectKey())
+            {
+                S.HotkeyVengeanceAoeModifier = GetKeyModifierPressed();
+                S.HotkeyVengeanceAoeKey = keyPressed;
+            }
+            ResetKeys();
+        }
+
+
+        private void btnHotkeysVengeanceDefensiveCooldowns_Click(object sender, EventArgs e)
+        {
+            captureKeyPress = true;
+            btnHotkeysVengeanceDefensiveCooldowns.Text = "";
+        }
+
+        private void btnHotkeysVengeanceDefensiveCooldowns_KeyDown(object sender, KeyEventArgs e)
+        {
+            CheckIfKeyPressed(e);
+            btnHotkeysVengeanceDefensiveCooldowns.Text = GetKeyModifierText();
+        }
+
+        private void btnHotkeysVengeanceDefensiveCooldowns_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (DidPressCorrectKey())
+            {
+                S.HotkeyVengeanceDefensiveKey = keyPressed;
+                S.HotkeyVengeanceDefensiveModifier = GetKeyModifierPressed();
+            }
+            ResetKeys();
+        }
     }
 }

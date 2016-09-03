@@ -244,6 +244,9 @@ namespace Illidari
             
             // grab all enemies within 50 yards to find a valid target
             U.enemyAnnex(50f);
+
+            // grab an interrupt target
+            if (GetInterruptTarget()) { return; }
             
             // get a taunt target, if any
             if (GetTauntTarget()) { return; }
@@ -252,6 +255,30 @@ namespace Illidari
             if (GetNewTarget()) { return; }
            
 
+        }
+
+        private bool GetInterruptTarget()
+        {
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowInterrupt)
+            {
+                // consume magic
+                if (IS.VengeanceAllowInterruptConsumeMagic && Core.Spell.OnCooldown(Core.Helpers.Spell_Book.ConsumeMagic))
+                {
+                    var units = U.activeEnemies(Me.Location, 20f); // get all enemies within 20 yards
+                    if (units != null)
+                    {
+                        var interruptTarget = units.Where(u => (u.IsCasting || u.IsCastingHealingSpell) && u.CanInterruptCurrentSpellCast).OrderBy(d => d.Distance).FirstOrDefault();
+                        if (interruptTarget != null)
+                        {
+                            interruptTarget.Target();
+                            return true;
+                        }
+                    }
+                }
+                
+
+            }
+            return false;
         }
         
         private bool GetTauntTarget()

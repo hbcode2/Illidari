@@ -83,7 +83,7 @@ namespace Illidari.Rotation
                 if (await S.Cast(SB.ThrowGlaive, C.CombatColor, CurrentTarget.Distance <= 30)) { return true; }
 
                 // use to engage if you have the charges to do so
-                if (await S.CastGround(SB.InfernalStrike, C.CombatColor, 
+                if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
                     CurrentTarget.Distance <= infernalStrikeRange
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me)
                     && !M.IS.VengeancePreferPullWithFelblade
@@ -127,6 +127,11 @@ namespace Illidari.Rotation
                 await C.EnsureMeleeRange(CurrentTarget);
             }
 
+            if (M.IS.VengeanceAllowInterrupt)
+            {
+                await InterruptTarget();
+            }
+
             if (M.IS.VengeanceAllowTaunt)
             {
                 await S.GCD(SB.Torment, C.CombatColor,
@@ -135,10 +140,7 @@ namespace Illidari.Rotation
             }
             if (CurrentTarget.IsValidCombatUnit())
             {
-                if (M.IS.VengeanceAllowInterrupt)
-                {
-                    await FindInterrupt();
-                }
+
 
                 if (await ActiveMitigation()) { return true; }
 
@@ -197,7 +199,7 @@ namespace Illidari.Rotation
             ))
             { return true; }
 
-            if (await S.Cast (SB.SoulBarrier, C.DefensiveColor, T.VengeanceSoulBarrier
+            if (await S.Cast(SB.SoulBarrier, C.DefensiveColor, T.VengeanceSoulBarrier
                 && M.IS.VengeanceAllowSoulBarrier
                 && Me.HealthPercent <= M.IS.VengeanceSoulBarrierHp,
                 string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulBarrierHp}")
@@ -229,8 +231,7 @@ namespace Illidari.Rotation
                 && U.activeEnemies(Me.Location, 50f).Where(u =>
                     u.IsTargetingMeOrPet && u.IsCasting)
                 .Any()
-            ))
-            { return true; }
+            )) { return true; }
 
             if (await S.Cast(SB.FieryBrand, C.DefensiveColor,
                 M.IS.VengeanceAllowFieryBrand
@@ -291,52 +292,53 @@ namespace Illidari.Rotation
         }
 
         #region Interrupt and Stun
-        public static async Task<bool> FindInterrupt()
+        public static async Task<bool> InterruptTarget()
         {
             // use consume magic at 20 yards first
-            WoWUnit interruptTarget = GetInterruptTarget(20f);
-            if (interruptTarget != null)
-            {
-                L.debugLog(string.Format($"Interrupt target 20yd: {interruptTarget.SafeName}"));
-                if (await S.GcdOnTarget(SB.ConsumeMagic, interruptTarget, C.DefensiveColor, M.IS.VengeanceAllowInterruptConsumeMagic,
-                    string.Format($"Interrupt: {interruptTarget.SafeName}")))
-                { return true; }
-            }
+            //WoWUnit interruptTarget = GetInterruptTarget(20f);
+            //L.debugLog(string.Format($"Interrupt target 20yd: {CurrentTarget.SafeName}"));
+            if (await S.GCD(SB.ConsumeMagic, C.DefensiveColor, 
+                M.IS.VengeanceAllowInterruptConsumeMagic
+                && CurrentTarget.IsValidCombatUnit()
+                && (CurrentTarget.IsCasting || CurrentTarget.IsCastingHealingSpell),
+                string.Format($"Interrupt: {CurrentTarget.SafeName}, casting: {CurrentTarget.CastingSpell?.Name}")
+            ))
+            { return true; }
 
 
-            interruptTarget = GetInterruptTarget(30f);
-            if (interruptTarget != null)
-            {
-                L.debugLog(string.Format($"Interrupt target 30yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell?.Name}"));
-                // now look for sigil of silence
-                if (await S.CastGround(SB.SigilOfSilence, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfSilence,
-                    string.Format($"Interrupt: {interruptTarget.SafeName}")))
-                { return true; }
+            //interruptTarget = GetInterruptTarget(30f);
+            //if (interruptTarget != null)
+            //{
+            //    L.debugLog(string.Format($"Interrupt target 30yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell?.Name}"));
+            //    // now look for sigil of silence
+            //    if (await S.CastGround(SB.SigilOfSilence, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfSilence,
+            //        string.Format($"Interrupt: {interruptTarget.SafeName}")))
+            //    { return true; }
 
-                // now look for sigil of misery
-                if (await S.CastGround(SB.SigilOfMisery, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfMisery,
-                    string.Format($"Interrupt: {interruptTarget.SafeName}")))
-                { return true; }
+            //    // now look for sigil of misery
+            //    if (await S.CastGround(SB.SigilOfMisery, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfMisery,
+            //        string.Format($"Interrupt: {interruptTarget.SafeName}")))
+            //    { return true; }
 
-            }
+            //}
 
             return false;
         }
-        private static WoWUnit GetInterruptTarget(double range)
-        {
+        //private static WoWUnit GetInterruptTarget(double range)
+        //{
 
-            var units = U.activeEnemies(Me.Location, 20f); // get all enemies within 20 yards
-            if (units != null)
-            {
-                var interruptTarget = units.Where(u => (u.IsCasting || u.IsCastingHealingSpell) && u.CanInterruptCurrentSpellCast).OrderBy(d => d.Distance).FirstOrDefault();
-                if (interruptTarget != null)
-                {
-                    return interruptTarget;
-                }
-            }
+        //    var units = U.activeEnemies(Me.Location, range); // get all enemies within 20 yards
+        //    if (units != null)
+        //    {
+        //        var interruptTarget = units.Where(u => (u.IsCasting || u.IsCastingHealingSpell) && u.CanInterruptCurrentSpellCast).OrderBy(d => d.Distance).FirstOrDefault();
+        //        if (interruptTarget != null)
+        //        {
+        //            return interruptTarget;
+        //        }
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         private static WoWUnit GetStunTarget(WoWUnit unit, double range)
         {
