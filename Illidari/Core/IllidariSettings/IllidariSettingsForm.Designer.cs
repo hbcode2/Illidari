@@ -120,25 +120,32 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.VengeanceAllowTaunt = new System.Windows.Forms.CheckBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.btnHotkeysVengeanceAoe = new System.Windows.Forms.Button();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.checkHotkeysVengeanceDefensiveEmpowerWards = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysVengeanceDefensiveSoulCarver = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysVengeanceDefensiveSoulBarrier = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysVengeanceDefensiveMetamorphosis = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysVengeanceDefensiveFieryBrand = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysVengeanceDefensiveSoulCleave = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysVengeanceDefensiveDemonSpikes = new System.Windows.Forms.CheckBox();
+            this.btnHotkeysVengeanceDefensiveCooldowns = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.btnSaveAndClose = new System.Windows.Forms.Button();
             this.btnCancelAndClose = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.btnHotkeysVengeanceDefensiveCooldowns = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.groupBox13 = new System.Windows.Forms.GroupBox();
-            this.btnHotkeysVengeanceAoe = new System.Windows.Forms.Button();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label32 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label33 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.label34 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -168,10 +175,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.VengeanceDemonSpikesHP)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.tabPage4.SuspendLayout();
-            this.groupBox10.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox12.SuspendLayout();
-            this.groupBox13.SuspendLayout();
+            this.groupBox10.SuspendLayout();
+            this.groupBox14.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -1145,6 +1152,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.groupBox14);
             this.tabPage4.Controls.Add(this.groupBox11);
             this.tabPage4.Controls.Add(this.groupBox10);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
@@ -1155,24 +1163,143 @@
             this.tabPage4.Text = "Hotkeys";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // groupBox11
+            // 
+            this.groupBox11.Controls.Add(this.groupBox12);
+            this.groupBox11.Location = new System.Drawing.Point(8, 261);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(561, 190);
+            this.groupBox11.TabIndex = 1;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Vengeance";
+            // 
+            // btnHotkeysVengeanceAoe
+            // 
+            this.btnHotkeysVengeanceAoe.Location = new System.Drawing.Point(87, 21);
+            this.btnHotkeysVengeanceAoe.Name = "btnHotkeysVengeanceAoe";
+            this.btnHotkeysVengeanceAoe.Size = new System.Drawing.Size(113, 23);
+            this.btnHotkeysVengeanceAoe.TabIndex = 1;
+            this.btnHotkeysVengeanceAoe.Text = "Click to Set";
+            this.btnHotkeysVengeanceAoe.UseVisualStyleBackColor = true;
+            this.btnHotkeysVengeanceAoe.Click += new System.EventHandler(this.btnHotkeysVengeanceAoe_Click);
+            // 
+            // groupBox12
+            // 
+            this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveEmpowerWards);
+            this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveSoulCarver);
+            this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveSoulBarrier);
+            this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveMetamorphosis);
+            this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveFieryBrand);
+            this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveSoulCleave);
+            this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveDemonSpikes);
+            this.groupBox12.Controls.Add(this.btnHotkeysVengeanceDefensiveCooldowns);
+            this.groupBox12.Location = new System.Drawing.Point(14, 88);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Size = new System.Drawing.Size(532, 89);
+            this.groupBox12.TabIndex = 2;
+            this.groupBox12.TabStop = false;
+            this.groupBox12.Text = "Defensive Cooldowns";
+            this.toolTip1.SetToolTip(this.groupBox12, "Will activate the defensive cooldowns checked.  This will ignore any settings on " +
+        "the Vengeance tab.");
+            // 
+            // checkHotkeysVengeanceDefensiveEmpowerWards
+            // 
+            this.checkHotkeysVengeanceDefensiveEmpowerWards.AutoSize = true;
+            this.checkHotkeysVengeanceDefensiveEmpowerWards.Location = new System.Drawing.Point(341, 55);
+            this.checkHotkeysVengeanceDefensiveEmpowerWards.Name = "checkHotkeysVengeanceDefensiveEmpowerWards";
+            this.checkHotkeysVengeanceDefensiveEmpowerWards.Size = new System.Drawing.Size(104, 17);
+            this.checkHotkeysVengeanceDefensiveEmpowerWards.TabIndex = 8;
+            this.checkHotkeysVengeanceDefensiveEmpowerWards.Text = "Empower Wards";
+            this.checkHotkeysVengeanceDefensiveEmpowerWards.UseVisualStyleBackColor = true;
+            this.checkHotkeysVengeanceDefensiveEmpowerWards.CheckedChanged += new System.EventHandler(this.checkHotkeysVengeanceDefensiveEmpowerWards_CheckedChanged);
+            // 
+            // checkHotkeysVengeanceDefensiveSoulCarver
+            // 
+            this.checkHotkeysVengeanceDefensiveSoulCarver.AutoSize = true;
+            this.checkHotkeysVengeanceDefensiveSoulCarver.Location = new System.Drawing.Point(252, 55);
+            this.checkHotkeysVengeanceDefensiveSoulCarver.Name = "checkHotkeysVengeanceDefensiveSoulCarver";
+            this.checkHotkeysVengeanceDefensiveSoulCarver.Size = new System.Drawing.Size(81, 17);
+            this.checkHotkeysVengeanceDefensiveSoulCarver.TabIndex = 7;
+            this.checkHotkeysVengeanceDefensiveSoulCarver.Text = "Soul Carver";
+            this.checkHotkeysVengeanceDefensiveSoulCarver.UseVisualStyleBackColor = true;
+            this.checkHotkeysVengeanceDefensiveSoulCarver.CheckedChanged += new System.EventHandler(this.checkHotkeysVengeanceDefensiveSoulCarver_CheckedChanged);
+            // 
+            // checkHotkeysVengeanceDefensiveSoulBarrier
+            // 
+            this.checkHotkeysVengeanceDefensiveSoulBarrier.AutoSize = true;
+            this.checkHotkeysVengeanceDefensiveSoulBarrier.Location = new System.Drawing.Point(151, 55);
+            this.checkHotkeysVengeanceDefensiveSoulBarrier.Name = "checkHotkeysVengeanceDefensiveSoulBarrier";
+            this.checkHotkeysVengeanceDefensiveSoulBarrier.Size = new System.Drawing.Size(80, 17);
+            this.checkHotkeysVengeanceDefensiveSoulBarrier.TabIndex = 6;
+            this.checkHotkeysVengeanceDefensiveSoulBarrier.Text = "Soul Barrier";
+            this.checkHotkeysVengeanceDefensiveSoulBarrier.UseVisualStyleBackColor = true;
+            this.checkHotkeysVengeanceDefensiveSoulBarrier.CheckedChanged += new System.EventHandler(this.checkHotkeysVengeanceDefensiveSoulBarrier_CheckedChanged);
+            // 
+            // checkHotkeysVengeanceDefensiveMetamorphosis
+            // 
+            this.checkHotkeysVengeanceDefensiveMetamorphosis.AutoSize = true;
+            this.checkHotkeysVengeanceDefensiveMetamorphosis.Location = new System.Drawing.Point(426, 32);
+            this.checkHotkeysVengeanceDefensiveMetamorphosis.Name = "checkHotkeysVengeanceDefensiveMetamorphosis";
+            this.checkHotkeysVengeanceDefensiveMetamorphosis.Size = new System.Drawing.Size(97, 17);
+            this.checkHotkeysVengeanceDefensiveMetamorphosis.TabIndex = 5;
+            this.checkHotkeysVengeanceDefensiveMetamorphosis.Text = "Metamorphosis";
+            this.checkHotkeysVengeanceDefensiveMetamorphosis.UseVisualStyleBackColor = true;
+            this.checkHotkeysVengeanceDefensiveMetamorphosis.CheckedChanged += new System.EventHandler(this.checkHotkeysVengeanceDefensiveMetamorphosis_CheckedChanged);
+            // 
+            // checkHotkeysVengeanceDefensiveFieryBrand
+            // 
+            this.checkHotkeysVengeanceDefensiveFieryBrand.AutoSize = true;
+            this.checkHotkeysVengeanceDefensiveFieryBrand.Location = new System.Drawing.Point(341, 32);
+            this.checkHotkeysVengeanceDefensiveFieryBrand.Name = "checkHotkeysVengeanceDefensiveFieryBrand";
+            this.checkHotkeysVengeanceDefensiveFieryBrand.Size = new System.Drawing.Size(79, 17);
+            this.checkHotkeysVengeanceDefensiveFieryBrand.TabIndex = 4;
+            this.checkHotkeysVengeanceDefensiveFieryBrand.Text = "Fiery Brand";
+            this.checkHotkeysVengeanceDefensiveFieryBrand.UseVisualStyleBackColor = true;
+            this.checkHotkeysVengeanceDefensiveFieryBrand.CheckedChanged += new System.EventHandler(this.checkHotkeysVengeanceDefensiveFieryBrand_CheckedChanged);
+            // 
+            // checkHotkeysVengeanceDefensiveSoulCleave
+            // 
+            this.checkHotkeysVengeanceDefensiveSoulCleave.AutoSize = true;
+            this.checkHotkeysVengeanceDefensiveSoulCleave.Location = new System.Drawing.Point(252, 32);
+            this.checkHotkeysVengeanceDefensiveSoulCleave.Name = "checkHotkeysVengeanceDefensiveSoulCleave";
+            this.checkHotkeysVengeanceDefensiveSoulCleave.Size = new System.Drawing.Size(83, 17);
+            this.checkHotkeysVengeanceDefensiveSoulCleave.TabIndex = 3;
+            this.checkHotkeysVengeanceDefensiveSoulCleave.Text = "Soul Cleave";
+            this.checkHotkeysVengeanceDefensiveSoulCleave.UseVisualStyleBackColor = true;
+            this.checkHotkeysVengeanceDefensiveSoulCleave.CheckedChanged += new System.EventHandler(this.checkHotkeysVengeanceDefensiveSoulCleave_CheckedChanged);
+            // 
+            // checkHotkeysVengeanceDefensiveDemonSpikes
+            // 
+            this.checkHotkeysVengeanceDefensiveDemonSpikes.AutoSize = true;
+            this.checkHotkeysVengeanceDefensiveDemonSpikes.Location = new System.Drawing.Point(151, 32);
+            this.checkHotkeysVengeanceDefensiveDemonSpikes.Name = "checkHotkeysVengeanceDefensiveDemonSpikes";
+            this.checkHotkeysVengeanceDefensiveDemonSpikes.Size = new System.Drawing.Size(95, 17);
+            this.checkHotkeysVengeanceDefensiveDemonSpikes.TabIndex = 2;
+            this.checkHotkeysVengeanceDefensiveDemonSpikes.Text = "Demon Spikes";
+            this.checkHotkeysVengeanceDefensiveDemonSpikes.UseVisualStyleBackColor = true;
+            this.checkHotkeysVengeanceDefensiveDemonSpikes.CheckedChanged += new System.EventHandler(this.checkHotkeysVengeanceDefensiveDemonSpikes_CheckedChanged);
+            // 
+            // btnHotkeysVengeanceDefensiveCooldowns
+            // 
+            this.btnHotkeysVengeanceDefensiveCooldowns.Location = new System.Drawing.Point(18, 28);
+            this.btnHotkeysVengeanceDefensiveCooldowns.Name = "btnHotkeysVengeanceDefensiveCooldowns";
+            this.btnHotkeysVengeanceDefensiveCooldowns.Size = new System.Drawing.Size(113, 23);
+            this.btnHotkeysVengeanceDefensiveCooldowns.TabIndex = 1;
+            this.btnHotkeysVengeanceDefensiveCooldowns.Text = "Click to Set";
+            this.btnHotkeysVengeanceDefensiveCooldowns.UseVisualStyleBackColor = true;
+            this.btnHotkeysVengeanceDefensiveCooldowns.Click += new System.EventHandler(this.btnHotkeysVengeanceDefensiveCooldowns_Click);
+            this.btnHotkeysVengeanceDefensiveCooldowns.KeyDown += new System.Windows.Forms.KeyEventHandler(this.btnHotkeysVengeanceDefensiveCooldowns_KeyDown);
+            this.btnHotkeysVengeanceDefensiveCooldowns.KeyUp += new System.Windows.Forms.KeyEventHandler(this.btnHotkeysVengeanceDefensiveCooldowns_KeyUp);
+            // 
             // groupBox10
             // 
-            this.groupBox10.Controls.Add(this.comboBox1);
-            this.groupBox10.Location = new System.Drawing.Point(8, 6);
+            this.groupBox10.Controls.Add(this.label34);
+            this.groupBox10.Location = new System.Drawing.Point(8, 124);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(556, 163);
+            this.groupBox10.Size = new System.Drawing.Size(556, 131);
             this.groupBox10.TabIndex = 0;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Havoc";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(175, 39);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 0;
             // 
             // btnSaveAndClose
             // 
@@ -1202,6 +1329,7 @@
             this.btnImport.TabIndex = 3;
             this.btnImport.Text = "Import...";
             this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
             // btnExport
             // 
@@ -1213,139 +1341,104 @@
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // groupBox11
+            // groupBox14
             // 
-            this.groupBox11.Controls.Add(this.groupBox13);
-            this.groupBox11.Controls.Add(this.groupBox12);
-            this.groupBox11.Location = new System.Drawing.Point(8, 175);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(561, 278);
-            this.groupBox11.TabIndex = 1;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Vengeance";
+            this.groupBox14.Controls.Add(this.label33);
+            this.groupBox14.Controls.Add(this.button3);
+            this.groupBox14.Controls.Add(this.label32);
+            this.groupBox14.Controls.Add(this.button2);
+            this.groupBox14.Controls.Add(this.label31);
+            this.groupBox14.Controls.Add(this.button1);
+            this.groupBox14.Controls.Add(this.label30);
+            this.groupBox14.Controls.Add(this.btnHotkeysVengeanceAoe);
+            this.groupBox14.Location = new System.Drawing.Point(8, 6);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(556, 112);
+            this.groupBox14.TabIndex = 2;
+            this.groupBox14.TabStop = false;
+            this.groupBox14.Text = "General";
             // 
-            // groupBox12
+            // label30
             // 
-            this.groupBox12.Controls.Add(this.checkBox7);
-            this.groupBox12.Controls.Add(this.checkBox6);
-            this.groupBox12.Controls.Add(this.checkBox5);
-            this.groupBox12.Controls.Add(this.checkBox4);
-            this.groupBox12.Controls.Add(this.checkBox3);
-            this.groupBox12.Controls.Add(this.checkBox2);
-            this.groupBox12.Controls.Add(this.checkBox1);
-            this.groupBox12.Controls.Add(this.btnHotkeysVengeanceDefensiveCooldowns);
-            this.groupBox12.Location = new System.Drawing.Point(14, 88);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(532, 89);
-            this.groupBox12.TabIndex = 2;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = "Defensive Cooldowns";
-            this.toolTip1.SetToolTip(this.groupBox12, "Will activate the defensive cooldowns checked.  This will ignore any settings on " +
-        "the Vengeance tab.");
-            // 
-            // btnHotkeysVengeanceDefensiveCooldowns
-            // 
-            this.btnHotkeysVengeanceDefensiveCooldowns.Location = new System.Drawing.Point(18, 28);
-            this.btnHotkeysVengeanceDefensiveCooldowns.Name = "btnHotkeysVengeanceDefensiveCooldowns";
-            this.btnHotkeysVengeanceDefensiveCooldowns.Size = new System.Drawing.Size(113, 23);
-            this.btnHotkeysVengeanceDefensiveCooldowns.TabIndex = 1;
-            this.btnHotkeysVengeanceDefensiveCooldowns.Text = "Click to Set";
-            this.btnHotkeysVengeanceDefensiveCooldowns.UseVisualStyleBackColor = true;
-            this.btnHotkeysVengeanceDefensiveCooldowns.Click += new System.EventHandler(this.btnHotkeysVengeanceDefensiveCooldowns_Click);
-            this.btnHotkeysVengeanceDefensiveCooldowns.KeyDown += new System.Windows.Forms.KeyEventHandler(this.btnHotkeysVengeanceDefensiveCooldowns_KeyDown);
-            this.btnHotkeysVengeanceDefensiveCooldowns.KeyUp += new System.Windows.Forms.KeyEventHandler(this.btnHotkeysVengeanceDefensiveCooldowns_KeyUp);
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(151, 32);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(95, 17);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "Demon Spikes";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(252, 32);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(83, 17);
-            this.checkBox2.TabIndex = 3;
-            this.checkBox2.Text = "Soul Cleave";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(341, 32);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(79, 17);
-            this.checkBox3.TabIndex = 4;
-            this.checkBox3.Text = "Fiery Brand";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // checkBox4
-            // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(426, 32);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(97, 17);
-            this.checkBox4.TabIndex = 5;
-            this.checkBox4.Text = "Metamorphosis";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // checkBox5
-            // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(151, 55);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(80, 17);
-            this.checkBox5.TabIndex = 6;
-            this.checkBox5.Text = "Soul Barrier";
-            this.checkBox5.UseVisualStyleBackColor = true;
-            // 
-            // checkBox6
-            // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(252, 55);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(81, 17);
-            this.checkBox6.TabIndex = 7;
-            this.checkBox6.Text = "Soul Carver";
-            this.checkBox6.UseVisualStyleBackColor = true;
-            // 
-            // checkBox7
-            // 
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(341, 55);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(104, 17);
-            this.checkBox7.TabIndex = 8;
-            this.checkBox7.Text = "Empower Wards";
-            this.checkBox7.UseVisualStyleBackColor = true;
-            // 
-            // groupBox13
-            // 
-            this.groupBox13.Controls.Add(this.btnHotkeysVengeanceAoe);
-            this.groupBox13.Location = new System.Drawing.Point(19, 20);
-            this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(152, 59);
-            this.groupBox13.TabIndex = 3;
-            this.groupBox13.TabStop = false;
-            this.groupBox13.Text = "AoE";
-            this.toolTip1.SetToolTip(this.groupBox13, "Will activate AoE mode even if on single target.  If no AoE abilities available, " +
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(11, 26);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(30, 13);
+            this.label30.TabIndex = 2;
+            this.label30.Text = "AoE:";
+            this.toolTip1.SetToolTip(this.label30, "Will activate AoE mode even if on single target.  If no AoE abilities available, " +
         "will default to single target.");
             // 
-            // btnHotkeysVengeanceAoe
+            // label31
             // 
-            this.btnHotkeysVengeanceAoe.Location = new System.Drawing.Point(13, 22);
-            this.btnHotkeysVengeanceAoe.Name = "btnHotkeysVengeanceAoe";
-            this.btnHotkeysVengeanceAoe.Size = new System.Drawing.Size(113, 23);
-            this.btnHotkeysVengeanceAoe.TabIndex = 1;
-            this.btnHotkeysVengeanceAoe.Text = "Click to Set";
-            this.btnHotkeysVengeanceAoe.UseVisualStyleBackColor = true;
-            this.btnHotkeysVengeanceAoe.Click += new System.EventHandler(this.btnHotkeysVengeanceAoe_Click);
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(11, 55);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(60, 13);
+            this.label31.TabIndex = 4;
+            this.label31.Text = "Movement:";
+            this.toolTip1.SetToolTip(this.label31, "Will disable movement temporarily");
+            // 
+            // button1
+            // 
+            this.button1.Enabled = false;
+            this.button1.Location = new System.Drawing.Point(87, 50);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(113, 23);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Coming soon";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(11, 84);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(55, 13);
+            this.label32.TabIndex = 6;
+            this.label32.Text = "Targeting:";
+            this.toolTip1.SetToolTip(this.label32, "Will disable targeting temporarily");
+            // 
+            // button2
+            // 
+            this.button2.Enabled = false;
+            this.button2.Location = new System.Drawing.Point(87, 79);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(113, 23);
+            this.button2.TabIndex = 5;
+            this.button2.Text = "Coming soon";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(222, 26);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(42, 13);
+            this.label33.TabIndex = 8;
+            this.label33.Text = "Facing:";
+            this.toolTip1.SetToolTip(this.label33, "Will disable facing temporarily");
+            // 
+            // button3
+            // 
+            this.button3.Enabled = false;
+            this.button3.Location = new System.Drawing.Point(298, 21);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(113, 23);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "Coming soon";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label34.ForeColor = System.Drawing.Color.DeepSkyBlue;
+            this.label34.Location = new System.Drawing.Point(25, 45);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(270, 39);
+            this.label34.TabIndex = 0;
+            this.label34.Text = "COMING SOON";
             // 
             // IllidariSettingsForm
             // 
@@ -1398,11 +1491,13 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.tabPage4.ResumeLayout(false);
-            this.groupBox10.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox12.ResumeLayout(false);
             this.groupBox12.PerformLayout();
-            this.groupBox13.ResumeLayout(false);
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
+            this.groupBox14.ResumeLayout(false);
+            this.groupBox14.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1493,7 +1588,6 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.NumericUpDown VengeanceMetamorphosisHp;
@@ -1509,15 +1603,23 @@
         private System.Windows.Forms.CheckBox VengeanceUseSoulCarver;
         private System.Windows.Forms.GroupBox groupBox11;
         private System.Windows.Forms.GroupBox groupBox12;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkHotkeysVengeanceDefensiveDemonSpikes;
         private System.Windows.Forms.Button btnHotkeysVengeanceDefensiveCooldowns;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.GroupBox groupBox13;
+        private System.Windows.Forms.CheckBox checkHotkeysVengeanceDefensiveSoulCleave;
         private System.Windows.Forms.Button btnHotkeysVengeanceAoe;
-        private System.Windows.Forms.CheckBox checkBox7;
-        private System.Windows.Forms.CheckBox checkBox6;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkHotkeysVengeanceDefensiveEmpowerWards;
+        private System.Windows.Forms.CheckBox checkHotkeysVengeanceDefensiveSoulCarver;
+        private System.Windows.Forms.CheckBox checkHotkeysVengeanceDefensiveSoulBarrier;
+        private System.Windows.Forms.CheckBox checkHotkeysVengeanceDefensiveMetamorphosis;
+        private System.Windows.Forms.CheckBox checkHotkeysVengeanceDefensiveFieryBrand;
+        private System.Windows.Forms.GroupBox groupBox14;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label label34;
     }
 }

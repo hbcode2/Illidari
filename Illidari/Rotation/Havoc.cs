@@ -126,7 +126,7 @@ namespace Illidari.Rotation
                 // see if we need any defensive cooldowns
                 if (await SaveMe()) { return true; }
 
-                if ((HK.AoEOn || U.activeEnemies(Me.Location, 8f).Count() >= 3))
+                if ((HK.HavocAoEOn || U.activeEnemies(Me.Location, 8f).Count() >= 3))
                 {
                     // try to use aoe abilities
                     if (await AoE()) { return true; }

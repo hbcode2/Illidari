@@ -16,7 +16,9 @@ namespace Illidari.Core.Managers
 {
     class Hotkeys
     {
-        public static bool AoEOn { get; set; }
+        public static bool VengeanceAoEOn { get; set; }
+        public static bool VengeanceDefensiveOn { get; set; }
+        public static bool HavocAoEOn { get; set; }
         public static bool cooldownsOn { get; set; }
         public static bool manualOn { get; set; }
         public static bool keysRegistered { get; set; }
@@ -30,21 +32,26 @@ namespace Illidari.Core.Managers
             TypeConverter converter = TypeDescriptor.GetConverter(typeof(Keys));
             if (Me.Specialization == WoWSpec.DemonHunterVengeance)
             {
+                // ++++++++ VENGEANCE SPEC ONLY ++++++++++
                 if (!string.IsNullOrEmpty(M.IS.HotkeyVengeanceAoeKey) && M.IS.HotkeyVengeanceAoeModifier > 0)
                 {
                     HotkeysManager.Register("AoEOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceAoeKey), (ModifierKeys)M.IS.HotkeyVengeanceAoeModifier, ret =>
                     {
-                        AoEOn = !AoEOn;
-                        StyxWoW.Overlay.AddToast((AoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);
+                        VengeanceAoEOn = !VengeanceAoEOn;
+                        StyxWoW.Overlay.AddToast((VengeanceAoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);
+                    });
+                }
+                if (M.IS.HotkeyVengeanceDefensiveModifier > 0 && !string.IsNullOrEmpty(M.IS.HotkeyVengeanceDefensiveKey))
+                {
+                    HotkeysManager.Register("VengeanceDefensiveOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceDefensiveKey), (ModifierKeys)M.IS.HotkeyVengeanceDefensiveModifier, ret =>
+                    {
+                        VengeanceDefensiveOn = !VengeanceDefensiveOn;
+                        StyxWoW.Overlay.AddToast((VengeanceDefensiveOn ? "Defensive Mode: Enabled!" : "Defensive Mode: Disabled!"), 2000);
+
                     });
                 }
             }
 
-            HotkeysManager.Register("cooldownsOn", Keys.E, ModifierKeys.Alt, ret =>
-                {
-                    cooldownsOn = !cooldownsOn;
-                    StyxWoW.Overlay.AddToast((cooldownsOn ? "Cooldowns: Enabled!" : "Cooldowns: Disabled!"), 2000);
-                });
             HotkeysManager.Register("ManualOn", Keys.S, ModifierKeys.Alt, ret =>
                 {
                     manualOn = !manualOn;
@@ -64,7 +71,8 @@ namespace Illidari.Core.Managers
             HotkeysManager.Unregister("AoEOn");
             HotkeysManager.Unregister("cooldownsOn");
             HotkeysManager.Unregister("manualOn");
-            AoEOn = false;
+            VengeanceAoEOn = false;
+            VengeanceDefensiveOn = false;
             cooldownsOn = false;
             manualOn = false;
             keysRegistered = false;

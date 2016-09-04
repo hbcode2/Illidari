@@ -189,6 +189,20 @@ namespace Illidari.Core.IllidariSettings
         public int HotkeyVengeanceDefensiveModifier { get; set; }
         [Setting, DefaultValue("D")]
         public string HotkeyVengeanceDefensiveKey { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyVengeanceDefensiveDemonSpikes { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyVengeanceDefensiveSoulCleave { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyVengeanceDefensiveFieryBrand { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyVengeanceDefensiveMetamorphosis { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyVengeanceDefensiveSoulBarrier { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyVengeanceDefensiveSoulCarver { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyVengeanceDefensiveEmpowerWards { get; set; }
         #endregion
 
         #region readonly properties

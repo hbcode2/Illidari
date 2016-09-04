@@ -146,7 +146,7 @@ namespace Illidari.Rotation
 
                 if (await GapCloser()) { return true; }
 
-                if ((HK.AoEOn || U.activeEnemies(Me.Location, 8f).Count() >= 3))
+                if ((HK.VengeanceAoEOn || U.activeEnemies(Me.Location, 8f).Count() >= 3))
                 {
                     if (await MultipleTarget())
                     {
@@ -187,9 +187,75 @@ namespace Illidari.Rotation
             if (await S.CastGround(SB.SigilOfMisery, stunTarget, C.DefensiveColor, stunTarget != null
                 && M.IS.VengeanceAllowStunSigilOfMisery))
             { return true; }
-            //L.infoLog(string.Format($"CP:{CurrentPain},DS:{M.IS.VengeanceAllowDemonSpikes},HP:{Me.HealthPercent},DSHP:{M.IS.VengeanceDemonSpikesHp}"),C.ItemColor);
-            // cast Demon Spikes if we have 
+
+            #region Defensive Hotkey
+            // demon spikes if force defensive is on
             if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
+                HK.VengeanceDefensiveOn
+                && M.IS.HotkeyVengeanceDefensiveDemonSpikes
+                && !Me.HasAura(SB.AuraDemonSpikes),
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveDemonSpikes:{M.IS.HotkeyVengeanceDefensiveDemonSpikes.ToString()}")
+            ))
+            { return true; }
+
+            if (await S.Cast(SB.MetamorphosisSpell, C.DefensiveColor,
+                HK.VengeanceDefensiveOn
+                && M.IS.HotkeyVengeanceDefensiveMetamorphosis,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveMetamorphosis:{M.IS.HotkeyVengeanceDefensiveMetamorphosis.ToString()}")
+            ))
+            { return true; }
+
+            if (await S.Cast(SB.SoulBarrier, C.DefensiveColor,
+                HK.VengeanceDefensiveOn
+                && M.IS.HotkeyVengeanceDefensiveSoulBarrier,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulBarrier:{M.IS.HotkeyVengeanceDefensiveSoulBarrier.ToString()}")
+            ))
+            { return true; }
+
+            if (Me.HasTankWarglaivesEquipped())
+            {
+                if (await S.Cast(SB.SoulCarver, C.DefensiveColor,
+                    HK.VengeanceDefensiveOn
+                    && M.IS.HotkeyVengeanceDefensiveSoulCarver
+                    && Me.IsWithinMeleeRangeOf(CurrentTarget) // must be within melee range or won't work.
+                    && Me.IsSafelyFacing(CurrentTarget.Location),
+                    string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulCarver:{M.IS.HotkeyVengeanceDefensiveSoulCarver.ToString()}")
+                ))
+                { return true; }
+            }
+
+            if (await S.Cast(SB.SoulCleave, C.DefensiveColor,
+                HK.VengeanceDefensiveOn
+                && M.IS.HotkeyVengeanceDefensiveSoulCleave
+                && CurrentTarget.IsWithinMeleeRangeOf(Me),
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulCleave:{M.IS.HotkeyVengeanceDefensiveSoulCleave.ToString()}")
+            ))
+            { return true; }
+
+            if (await S.Cast(SB.EmpowerWards, C.DefensiveColor,
+                HK.VengeanceDefensiveOn
+                && M.IS.HotkeyVengeanceDefensiveEmpowerWards,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveEmpowerWards:{M.IS.HotkeyVengeanceDefensiveEmpowerWards.ToString()}")
+            ))
+            { return true; }
+
+            if (await S.Cast(SB.FieryBrand, C.DefensiveColor,
+                HK.VengeanceDefensiveOn
+                && M.IS.HotkeyVengeanceDefensiveEmpowerWards,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveEmpowerWards:{M.IS.HotkeyVengeanceDefensiveEmpowerWards.ToString()}")))
+            { return true; }
+
+            #endregion
+
+            if (await S.Cast(SB.MetamorphosisSpell, C.DefensiveColor,
+                M.IS.VengeanceAllowMetamorphosis
+                && Me.HealthPercent <= M.IS.VengeanceMetamorphosisHp,
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceMetamorphosisHp}")
+            ))
+            { return true; }
+
+            // cast Demon Spikes if we have 
+                if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
                 M.IS.VengeanceAllowDemonSpikes
                 && C.CurrentPower >= 20
                 && Me.HealthPercent <= M.IS.VengeanceDemonSpikesHp
@@ -297,7 +363,7 @@ namespace Illidari.Rotation
             // use consume magic at 20 yards first
             //WoWUnit interruptTarget = GetInterruptTarget(20f);
             //L.debugLog(string.Format($"Interrupt target 20yd: {CurrentTarget.SafeName}"));
-            if (await S.GCD(SB.ConsumeMagic, C.DefensiveColor, 
+            if (await S.GCD(SB.ConsumeMagic, C.DefensiveColor,
                 M.IS.VengeanceAllowInterruptConsumeMagic
                 && CurrentTarget.IsValidCombatUnit()
                 && (CurrentTarget.IsCasting || CurrentTarget.IsCastingHealingSpell),

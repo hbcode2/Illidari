@@ -213,33 +213,62 @@ namespace Illidari.Core.Managers
         {
             using (StyxWoW.Memory.AcquireFrame())
             {
-                //Lua.Events.AttachEvent("PLAYER_LEVEL_UP", playerLeveledUp);
+                Lua.Events.AttachEvent("PLAYER_LEVEL_UP", playerLeveledUp);
                 //Lua.Events.AttachEvent("CHARACTER_POINTS_CHANGED", initializeTalents);
-                //Lua.Events.AttachEvent("ACTIVE_TALENT_GROUP_CHANGED", initializeTalents);
+                Lua.Events.AttachEvent("ACTIVE_TALENT_GROUP_CHANGED", activeTalentGroupChanged);
                 //Lua.Events.AttachEvent("PLAYER_SPECIALIZATION_CHANGED", talentSpecChanged);
                 //Lua.Events.AttachEvent("LEARNED_SPELL_IN_TAB", initializeTalents);
-                Lua.Events.AttachEvent("PLAYER_TALENT_UPDATE", initializeTalents);
+                //Lua.Events.AttachEvent("PLAYER_TALENT_UPDATE", playerTalentUpdate);
             }
 
         }
-
+        private static void characterPointsChanged(object sender, LuaEventArgs args)
+        {
+            L.infoLog("CHARACTER_POINTS_CHANGED - Event triggered: " + args.EventName, C.InfoColor);
+            initializeTalents(sender, args);
+        }
+        private static void activeTalentGroupChanged(object sender, LuaEventArgs args)
+        {
+            //L.infoLog("ACTIVE_TALENT_GROUP_CHANGED - Event triggered: " + args.EventName, C.InfoColor);
+            initializeTalents(sender, args);
+        }
+        private static void learnedSpellInTab(object sender, LuaEventArgs args)
+        {
+            L.infoLog("LEARNED_SPELL_IN_TAB - Event triggered: " + args.EventName, C.InfoColor);
+            initializeTalents(sender, args);
+        }
+        private static void playerTalentUpdate(object sender, LuaEventArgs args)
+        {
+            L.infoLog("PLAYER_TALENT_UPDATE - Event triggered: " + args.EventName, C.InfoColor);
+            initializeTalents(sender, args);
+        }
         private static void talentSpecChanged(object sender, LuaEventArgs args)
         {
             //TODO: Remove after all 3 Spec supported
-            setTalents();
-            Logging.Write("Spec changed to {0}.- {1}", Me.Specialization, args.EventName);
-            printTalents();
+
+            L.infoLog("PLAYER_SPECIALIZATION_CHANGED - Spec changed to {0}.- {1}", C.InfoColor, Me.Specialization, args.EventName);
+            initializeTalents(sender, args);
             //onSpecChanged(args);
         }
         private static void initializeTalents(object sender, LuaEventArgs args)
         {
-            Logging.Write("Event triggered: " + args.EventName);
+            L.infoLog("Event triggered: " + args.EventName, C.InfoColor);
+            //WriteDebugLuaEvents(args);
             setTalents();
-            printTalents();
+            //printTalents();
+        }
+        private static void WriteDebugLuaEvents(LuaEventArgs args)
+        {
+            int i = 0;
+            foreach (var arg in args.Args)
+            {
+                L.debugLog("Arg[{0}]:{1}", i, arg);
+                i++;
+            }
         }
         private static void playerLeveledUp(object sender, LuaEventArgs args)
         {
-            Logging.Write(String.Format($"Player leveled up!  Now level {args.Args[0]}"));
+            L.infoLog(string.Format($"Player leveled up!  Now level {args.Args[0]}"), C.InfoColor);
             setTalents();
         }
         private static void printTalents()

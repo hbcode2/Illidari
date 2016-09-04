@@ -119,9 +119,16 @@ namespace Illidari
             #endregion
 
             #region Hotkeys load
-            MessageBox.Show(S.HotkeyVengeanceAoeModifier.ToString() + ":" + S.HotkeyVengeanceAoeKey);
+            //MessageBox.Show(S.HotkeyVengeanceAoeModifier.ToString() + ":" + S.HotkeyVengeanceAoeKey);
             LoadButtonText(S.HotkeyVengeanceAoeModifier, S.HotkeyVengeanceAoeKey, btnHotkeysVengeanceAoe);
-
+            LoadButtonText(S.HotkeyVengeanceDefensiveModifier, S.HotkeyVengeanceDefensiveKey, btnHotkeysVengeanceDefensiveCooldowns);
+            checkHotkeysVengeanceDefensiveDemonSpikes.Checked = S.HotkeyVengeanceDefensiveDemonSpikes;
+            checkHotkeysVengeanceDefensiveEmpowerWards.Checked = S.HotkeyVengeanceDefensiveEmpowerWards;
+            checkHotkeysVengeanceDefensiveFieryBrand.Checked = S.HotkeyVengeanceDefensiveFieryBrand;
+            checkHotkeysVengeanceDefensiveMetamorphosis.Checked = S.HotkeyVengeanceDefensiveMetamorphosis;
+            checkHotkeysVengeanceDefensiveSoulBarrier.Checked = S.HotkeyVengeanceDefensiveSoulBarrier;
+            checkHotkeysVengeanceDefensiveSoulCarver.Checked = S.HotkeyVengeanceDefensiveSoulCarver;
+            checkHotkeysVengeanceDefensiveSoulCleave.Checked = S.HotkeyVengeanceDefensiveSoulCleave;
 
 
             #endregion
@@ -148,7 +155,7 @@ namespace Illidari
 
             // one triple
             if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Control + (int)Styx.Common.ModifierKeys.Shift) { alt = true; shift = true; ctrl = true; }
-            MessageBox.Show("shift:" + shift.ToString() + ", alt:" + alt.ToString() + ", ctrl:" + ctrl.ToString());
+            //MessageBox.Show("shift:" + shift.ToString() + ", alt:" + alt.ToString() + ", ctrl:" + ctrl.ToString());
             string btnText = GetKeyModifierText(alt, shift, ctrl, key);
             btn.Text = btnText;
         }
@@ -578,8 +585,33 @@ namespace Illidari
                 if (isLetterOrDigit) { keyPressed = new KeysConverter().ConvertToString(e.KeyCode); }
             }
         }
-
-
+        private enum KeybindTypes
+        {
+            VengeanceAoe,
+            VengeanceDefensive
+        }
+        private void ClearButtonHotkey(Button btn, KeybindTypes kbType)
+        {
+            btn.Text = "Click to Set"; ResetKeys();
+            if (kbType == KeybindTypes.VengeanceAoe)
+            {
+                S.HotkeyVengeanceAoeKey = "";
+                S.HotkeyVengeanceAoeModifier = 0;
+            }
+            else if (kbType == KeybindTypes.VengeanceDefensive)
+            {
+                S.HotkeyVengeanceDefensiveModifier = 0;
+                S.HotkeyVengeanceDefensiveKey = "";
+                S.HotkeyVengeanceDefensiveDemonSpikes = false;
+                S.HotkeyVengeanceDefensiveEmpowerWards = false;
+                S.HotkeyVengeanceDefensiveFieryBrand = false;
+                S.HotkeyVengeanceDefensiveMetamorphosis = false;
+                S.HotkeyVengeanceDefensiveSoulBarrier = false;
+                S.HotkeyVengeanceDefensiveSoulCarver = false;
+                S.HotkeyVengeanceDefensiveSoulCleave = false;
+            }
+            ResetKeys();
+        }
         private void ResetKeys()
         {
             captureKeyPress = false;
@@ -711,6 +743,7 @@ namespace Illidari
 
         private void btnHotkeysVengeanceAoe_KeyUp(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Escape) { ClearButtonHotkey(btnHotkeysVengeanceAoe, KeybindTypes.VengeanceAoe); return; }
             if (DidPressCorrectKey())
             {
                 S.HotkeyVengeanceAoeModifier = GetKeyModifierPressed();
@@ -718,7 +751,7 @@ namespace Illidari
             }
             ResetKeys();
         }
-
+        #endregion
 
         private void btnHotkeysVengeanceDefensiveCooldowns_Click(object sender, EventArgs e)
         {
@@ -734,12 +767,53 @@ namespace Illidari
 
         private void btnHotkeysVengeanceDefensiveCooldowns_KeyUp(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Escape) { ClearButtonHotkey(btnHotkeysVengeanceDefensiveCooldowns, KeybindTypes.VengeanceDefensive); return; }
             if (DidPressCorrectKey())
             {
                 S.HotkeyVengeanceDefensiveKey = keyPressed;
                 S.HotkeyVengeanceDefensiveModifier = GetKeyModifierPressed();
             }
             ResetKeys();
+        }
+
+        private void checkHotkeysVengeanceDefensiveDemonSpikes_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyVengeanceDefensiveDemonSpikes = checkHotkeysVengeanceDefensiveDemonSpikes.Checked;
+        }
+
+        private void checkHotkeysVengeanceDefensiveSoulCleave_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyVengeanceDefensiveSoulCleave = checkHotkeysVengeanceDefensiveSoulCleave.Checked;
+        }
+
+        private void checkHotkeysVengeanceDefensiveFieryBrand_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyVengeanceDefensiveFieryBrand = checkHotkeysVengeanceDefensiveFieryBrand.Checked;
+        }
+
+        private void checkHotkeysVengeanceDefensiveMetamorphosis_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyVengeanceDefensiveMetamorphosis = checkHotkeysVengeanceDefensiveMetamorphosis.Checked;
+        }
+
+        private void checkHotkeysVengeanceDefensiveSoulBarrier_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyVengeanceDefensiveSoulBarrier = checkHotkeysVengeanceDefensiveSoulBarrier.Checked;
+        }
+
+        private void checkHotkeysVengeanceDefensiveSoulCarver_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyVengeanceDefensiveSoulCarver = checkHotkeysVengeanceDefensiveSoulCarver.Checked;
+        }
+
+        private void checkHotkeysVengeanceDefensiveEmpowerWards_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyVengeanceDefensiveEmpowerWards = checkHotkeysVengeanceDefensiveEmpowerWards.Checked;
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Coming Soon!");
         }
     }
 }

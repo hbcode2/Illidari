@@ -148,7 +148,7 @@ namespace Illidari
             Logging.Write(Colors.Fuchsia, "-- v" + version + " --");
             Logging.Write(Colors.Fuchsia, "-- by SpeshulK926 --");
             Logging.Write(Colors.Fuchsia, "-- A Demon Hunter's Combat Routine --");
-            HK.registerHotkeys();
+            
             
             IS = new Core.IllidariSettings.IllidariSettings();
 
@@ -173,6 +173,8 @@ namespace Illidari
                 }
 
             }
+
+            HK.registerHotkeys();
 
         }
         public override bool WantButton { get { return true; } }
@@ -234,7 +236,7 @@ namespace Illidari
         public override void Pulse()
         {
 
-            if (!StyxWoW.IsInGame || !StyxWoW.IsInWorld || Me == null || !Me.IsValid || !Me.IsAlive || Me.Mounted)
+            if (!StyxWoW.IsInGame || !StyxWoW.IsInWorld || Me == null || !Me.IsValid || !Me.IsAlive || Me.Mounted || HK.manualOn)
                 return;
             if (!Me.Combat)
                 return;
@@ -262,7 +264,7 @@ namespace Illidari
             if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowInterrupt)
             {
                 // consume magic
-                if (IS.VengeanceAllowInterruptConsumeMagic && Core.Spell.OnCooldown(Core.Helpers.Spell_Book.ConsumeMagic))
+                if (IS.VengeanceAllowInterruptConsumeMagic && !Core.Spell.OnCooldown(Core.Helpers.Spell_Book.ConsumeMagic))
                 {
                     var units = U.activeEnemies(Me.Location, 20f); // get all enemies within 20 yards
                     if (units != null)
