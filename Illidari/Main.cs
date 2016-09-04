@@ -29,7 +29,7 @@ namespace Illidari
     public class Main : CombatRoutine
     { 
         public static Core.IllidariSettings.IllidariSettings IS;
-        private static readonly Version version = new Version(09, 01, 2016);
+        private static readonly Version version = new Version(09, 04, 2016);
         public override string Name { get { return string.Format($"{CRName} v{version}"); } }
         public override WoWClass Class { get { return WoWClass.DemonHunter; } }
         public static string CRName { get { return "Illidari"; } }
