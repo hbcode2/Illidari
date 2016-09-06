@@ -130,6 +130,10 @@ namespace Illidari
             checkHotkeysVengeanceDefensiveSoulCarver.Checked = S.HotkeyVengeanceDefensiveSoulCarver;
             checkHotkeysVengeanceDefensiveSoulCleave.Checked = S.HotkeyVengeanceDefensiveSoulCleave;
 
+            LoadButtonText(S.HotkeyHavocOffensiveModifier, S.HotkeyHavocOffensiveKey, btnHotkeysHavocOffensiveCooldowns);
+            checkHotkeysHavocOffensiveAgilityPotion.Checked = S.HotkeyHavocOffensiveAgilityPotion;
+            checkHotkeysHavocOffensiveFoTI.Checked = S.HotkeyHavocOffensiveFoTI;
+            checkHotkeysHavocOffensiveMetamorphosis.Checked = S.HotkeyHavocOffensiveMetamorphosis;
 
             #endregion
 
