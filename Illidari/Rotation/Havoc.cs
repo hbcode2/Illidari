@@ -123,6 +123,24 @@ namespace Illidari.Rotation
 
             if (CurrentTarget.IsValidCombatUnit())
             {
+                #region Offensive Hotkey
+                if (HK.HavocOffensiveOn)
+                {
+                    // we have offensive cooldowns enabled, let's use them if they are available first.
+                    if (await I.UseItem(I.GetItemByName("Draenic Agility Potion"), M.IS.HotkeyHavocOffensiveAgilityPotion))
+                    {
+                        return true;
+                    }
+                    if (await S.Cast(SB.MetamorphosisSpell, C.CombatColor, M.IS.HotkeyHavocOffensiveMetamorphosis))
+                    {
+                        return true;
+                    }
+                    if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor, M.IS.HotkeyHavocOffensiveFoTI))
+                    {
+                        return true;
+                    }
+                }
+                #endregion
                 // see if we need any defensive cooldowns
                 if (await SaveMe()) { return true; }
 
@@ -275,7 +293,13 @@ namespace Illidari.Rotation
                && (S.CooldownTimeLeft(SB.FelRush) < 500), "AoE"))               // and cooldown timer < 500ms (2nd one)
             { return true; }
             #endregion
-
+            if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor,
+                M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.AoE
+                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly && CurrentTarget.IsBoss)
+                    || (M.IS.HavocUseFuryOfTheIllidariCooldown ==  Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && (CurrentTarget.IsBoss || CurrentTarget.Elite)
+                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown)
+                    )
+                )) { return true; }
             if (await S.GCD(SB.EyeBeam, C.CombatColor, addLog: "AoE")) { return true; }
             if (await S.Cast(SB.ChaosStrike, C.CombatColor, T.HavocChaosCleave, "AoE")) { return true; }
             if (await S.GCD(SB.BladeDance, C.CombatColor, addLog: "AoE")) { return true; }
@@ -425,6 +449,13 @@ namespace Illidari.Rotation
                 "ST 2"))
             { return true; }
             #endregion
+
+            if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor,
+                    (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly && CurrentTarget.IsBoss)
+                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && (CurrentTarget.IsBoss || CurrentTarget.Elite)
+                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown)
+                    )
+                )) { return true; }
 
             // only cast bite if we don't have DemonBlades.  DB removes the ability of Demon's bite
             if (await S.Cast(SB.DemonsBite, C.CombatColor,

@@ -120,8 +120,16 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.VengeanceAllowTaunt = new System.Windows.Forms.CheckBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.label33 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.label32 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label31 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label30 = new System.Windows.Forms.Label();
             this.btnHotkeysVengeanceAoe = new System.Windows.Forms.Button();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.checkHotkeysVengeanceDefensiveEmpowerWards = new System.Windows.Forms.CheckBox();
             this.checkHotkeysVengeanceDefensiveSoulCarver = new System.Windows.Forms.CheckBox();
@@ -137,15 +145,13 @@
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBox14 = new System.Windows.Forms.GroupBox();
-            this.label30 = new System.Windows.Forms.Label();
-            this.label31 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label32 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.label33 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.label34 = new System.Windows.Forms.Label();
+            this.HavocUseFuryOfTheIllidariCooldown = new System.Windows.Forms.ComboBox();
+            this.label35 = new System.Windows.Forms.Label();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.checkHotkeysHavocOffensiveMetamorphosis = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysHavocOffensiveFoTI = new System.Windows.Forms.CheckBox();
+            this.checkHotkeysHavocOffensiveAgilityPotion = new System.Windows.Forms.CheckBox();
+            this.btnHotkeysHavocOffensiveCooldowns = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -175,10 +181,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.VengeanceDemonSpikesHP)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.groupBox14.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox12.SuspendLayout();
             this.groupBox10.SuspendLayout();
-            this.groupBox14.SuspendLayout();
+            this.groupBox13.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -308,6 +315,8 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.HavocUseFuryOfTheIllidariCooldown);
+            this.groupBox9.Controls.Add(this.label35);
             this.groupBox9.Controls.Add(this.HavocUseMetamorphosisCooldown);
             this.groupBox9.Controls.Add(this.label23);
             this.groupBox9.Controls.Add(this.HavocUseAgilityPotionCooldown);
@@ -320,7 +329,7 @@
             this.groupBox9.Controls.Add(this.HavocFelRushOnPull);
             this.groupBox9.Location = new System.Drawing.Point(8, 150);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(335, 195);
+            this.groupBox9.Size = new System.Drawing.Size(335, 210);
             this.groupBox9.TabIndex = 1;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Combat";
@@ -1163,15 +1172,93 @@
             this.tabPage4.Text = "Hotkeys";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // groupBox11
+            // groupBox14
             // 
-            this.groupBox11.Controls.Add(this.groupBox12);
-            this.groupBox11.Location = new System.Drawing.Point(8, 261);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(561, 190);
-            this.groupBox11.TabIndex = 1;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Vengeance";
+            this.groupBox14.Controls.Add(this.label33);
+            this.groupBox14.Controls.Add(this.button3);
+            this.groupBox14.Controls.Add(this.label32);
+            this.groupBox14.Controls.Add(this.button2);
+            this.groupBox14.Controls.Add(this.label31);
+            this.groupBox14.Controls.Add(this.button1);
+            this.groupBox14.Controls.Add(this.label30);
+            this.groupBox14.Controls.Add(this.btnHotkeysVengeanceAoe);
+            this.groupBox14.Location = new System.Drawing.Point(8, 6);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(556, 112);
+            this.groupBox14.TabIndex = 2;
+            this.groupBox14.TabStop = false;
+            this.groupBox14.Text = "General";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(222, 26);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(42, 13);
+            this.label33.TabIndex = 8;
+            this.label33.Text = "Facing:";
+            this.toolTip1.SetToolTip(this.label33, "Will disable facing temporarily");
+            // 
+            // button3
+            // 
+            this.button3.Enabled = false;
+            this.button3.Location = new System.Drawing.Point(298, 21);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(113, 23);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "Coming soon";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(11, 84);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(55, 13);
+            this.label32.TabIndex = 6;
+            this.label32.Text = "Targeting:";
+            this.toolTip1.SetToolTip(this.label32, "Will disable targeting temporarily");
+            // 
+            // button2
+            // 
+            this.button2.Enabled = false;
+            this.button2.Location = new System.Drawing.Point(87, 79);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(113, 23);
+            this.button2.TabIndex = 5;
+            this.button2.Text = "Coming soon";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(11, 55);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(60, 13);
+            this.label31.TabIndex = 4;
+            this.label31.Text = "Movement:";
+            this.toolTip1.SetToolTip(this.label31, "Will disable movement temporarily");
+            // 
+            // button1
+            // 
+            this.button1.Enabled = false;
+            this.button1.Location = new System.Drawing.Point(87, 50);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(113, 23);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Coming soon";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(11, 26);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(30, 13);
+            this.label30.TabIndex = 2;
+            this.label30.Text = "AoE:";
+            this.toolTip1.SetToolTip(this.label30, "Will activate AoE mode even if on single target.  If no AoE abilities available, " +
+        "will default to single target.");
             // 
             // btnHotkeysVengeanceAoe
             // 
@@ -1183,6 +1270,16 @@
             this.btnHotkeysVengeanceAoe.UseVisualStyleBackColor = true;
             this.btnHotkeysVengeanceAoe.Click += new System.EventHandler(this.btnHotkeysVengeanceAoe_Click);
             // 
+            // groupBox11
+            // 
+            this.groupBox11.Controls.Add(this.groupBox12);
+            this.groupBox11.Location = new System.Drawing.Point(8, 227);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(561, 120);
+            this.groupBox11.TabIndex = 1;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Vengeance";
+            // 
             // groupBox12
             // 
             this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveEmpowerWards);
@@ -1193,7 +1290,7 @@
             this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveSoulCleave);
             this.groupBox12.Controls.Add(this.checkHotkeysVengeanceDefensiveDemonSpikes);
             this.groupBox12.Controls.Add(this.btnHotkeysVengeanceDefensiveCooldowns);
-            this.groupBox12.Location = new System.Drawing.Point(14, 88);
+            this.groupBox12.Location = new System.Drawing.Point(14, 19);
             this.groupBox12.Name = "groupBox12";
             this.groupBox12.Size = new System.Drawing.Size(532, 89);
             this.groupBox12.TabIndex = 2;
@@ -1293,10 +1390,10 @@
             // 
             // groupBox10
             // 
-            this.groupBox10.Controls.Add(this.label34);
+            this.groupBox10.Controls.Add(this.groupBox13);
             this.groupBox10.Location = new System.Drawing.Point(8, 124);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(556, 131);
+            this.groupBox10.Size = new System.Drawing.Size(556, 97);
             this.groupBox10.TabIndex = 0;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Havoc";
@@ -1341,104 +1438,89 @@
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // groupBox14
+            // HavocUseFuryOfTheIllidariCooldown
             // 
-            this.groupBox14.Controls.Add(this.label33);
-            this.groupBox14.Controls.Add(this.button3);
-            this.groupBox14.Controls.Add(this.label32);
-            this.groupBox14.Controls.Add(this.button2);
-            this.groupBox14.Controls.Add(this.label31);
-            this.groupBox14.Controls.Add(this.button1);
-            this.groupBox14.Controls.Add(this.label30);
-            this.groupBox14.Controls.Add(this.btnHotkeysVengeanceAoe);
-            this.groupBox14.Location = new System.Drawing.Point(8, 6);
-            this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(556, 112);
-            this.groupBox14.TabIndex = 2;
-            this.groupBox14.TabStop = false;
-            this.groupBox14.Text = "General";
+            this.HavocUseFuryOfTheIllidariCooldown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.HavocUseFuryOfTheIllidariCooldown.FormattingEnabled = true;
+            this.HavocUseFuryOfTheIllidariCooldown.Items.AddRange(new object[] {
+            "OnCooldown",
+            "BossElite",
+            "Manual"});
+            this.HavocUseFuryOfTheIllidariCooldown.Location = new System.Drawing.Point(128, 171);
+            this.HavocUseFuryOfTheIllidariCooldown.Name = "HavocUseFuryOfTheIllidariCooldown";
+            this.HavocUseFuryOfTheIllidariCooldown.Size = new System.Drawing.Size(146, 21);
+            this.HavocUseFuryOfTheIllidariCooldown.TabIndex = 29;
+            this.HavocUseFuryOfTheIllidariCooldown.SelectedIndexChanged += new System.EventHandler(this.HavocUseFuryOfTheIllidariCooldown_SelectedIndexChanged);
             // 
-            // label30
+            // label35
             // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(11, 26);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(30, 13);
-            this.label30.TabIndex = 2;
-            this.label30.Text = "AoE:";
-            this.toolTip1.SetToolTip(this.label30, "Will activate AoE mode even if on single target.  If no AoE abilities available, " +
-        "will default to single target.");
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(14, 174);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(51, 13);
+            this.label35.TabIndex = 28;
+            this.label35.Text = "Use FoTI";
+            this.toolTip1.SetToolTip(this.label35, "Use Fury of the Illidari; Ancient weapon ability");
             // 
-            // label31
+            // groupBox13
             // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(11, 55);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(60, 13);
-            this.label31.TabIndex = 4;
-            this.label31.Text = "Movement:";
-            this.toolTip1.SetToolTip(this.label31, "Will disable movement temporarily");
+            this.groupBox13.Controls.Add(this.checkHotkeysHavocOffensiveMetamorphosis);
+            this.groupBox13.Controls.Add(this.checkHotkeysHavocOffensiveFoTI);
+            this.groupBox13.Controls.Add(this.checkHotkeysHavocOffensiveAgilityPotion);
+            this.groupBox13.Controls.Add(this.btnHotkeysHavocOffensiveCooldowns);
+            this.groupBox13.Location = new System.Drawing.Point(12, 21);
+            this.groupBox13.Name = "groupBox13";
+            this.groupBox13.Size = new System.Drawing.Size(532, 66);
+            this.groupBox13.TabIndex = 3;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "Offensive Cooldowns";
+            this.toolTip1.SetToolTip(this.groupBox13, "Will activate the following offensive cooldowns.  This will ignore any settings o" +
+        "n the Havoc page");
             // 
-            // button1
+            // checkHotkeysHavocOffensiveMetamorphosis
             // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(87, 50);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(113, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Coming soon";
-            this.button1.UseVisualStyleBackColor = true;
+            this.checkHotkeysHavocOffensiveMetamorphosis.AutoSize = true;
+            this.checkHotkeysHavocOffensiveMetamorphosis.Location = new System.Drawing.Point(297, 32);
+            this.checkHotkeysHavocOffensiveMetamorphosis.Name = "checkHotkeysHavocOffensiveMetamorphosis";
+            this.checkHotkeysHavocOffensiveMetamorphosis.Size = new System.Drawing.Size(97, 17);
+            this.checkHotkeysHavocOffensiveMetamorphosis.TabIndex = 5;
+            this.checkHotkeysHavocOffensiveMetamorphosis.Text = "Metamorphosis";
+            this.checkHotkeysHavocOffensiveMetamorphosis.UseVisualStyleBackColor = true;
+            this.checkHotkeysHavocOffensiveMetamorphosis.CheckedChanged += new System.EventHandler(this.checkHotkeysHavocOffensiveMetamorphosis_CheckedChanged);
             // 
-            // label32
+            // checkHotkeysHavocOffensiveFoTI
             // 
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(11, 84);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(55, 13);
-            this.label32.TabIndex = 6;
-            this.label32.Text = "Targeting:";
-            this.toolTip1.SetToolTip(this.label32, "Will disable targeting temporarily");
+            this.checkHotkeysHavocOffensiveFoTI.AutoSize = true;
+            this.checkHotkeysHavocOffensiveFoTI.Location = new System.Drawing.Point(243, 32);
+            this.checkHotkeysHavocOffensiveFoTI.Name = "checkHotkeysHavocOffensiveFoTI";
+            this.checkHotkeysHavocOffensiveFoTI.Size = new System.Drawing.Size(48, 17);
+            this.checkHotkeysHavocOffensiveFoTI.TabIndex = 3;
+            this.checkHotkeysHavocOffensiveFoTI.Text = "FoTI";
+            this.checkHotkeysHavocOffensiveFoTI.UseVisualStyleBackColor = true;
+            this.checkHotkeysHavocOffensiveFoTI.CheckedChanged += new System.EventHandler(this.checkHotkeysHavocOffensiveFoTI_CheckedChanged);
             // 
-            // button2
+            // checkHotkeysHavocOffensiveAgilityPotion
             // 
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(87, 79);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(113, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Coming soon";
-            this.button2.UseVisualStyleBackColor = true;
+            this.checkHotkeysHavocOffensiveAgilityPotion.AutoSize = true;
+            this.checkHotkeysHavocOffensiveAgilityPotion.Location = new System.Drawing.Point(151, 32);
+            this.checkHotkeysHavocOffensiveAgilityPotion.Name = "checkHotkeysHavocOffensiveAgilityPotion";
+            this.checkHotkeysHavocOffensiveAgilityPotion.Size = new System.Drawing.Size(86, 17);
+            this.checkHotkeysHavocOffensiveAgilityPotion.TabIndex = 2;
+            this.checkHotkeysHavocOffensiveAgilityPotion.Text = "Agility Potion";
+            this.checkHotkeysHavocOffensiveAgilityPotion.UseVisualStyleBackColor = true;
+            this.checkHotkeysHavocOffensiveAgilityPotion.CheckedChanged += new System.EventHandler(this.checkHotkeysHavocOffensiveAgilityPotion_CheckedChanged);
             // 
-            // label33
+            // btnHotkeysHavocOffensiveCooldowns
             // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(222, 26);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(42, 13);
-            this.label33.TabIndex = 8;
-            this.label33.Text = "Facing:";
-            this.toolTip1.SetToolTip(this.label33, "Will disable facing temporarily");
-            // 
-            // button3
-            // 
-            this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(298, 21);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(113, 23);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "Coming soon";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // label34
-            // 
-            this.label34.AutoSize = true;
-            this.label34.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label34.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.label34.Location = new System.Drawing.Point(25, 45);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(270, 39);
-            this.label34.TabIndex = 0;
-            this.label34.Text = "COMING SOON";
+            this.btnHotkeysHavocOffensiveCooldowns.Location = new System.Drawing.Point(18, 28);
+            this.btnHotkeysHavocOffensiveCooldowns.Name = "btnHotkeysHavocOffensiveCooldowns";
+            this.btnHotkeysHavocOffensiveCooldowns.Size = new System.Drawing.Size(113, 23);
+            this.btnHotkeysHavocOffensiveCooldowns.TabIndex = 1;
+            this.btnHotkeysHavocOffensiveCooldowns.Text = "Click to Set";
+            this.btnHotkeysHavocOffensiveCooldowns.UseVisualStyleBackColor = true;
+            this.btnHotkeysHavocOffensiveCooldowns.Click += new System.EventHandler(this.btnHotkeysHavocOffensiveCooldowns_Click);
+            this.btnHotkeysHavocOffensiveCooldowns.KeyDown += new System.Windows.Forms.KeyEventHandler(this.btnHotkeysHavocOffensiveCooldowns_KeyDown);
+            this.btnHotkeysHavocOffensiveCooldowns.KeyUp += new System.Windows.Forms.KeyEventHandler(this.btnHotkeysHavocOffensiveCooldowns_KeyUp);
             // 
             // IllidariSettingsForm
             // 
@@ -1491,13 +1573,14 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.tabPage4.ResumeLayout(false);
+            this.groupBox14.ResumeLayout(false);
+            this.groupBox14.PerformLayout();
             this.groupBox11.ResumeLayout(false);
             this.groupBox12.ResumeLayout(false);
             this.groupBox12.PerformLayout();
             this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
-            this.groupBox14.ResumeLayout(false);
-            this.groupBox14.PerformLayout();
+            this.groupBox13.ResumeLayout(false);
+            this.groupBox13.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1620,6 +1703,12 @@
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label30;
-        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.ComboBox HavocUseFuryOfTheIllidariCooldown;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.GroupBox groupBox13;
+        private System.Windows.Forms.CheckBox checkHotkeysHavocOffensiveMetamorphosis;
+        private System.Windows.Forms.CheckBox checkHotkeysHavocOffensiveFoTI;
+        private System.Windows.Forms.CheckBox checkHotkeysHavocOffensiveAgilityPotion;
+        private System.Windows.Forms.Button btnHotkeysHavocOffensiveCooldowns;
     }
 }

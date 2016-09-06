@@ -31,6 +31,7 @@ namespace Illidari.Core.Helpers
             FelRush = 195072,
             FieryBrand = 204021,
             Fracture = 209795,
+            FuryOfTheIllidari = 201467,
             Glide = 131347,
             ImmolationAura = 178740,
             Imprison = 217832,

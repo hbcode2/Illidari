@@ -30,6 +30,7 @@ namespace Illidari
             #region Load Comboboxes
             HavocUseAgilityPotionCooldown.DataSource = Enum.GetValues(typeof(IllidariSettings.CooldownTypes));
             HavocUseMetamorphosisCooldown.DataSource = Enum.GetValues(typeof(IllidariSettings.CooldownTypes));
+            HavocUseFuryOfTheIllidariCooldown.DataSource = Enum.GetValues(typeof(IllidariSettings.CooldownTypes));
             #endregion
 
             #region General Settings load
@@ -65,7 +66,6 @@ namespace Illidari
             HavocFelRushAoe.Checked = S.HavocFelRushAoe;
             HavocVengefulReatreatSingleTarget.Checked = S.HavocVengefulReatreatSingleTarget;
             HavocVengefulReatreatAoe.Checked = S.HavocVengefulReatreatAoe;
-
             #endregion
 
             #endregion
@@ -167,6 +167,7 @@ namespace Illidari
             // must set these on form load as the initialization process populates the dropdowns with data
             HavocUseAgilityPotionCooldown.SelectedItem = S.HavocUseAgilityPotionCooldown;
             HavocUseMetamorphosisCooldown.SelectedItem = S.HavocUseMetamorphosisCooldown;
+            HavocUseFuryOfTheIllidariCooldown.SelectedItem = S.HavocUseFuryOfTheIllidariCooldown;
 
             _isLoading = false;
         }
@@ -418,8 +419,6 @@ namespace Illidari
         {
             S.HavocVengefulReatreatAoe = HavocVengefulReatreatAoe.Checked;
         }
-        #endregion
-
         private void HavocUseAgilityPotionCooldown_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!_isLoading)
@@ -441,6 +440,19 @@ namespace Illidari
                 S.HavocUseMetamorphosisCooldown = metamorphosiscd;
             }
         }
+
+        private void HavocUseFuryOfTheIllidariCooldown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isLoading)
+            {
+                IllidariSettings.CooldownTypes foticooldown;
+                Enum.TryParse(HavocUseFuryOfTheIllidariCooldown.SelectedValue.ToString(), out foticooldown);
+                S.HavocUseMetamorphosisCooldown = foticooldown;
+            }
+        }
+
+        #endregion
+
 
         #endregion
 
@@ -588,7 +600,9 @@ namespace Illidari
         private enum KeybindTypes
         {
             VengeanceAoe,
-            VengeanceDefensive
+            VengeanceDefensive,
+            HavocAoe,
+            HavocOffensive
         }
         private void ClearButtonHotkey(Button btn, KeybindTypes kbType)
         {
@@ -609,6 +623,11 @@ namespace Illidari
                 S.HotkeyVengeanceDefensiveSoulBarrier = false;
                 S.HotkeyVengeanceDefensiveSoulCarver = false;
                 S.HotkeyVengeanceDefensiveSoulCleave = false;
+            }
+            else if (kbType == KeybindTypes.HavocOffensive)
+            {
+                S.HotkeyHavocOffensiveKey = "";
+                S.HotkeyHavocOffensiveModifier = 0;
             }
             ResetKeys();
         }
@@ -726,7 +745,7 @@ namespace Illidari
         }
         #endregion
 
-        #region Hotkey - Vengeance - AoE
+        #region Hotkey - AoE
 
         private void btnHotkeysVengeanceAoe_KeyDown(object sender, KeyEventArgs e)
         {
@@ -751,8 +770,11 @@ namespace Illidari
             }
             ResetKeys();
         }
+
+
         #endregion
 
+        #region Hotkey - Vengeance - Defensive
         private void btnHotkeysVengeanceDefensiveCooldowns_Click(object sender, EventArgs e)
         {
             captureKeyPress = true;
@@ -811,9 +833,50 @@ namespace Illidari
             S.HotkeyVengeanceDefensiveEmpowerWards = checkHotkeysVengeanceDefensiveEmpowerWards.Checked;
         }
 
+        #endregion
+
+
         private void btnImport_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Coming Soon!");
+        }
+
+        private void btnHotkeysHavocOffensiveCooldowns_Click(object sender, EventArgs e)
+        {
+            captureKeyPress = true;
+            btnHotkeysHavocOffensiveCooldowns.Text = "";
+        }
+
+        private void btnHotkeysHavocOffensiveCooldowns_KeyDown(object sender, KeyEventArgs e)
+        {
+            CheckIfKeyPressed(e);
+            btnHotkeysHavocOffensiveCooldowns.Text = GetKeyModifierText();
+        }
+
+        private void btnHotkeysHavocOffensiveCooldowns_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) { ClearButtonHotkey(btnHotkeysHavocOffensiveCooldowns, KeybindTypes.HavocOffensive); return; }
+            if (DidPressCorrectKey())
+            {
+                S.HotkeyHavocOffensiveKey = keyPressed;
+                S.HotkeyHavocOffensiveModifier = GetKeyModifierPressed();
+            }
+            ResetKeys();
+        }
+
+        private void checkHotkeysHavocOffensiveAgilityPotion_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyHavocOffensiveAgilityPotion = checkHotkeysHavocOffensiveAgilityPotion.Checked;
+        }
+
+        private void checkHotkeysHavocOffensiveFoTI_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyHavocOffensiveFoTI = checkHotkeysHavocOffensiveFoTI.Checked;
+        }
+
+        private void checkHotkeysHavocOffensiveMetamorphosis_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyHavocOffensiveMetamorphosis = checkHotkeysHavocOffensiveMetamorphosis.Checked;
         }
     }
 }

@@ -101,7 +101,7 @@ namespace Illidari.Core.Managers
             // these are 0-based, and we are sending in actual tiers and index numbers.
             tier--;
             index--;
-            return Me.GetLearnedTalent(tier).Index == index;
+            return Me.GetLearnedTalent(tier)?.Index == index;
         }
         public static void initTalents()
         {

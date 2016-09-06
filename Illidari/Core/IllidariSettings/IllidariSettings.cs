@@ -110,6 +110,8 @@ namespace Illidari.Core.IllidariSettings
         #region DPS cooldowns
         [Setting, DefaultValue(CooldownTypes.Cooldown)]
         public CooldownTypes HavocUseMetamorphosisCooldown { get; set; }
+        [Setting, DefaultValue(CooldownTypes.AoE)]
+        public CooldownTypes HavocUseFuryOfTheIllidariCooldown { get; set; }
         #endregion
 
         #endregion
@@ -203,6 +205,18 @@ namespace Illidari.Core.IllidariSettings
         public bool HotkeyVengeanceDefensiveSoulCarver { get; set; }
         [Setting, DefaultValue(true)]
         public bool HotkeyVengeanceDefensiveEmpowerWards { get; set; }
+
+        [Setting, DefaultValue(1)] // default Alt = 1
+        public int HotkeyHavocOffensiveModifier { get; set; }
+        [Setting, DefaultValue("A")]
+        public string HotkeyHavocOffensiveKey { get; set; }
+
+        [Setting, DefaultValue(true)]
+        public bool HotkeyHavocOffensiveAgilityPotion { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyHavocOffensiveFoTI { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyHavocOffensiveMetamorphosis { get; set; }
         #endregion
 
         #region readonly properties
@@ -233,7 +247,8 @@ namespace Illidari.Core.IllidariSettings
             Manual,
             EliteBoss,
             BossOnly,
-            Cooldown
+            Cooldown,
+            AoE
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Illidari.Core.Managers
         public static bool VengeanceAoEOn { get; set; }
         public static bool VengeanceDefensiveOn { get; set; }
         public static bool HavocAoEOn { get; set; }
+        public static bool HavocOffensiveOn { get; set; }
         public static bool cooldownsOn { get; set; }
         public static bool manualOn { get; set; }
         public static bool keysRegistered { get; set; }
@@ -30,17 +31,21 @@ namespace Illidari.Core.Managers
             if (keysRegistered)
                 return;
             TypeConverter converter = TypeDescriptor.GetConverter(typeof(Keys));
+
+            // ++++++++++ General AoE +++++++++++++++
+            if (!string.IsNullOrEmpty(M.IS.HotkeyVengeanceAoeKey) && M.IS.HotkeyVengeanceAoeModifier > 0)
+            {
+                HotkeysManager.Register("AoEOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceAoeKey), (ModifierKeys)M.IS.HotkeyVengeanceAoeModifier, ret =>
+                {
+                    VengeanceAoEOn = !VengeanceAoEOn;
+                    StyxWoW.Overlay.AddToast((VengeanceAoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);
+                });
+            }
+
             if (Me.Specialization == WoWSpec.DemonHunterVengeance)
             {
                 // ++++++++ VENGEANCE SPEC ONLY ++++++++++
-                if (!string.IsNullOrEmpty(M.IS.HotkeyVengeanceAoeKey) && M.IS.HotkeyVengeanceAoeModifier > 0)
-                {
-                    HotkeysManager.Register("AoEOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceAoeKey), (ModifierKeys)M.IS.HotkeyVengeanceAoeModifier, ret =>
-                    {
-                        VengeanceAoEOn = !VengeanceAoEOn;
-                        StyxWoW.Overlay.AddToast((VengeanceAoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);
-                    });
-                }
+                
                 if (M.IS.HotkeyVengeanceDefensiveModifier > 0 && !string.IsNullOrEmpty(M.IS.HotkeyVengeanceDefensiveKey))
                 {
                     HotkeysManager.Register("VengeanceDefensiveOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceDefensiveKey), (ModifierKeys)M.IS.HotkeyVengeanceDefensiveModifier, ret =>
@@ -48,6 +53,18 @@ namespace Illidari.Core.Managers
                         VengeanceDefensiveOn = !VengeanceDefensiveOn;
                         StyxWoW.Overlay.AddToast((VengeanceDefensiveOn ? "Defensive Mode: Enabled!" : "Defensive Mode: Disabled!"), 2000);
 
+                    });
+                }
+            }
+
+            if (Me.Specialization == WoWSpec.DemonHunterHavoc)
+            {
+                if (M.IS.HotkeyHavocOffensiveModifier > 0 && !string.IsNullOrEmpty(M.IS.HotkeyHavocOffensiveKey))
+                {
+                    HotkeysManager.Register("HavocOffensiveOn", (Keys)converter.ConvertFromString(M.IS.HotkeyHavocOffensiveKey), (ModifierKeys)M.IS.HotkeyHavocOffensiveModifier, ret =>
+                    {
+                        HavocOffensiveOn = !HavocOffensiveOn;
+                        StyxWoW.Overlay.AddToast((HavocOffensiveOn ? "Offensive Cooldowns: Enabled!" : "Offensive Cooldowns: Disabled!"), 2000);
                     });
                 }
             }
