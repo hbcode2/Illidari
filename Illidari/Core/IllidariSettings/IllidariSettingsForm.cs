@@ -451,7 +451,7 @@ namespace Illidari
             {
                 IllidariSettings.CooldownTypes foticooldown;
                 Enum.TryParse(HavocUseFuryOfTheIllidariCooldown.SelectedValue.ToString(), out foticooldown);
-                S.HavocUseMetamorphosisCooldown = foticooldown;
+                S.HavocUseFuryOfTheIllidariCooldown = foticooldown;
             }
         }
 

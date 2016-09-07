@@ -38,6 +38,7 @@ namespace Illidari.Core.Managers
                 HotkeysManager.Register("AoEOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceAoeKey), (ModifierKeys)M.IS.HotkeyVengeanceAoeModifier, ret =>
                 {
                     VengeanceAoEOn = !VengeanceAoEOn;
+                    HavocAoEOn = !HavocAoEOn;
                     StyxWoW.Overlay.AddToast((VengeanceAoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);
                 });
             }
