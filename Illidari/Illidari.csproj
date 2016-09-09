@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Blacklist.cs" />
     <Compile Include="Core\Helpers\Common.cs" />
     <Compile Include="Core\Helpers\Extensions.cs" />
     <Compile Include="Core\Helpers\Spell Book.cs" />

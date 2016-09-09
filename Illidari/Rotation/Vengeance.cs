@@ -17,6 +17,7 @@ using T = Illidari.Core.Managers.TalentManager;
 using L = Illidari.Core.Utilities.Log;
 using C = Illidari.Core.Helpers.Common;
 using M = Illidari.Main;
+using System.Diagnostics;
 
 namespace Illidari.Rotation
 {
@@ -80,7 +81,7 @@ namespace Illidari.Rotation
                 }
 
                 // throw a glaive first
-                if (await S.Cast(SB.ThrowGlaive, C.CombatColor, CurrentTarget.Distance <= 30)) { return true; }
+                if (await S.Cast(SB.ThrowGlaive, C.CombatColor, CurrentTarget.Distance <= 30)) { glaiveTossTimer.Restart(); return true; }
 
                 // use to engage if you have the charges to do so
                 if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
@@ -162,6 +163,13 @@ namespace Illidari.Rotation
 
         public static async Task<bool> GapCloser()
         {
+            if (await S.Cast(SB.ThrowGlaive, C.CombatColor, 
+                CurrentTarget.Distance > 8 
+                && CurrentTarget.Distance <= 30))
+            {
+                glaiveTossTimer.Restart();
+                return true;
+            }
             if (await S.Cast(SB.FelBlade, C.CombatColor,
                T.VengeanceFelblade
                && !CurrentTarget.IsWithinMeleeRangeOf(Me)
@@ -306,9 +314,16 @@ namespace Illidari.Rotation
 
             return false;
         }
-
+        private static Stopwatch glaiveTossTimer = new Stopwatch();
         public static async Task<bool> SingleTarget()
         {
+            if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
+                !glaiveTossTimer.IsRunning 
+                || (glaiveTossTimer.IsRunning && glaiveTossTimer.ElapsedMilliseconds > 5000)))
+            {
+                glaiveTossTimer.Restart();
+                return true;
+            }
             if (await S.Cast(SB.SoulCleave, C.CombatColor,
                 C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
@@ -317,7 +332,8 @@ namespace Illidari.Rotation
             { return true; }
 
             // cast infernal strike in melee only if we have max chargets
-            if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
+            // cast on yourself to see 
+            if (await S.CastGround(SB.InfernalStrike, Me, C.CombatColor,
                 S.MaxChargesAvailable(SB.InfernalStrike)
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
                 "ST Max Charges Available"))

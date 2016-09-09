@@ -89,9 +89,14 @@ namespace Illidari.Rotation
                     CurrentTarget.Distance <= 30))
                 { return true; }
 
+                if (await S.Cast(SB.FelBlade, C.CombatColor,
+                    CurrentTarget.Distance <= 15))
+                { return true; }
+
                 // use to engage
                 return await S.GCD(SB.FelRush, C.CombatColor, CurrentTarget.Distance <= 20
                     && M.IS.HavocFelRushOnPull);
+
             }
 
             return true;

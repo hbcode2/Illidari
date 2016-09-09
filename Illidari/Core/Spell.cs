@@ -185,6 +185,7 @@ namespace Illidari.Core
             await CommonCoroutines.SleepForRandomReactionTime();
             return true;
         }
+        private static List<SpellBlacklist> GroundSpellBlacklist = new List<SpellBlacklist>();
         /// <summary>
         /// Casts spell on the ground at current target's location.
         /// </summary>
@@ -193,7 +194,10 @@ namespace Illidari.Core
         /// <returns></returns>
         public static async Task<bool> CastGround(int Spell, WoWUnit target, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "")
         {
-
+            foreach (var item in GroundSpellBlacklist)
+            {
+                if (item.SpellId == Spell && item.IsBlacklisted()) { return false; }
+            }
             if (!reqs) { return false; }
             //L.combatLog("Trying to cast: " + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) ? "" : " - " + addLog));
             if (!target.IsValidCombatUnit()) { return false; }
@@ -202,14 +206,20 @@ namespace Illidari.Core
             if (await GCD(Spell, newColor, true, "CastGround")
                 && !await Coroutine.Wait(1000, () => Me.CurrentPendingCursorSpell != null))
             {
+                AddSpellToBlacklist(Spell);
                 L.diagnosticsLog("No Cursor Detected");
                 return false;
             }
             lastSpellCast = Spell;
-            SpellManager.ClickRemoteLocation(target.Location);
+            if (SpellManager.ClickRemoteLocation(target.Location) == false) { AddSpellToBlacklist(Spell); }
             await CommonCoroutines.SleepForLagDuration();
 
             return true;
+        }
+        private static void AddSpellToBlacklist(int spellId)
+        {
+            var blSpell = GroundSpellBlacklist.FirstOrDefault(bl => bl.SpellId == spellId);
+            if (blSpell != null) { blSpell.AddBlacklistCounter(); } else { GroundSpellBlacklist.Add(new SpellBlacklist(spellId)); }
         }
         /// <summary>
         /// Casts spell on the ground at current target's location.

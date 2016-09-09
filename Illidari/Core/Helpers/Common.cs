@@ -25,7 +25,7 @@ namespace Illidari.Core.Helpers
         {
             if (target == null || Me.IsWithinMeleeRangeOf(target) || !target.IsValidCombatUnit()) { return false; }
             L.infoLog("Getting in melee range", InfoColor);
-            if (Me.IsWithinMeleeRangeOf(target) && Me.IsMoving) { return await CommonCoroutines.StopMoving(); }
+            if (Me.IsWithinMeleeRangeOf(target)) { return await CommonCoroutines.StopMoving(); }
             if (!Me.IsWithinMeleeRangeOf(target))
             {
                 await CommonCoroutines.MoveTo(target.RelativeLocation, target.SafeName);
