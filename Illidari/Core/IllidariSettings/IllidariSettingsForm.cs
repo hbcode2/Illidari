@@ -38,6 +38,8 @@ namespace Illidari
             GeneralEnableFacing.Checked = S.GeneralFacing;
             GeneralEnableMovement.Checked = S.GeneralMovement;
             GeneralEnableTargeting.Checked = S.GeneralTargeting;
+            GeneralRestingUseBandages.Checked = S.GeneralRestingUseBandages;
+            GeneralRestingRestHp.Value = S.GeneralRestingRestHp;
             #endregion
 
             #region Havoc Settings load
@@ -906,6 +908,16 @@ namespace Illidari
         private void VengeanceCombatInfernalStrikeGapCloser_CheckedChanged(object sender, EventArgs e)
         {
             S.VengeanceCombatInfernalStrikeGapCloser = VengeanceCombatInfernalStrikeGapCloser.Checked;
+        }
+
+        private void GeneralRestingRestHp_ValueChanged(object sender, EventArgs e)
+        {
+            S.GeneralRestingRestHp = (int)GeneralRestingRestHp.Value;
+        }
+
+        private void GeneralRestingUseBandages_CheckedChanged(object sender, EventArgs e)
+        {
+            S.GeneralRestingUseBandages = GeneralRestingUseBandages.Checked;
         }
     }
 }

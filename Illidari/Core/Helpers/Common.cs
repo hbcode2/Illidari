@@ -43,9 +43,17 @@ namespace Illidari.Core.Helpers
             L.infoLog("Not facing target; will attempt to", InfoColor);
             target.Face();
             lastUnitGuid = target.Guid;
+            if (Me.IsWithinMeleeRangeOf(target)) { return await CommonCoroutines.StopMoving(); }
             if (!lastTimeFaced.IsRunning) { lastTimeFaced.Start(); } else { lastTimeFaced.Restart(); }
             await Coroutine.Yield();
             return true;
+        }
+        public static bool IsEatingOrDrinking
+        {
+            get
+            {
+                return Me.HasAnyAura("Drink", "Food", "Refreshment", "Cannibalize");
+            }
         }
         #region Cache
         public static uint CurrentPower;

@@ -336,8 +336,9 @@ namespace Illidari.Rotation
 
             // cast infernal strike in melee only if we have max chargets
             // cast on yourself to see 
-            if (await S.CastGround(SB.InfernalStrike, Me, C.CombatColor,
+            if (await S.CastGroundOnMe(SB.InfernalStrike, C.CombatColor,
                 M.IS.VengeanceCombatInfernalStrikeSingleTarget
+                && Me.IsWithinMeleeRangeOf(CurrentTarget)
                 && S.MaxChargesAvailable(SB.InfernalStrike)
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
                 "ST Max Charges Available"))
@@ -362,8 +363,9 @@ namespace Illidari.Rotation
             ))
             { return true; }
 
-            if (await S.CastGround(SB.InfernalStrike, Me, C.CombatColor,
+            if (await S.CastGroundOnMe(SB.InfernalStrike, C.CombatColor,
                 M.IS.VengeanceCombatInfernalStrikeAoE
+                && Me.IsWithinMeleeRangeOf(CurrentTarget)
                 && S.MaxChargesAvailable(SB.InfernalStrike),
                 "AoE Max Charges Available"))
             { return true; }

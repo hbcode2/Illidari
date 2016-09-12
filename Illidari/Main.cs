@@ -20,6 +20,7 @@ using TM = Illidari.Core.Managers.TalentManager;
 using D = Illidari.Rotation.Death;
 using L = Illidari.Core.Utilities.Log;
 using C = Illidari.Core.Helpers.Common;
+using R = Illidari.Rotation.Resting;
 using System.Diagnostics;
 using System.Reflection;
 #endregion
@@ -94,9 +95,7 @@ namespace Illidari
         {
             get
             {
-                //if (DateTime.Now.Second % 5 == 0)
-                   // L.debugLog("Calling RestBehavior");
-                return base.RestBehavior;
+                return new ActionRunCoroutine(ctx => R.RestBehavior());
             }
         }
         public override Composite MoveToTargetBehavior
@@ -126,11 +125,11 @@ namespace Illidari
             {
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
-                    return Me.HealthPercent < 50;
+                    return Me.HealthPercent < IS.GeneralRestingRestHp;
                 }
                 if (Me.Specialization == WoWSpec.DemonHunterVengeance)
                 {
-                    return Me.HealthPercent < 50;
+                    return Me.HealthPercent < IS.GeneralRestingRestHp;
                 }
                 return false;
             }
@@ -176,7 +175,8 @@ namespace Illidari
 
             HK.registerHotkeys();
 
-        }
+        } 
+        
         public override bool WantButton { get { return true; } }
 
         public override CapabilityFlags SupportedCapabilities

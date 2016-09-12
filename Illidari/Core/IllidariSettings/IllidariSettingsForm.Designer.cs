@@ -157,6 +157,24 @@
             this.VengeanceCombatInfernalStrikeAoE = new System.Windows.Forms.CheckBox();
             this.VengeanceCombatInfernalStrikePull = new System.Windows.Forms.CheckBox();
             this.VengeanceCombatInfernalStrikeGapCloser = new System.Windows.Forms.CheckBox();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label36 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.groupBox16 = new System.Windows.Forms.GroupBox();
+            this.GeneralRestingUseBandages = new System.Windows.Forms.CheckBox();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.GeneralRestingRestHp = new System.Windows.Forms.NumericUpDown();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
+            this.GeneralRestingRestHpReaches = new System.Windows.Forms.NumericUpDown();
+            this.label40 = new System.Windows.Forms.Label();
+            this.GeneralRestingRestHpSecondsTimeout = new System.Windows.Forms.NumericUpDown();
+            this.label41 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -191,6 +209,12 @@
             this.groupBox12.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox13.SuspendLayout();
+            this.groupBox15.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.groupBox16.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GeneralRestingRestHp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GeneralRestingRestHpReaches)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GeneralRestingRestHpSecondsTimeout)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -208,6 +232,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox16);
+            this.tabPage1.Controls.Add(this.groupBox15);
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -220,12 +246,13 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.checkBox6);
             this.groupBox2.Controls.Add(this.GeneralEnableFacing);
             this.groupBox2.Controls.Add(this.GeneralEnableTargeting);
             this.groupBox2.Controls.Add(this.GeneralEnableMovement);
             this.groupBox2.Location = new System.Drawing.Point(8, 90);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(193, 102);
+            this.groupBox2.Size = new System.Drawing.Size(441, 102);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mobility";
@@ -1585,6 +1612,183 @@
             this.VengeanceCombatInfernalStrikeGapCloser.UseVisualStyleBackColor = true;
             this.VengeanceCombatInfernalStrikeGapCloser.CheckedChanged += new System.EventHandler(this.VengeanceCombatInfernalStrikeGapCloser_CheckedChanged);
             // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add(this.checkBox5);
+            this.groupBox15.Controls.Add(this.label37);
+            this.groupBox15.Controls.Add(this.label36);
+            this.groupBox15.Controls.Add(this.numericUpDown1);
+            this.groupBox15.Controls.Add(this.checkBox3);
+            this.groupBox15.Controls.Add(this.checkBox2);
+            this.groupBox15.Controls.Add(this.checkBox1);
+            this.groupBox15.Location = new System.Drawing.Point(8, 198);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(441, 100);
+            this.groupBox15.TabIndex = 2;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = "Combat";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(6, 19);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(321, 17);
+            this.checkBox1.TabIndex = 0;
+            this.checkBox1.Text = "!!! Use Combat Ally (Matron Mother) ability (Mother\'s Caress) on";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(28, 43);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(58, 17);
+            this.checkBox2.TabIndex = 1;
+            this.checkBox2.Text = "!!! Elite";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(80, 42);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(61, 17);
+            this.checkBox3.TabIndex = 2;
+            this.checkBox3.Text = "!!! Boss";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(171, 39);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(56, 20);
+            this.numericUpDown1.TabIndex = 3;
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(136, 42);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(16, 13);
+            this.label36.TabIndex = 4;
+            this.label36.Text = "or";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(233, 43);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(31, 13);
+            this.label37.TabIndex = 5;
+            this.label37.Text = "Units";
+            // 
+            // groupBox16
+            // 
+            this.groupBox16.Controls.Add(this.label41);
+            this.groupBox16.Controls.Add(this.GeneralRestingRestHpSecondsTimeout);
+            this.groupBox16.Controls.Add(this.label40);
+            this.groupBox16.Controls.Add(this.GeneralRestingRestHpReaches);
+            this.groupBox16.Controls.Add(this.label39);
+            this.groupBox16.Controls.Add(this.label38);
+            this.groupBox16.Controls.Add(this.GeneralRestingRestHp);
+            this.groupBox16.Controls.Add(this.GeneralRestingUseBandages);
+            this.groupBox16.Location = new System.Drawing.Point(8, 304);
+            this.groupBox16.Name = "groupBox16";
+            this.groupBox16.Size = new System.Drawing.Size(441, 100);
+            this.groupBox16.TabIndex = 3;
+            this.groupBox16.TabStop = false;
+            this.groupBox16.Text = "Resting";
+            // 
+            // GeneralRestingUseBandages
+            // 
+            this.GeneralRestingUseBandages.AutoSize = true;
+            this.GeneralRestingUseBandages.Location = new System.Drawing.Point(10, 44);
+            this.GeneralRestingUseBandages.Name = "GeneralRestingUseBandages";
+            this.GeneralRestingUseBandages.Size = new System.Drawing.Size(96, 17);
+            this.GeneralRestingUseBandages.TabIndex = 0;
+            this.GeneralRestingUseBandages.Text = "Use Bandages";
+            this.GeneralRestingUseBandages.UseVisualStyleBackColor = true;
+            this.GeneralRestingUseBandages.CheckedChanged += new System.EventHandler(this.GeneralRestingUseBandages_CheckedChanged);
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Location = new System.Drawing.Point(6, 66);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(142, 17);
+            this.checkBox5.TabIndex = 6;
+            this.checkBox5.Text = "Use Engineering attacks";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.Location = new System.Drawing.Point(119, 42);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(149, 17);
+            this.checkBox6.TabIndex = 3;
+            this.checkBox6.Text = "!!! Ignore opposing faction";
+            this.checkBox6.UseVisualStyleBackColor = true;
+            // 
+            // GeneralRestingRestHp
+            // 
+            this.GeneralRestingRestHp.Location = new System.Drawing.Point(63, 18);
+            this.GeneralRestingRestHp.Name = "GeneralRestingRestHp";
+            this.GeneralRestingRestHp.Size = new System.Drawing.Size(57, 20);
+            this.GeneralRestingRestHp.TabIndex = 1;
+            this.GeneralRestingRestHp.ValueChanged += new System.EventHandler(this.GeneralRestingRestHp_ValueChanged);
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(7, 20);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(50, 13);
+            this.label38.TabIndex = 2;
+            this.label38.Text = "Rest HP:";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(126, 20);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(88, 13);
+            this.label39.TabIndex = 3;
+            this.label39.Text = "until HP reaches ";
+            // 
+            // GeneralRestingRestHpReaches
+            // 
+            this.GeneralRestingRestHpReaches.Location = new System.Drawing.Point(220, 18);
+            this.GeneralRestingRestHpReaches.Name = "GeneralRestingRestHpReaches";
+            this.GeneralRestingRestHpReaches.Size = new System.Drawing.Size(57, 20);
+            this.GeneralRestingRestHpReaches.TabIndex = 4;
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(283, 20);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(16, 13);
+            this.label40.TabIndex = 5;
+            this.label40.Text = "or";
+            // 
+            // GeneralRestingRestHpSecondsTimeout
+            // 
+            this.GeneralRestingRestHpSecondsTimeout.Location = new System.Drawing.Point(305, 18);
+            this.GeneralRestingRestHpSecondsTimeout.Name = "GeneralRestingRestHpSecondsTimeout";
+            this.GeneralRestingRestHpSecondsTimeout.Size = new System.Drawing.Size(57, 20);
+            this.GeneralRestingRestHpSecondsTimeout.TabIndex = 6;
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(368, 20);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(47, 13);
+            this.label41.TabIndex = 7;
+            this.label41.Text = "seconds";
+            // 
             // IllidariSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1644,6 +1848,14 @@
             this.groupBox10.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
+            this.groupBox15.ResumeLayout(false);
+            this.groupBox15.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.groupBox16.ResumeLayout(false);
+            this.groupBox16.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GeneralRestingRestHp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GeneralRestingRestHpReaches)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GeneralRestingRestHpSecondsTimeout)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1778,5 +1990,23 @@
         private System.Windows.Forms.CheckBox VengeanceCombatInfernalStrikeAoE;
         private System.Windows.Forms.CheckBox VengeanceCombatInfernalStrikeSingleTarget;
         private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.GroupBox groupBox16;
+        private System.Windows.Forms.CheckBox GeneralRestingUseBandages;
+        private System.Windows.Forms.GroupBox groupBox15;
+        private System.Windows.Forms.CheckBox checkBox5;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.NumericUpDown GeneralRestingRestHp;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.NumericUpDown GeneralRestingRestHpSecondsTimeout;
+        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.NumericUpDown GeneralRestingRestHpReaches;
+        private System.Windows.Forms.Label label39;
     }
 }

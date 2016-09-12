@@ -71,6 +71,21 @@ namespace Illidari.Core
                 
 
         }
+
+        public static WoWItem FindBestFood()
+        {
+            return Me.CarriedItems
+                .Where(hp => hp.ItemInfo.ItemClass == WoWItemClass.Consumable
+                && hp.ItemInfo.ConsumableClass == WoWItemConsumableClass.FoodAndDrink
+                && (hp.ItemInfo.RequiredSkillId == 0 || Me.GetSkill(hp.ItemInfo.RequiredSkillId).CurrentValue >= hp.ItemInfo.RequiredSkillLevel)
+                && hp.ItemInfo.RequiredLevel <= Me.Level
+                && CanUseItem(hp))
+                .OrderBy(l => l.ItemInfo.Level)
+                .ThenByDescending(hp => hp.ItemInfo.RequiredSkillLevel)
+                .FirstOrDefault();
+
+
+        }
         public static WoWItem GetItemByName(string itemName)
         {
             return Me.CarriedItems

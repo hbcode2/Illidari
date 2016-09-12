@@ -35,6 +35,17 @@ namespace Illidari.Core.IllidariSettings
         public bool GeneralTargeting { get; set; }
         #endregion
 
+        #region Resting
+
+        #endregion
+        [Setting, DefaultValue(true)]
+        public bool GeneralRestingUseBandages { get; set; }
+        [Setting, DefaultValue(50)]
+        public int GeneralRestingRestHp { get; set; }
+        [Setting, DefaultValue(90)]
+        public int GeneralRestingRestHpReaches { get; set; }
+        [Setting, DefaultValue(30)]
+        public int GeneralRestingRestHpSecondsTimeout { get; set; }
         #endregion
 
         #region Havoc

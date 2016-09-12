@@ -216,6 +216,29 @@ namespace Illidari.Core
 
             return true;
         }
+        public static async Task<bool> CastGroundOnMe(int Spell, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "")
+        {
+            foreach (var item in GroundSpellBlacklist)
+            {
+                if (item.SpellId == Spell && item.IsBlacklisted()) { return false; }
+            }
+            if (!reqs) { return false; }
+            //L.combatLog("Trying to cast: " + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) ? "" : " - " + addLog));
+            if (!SpellManager.CanCast(WoWSpell.FromId(Spell))) { return false; }
+
+            if (await GCD(Spell, newColor, true, "CastGround")
+                && !await Coroutine.Wait(1000, () => Me.CurrentPendingCursorSpell != null))
+            {
+                AddSpellToBlacklist(Spell);
+                L.diagnosticsLog("No Cursor Detected");
+                return false;
+            }
+            lastSpellCast = Spell;
+            if (SpellManager.ClickRemoteLocation(Me.Location) == false) { AddSpellToBlacklist(Spell); }
+            await CommonCoroutines.SleepForLagDuration();
+
+            return true;
+        }
         private static void AddSpellToBlacklist(int spellId)
         {
             var blSpell = GroundSpellBlacklist.FirstOrDefault(bl => bl.SpellId == spellId);

@@ -60,6 +60,18 @@ namespace Illidari
             }
             return false;
         }
+        /// <summary>
+        ///  Checks for the auras on a specified unit. Returns true if the unit has any aura in the auraNames list.
+        /// </summary>
+        /// <param name="unit"> The unit to check auras for. </param>
+        /// <param name="auraNames"> Aura names to be checked. </param>
+        /// <returns></returns>
+        public static bool HasAnyAura(this WoWUnit unit, params string[] auraNames)
+        {
+            var auras = unit.GetAllAuras();
+            var hashes = new HashSet<string>(auraNames);
+            return auras.Any(a => hashes.Contains(a.Name));
+        }
         public static bool IsValidCombatUnit(this WoWUnit Unit)
         {
             return Unit != null && Unit.IsValid && Unit.IsAlive && Unit.Attackable;
