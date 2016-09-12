@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Styx.WoWInternals;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,7 +44,7 @@ namespace Illidari.Core
         public void AddBlacklistCounter()
         {
             Count++;
-            if (Count >= 3) { DateBlacklisted = DateTime.Now; }
+            if (Count >= 3) { DateBlacklisted = DateTime.Now; Utilities.Log.debugLog("Blacklisted Spell: " + WoWSpell.FromId(SpellId)?.Name); }
         }
         public void ClearBlacklist()
         {

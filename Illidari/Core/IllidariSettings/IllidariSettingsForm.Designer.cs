@@ -41,6 +41,8 @@
             this.GeneralEnableDebug = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.HavocUseFuryOfTheIllidariCooldown = new System.Windows.Forms.ComboBox();
+            this.label35 = new System.Windows.Forms.Label();
             this.HavocUseMetamorphosisCooldown = new System.Windows.Forms.ComboBox();
             this.label23 = new System.Windows.Forms.Label();
             this.HavocUseAgilityPotionCooldown = new System.Windows.Forms.ComboBox();
@@ -140,18 +142,21 @@
             this.checkHotkeysVengeanceDefensiveDemonSpikes = new System.Windows.Forms.CheckBox();
             this.btnHotkeysVengeanceDefensiveCooldowns = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.btnSaveAndClose = new System.Windows.Forms.Button();
-            this.btnCancelAndClose = new System.Windows.Forms.Button();
-            this.btnImport = new System.Windows.Forms.Button();
-            this.btnExport = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.HavocUseFuryOfTheIllidariCooldown = new System.Windows.Forms.ComboBox();
-            this.label35 = new System.Windows.Forms.Label();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.checkHotkeysHavocOffensiveMetamorphosis = new System.Windows.Forms.CheckBox();
             this.checkHotkeysHavocOffensiveFoTI = new System.Windows.Forms.CheckBox();
             this.checkHotkeysHavocOffensiveAgilityPotion = new System.Windows.Forms.CheckBox();
             this.btnHotkeysHavocOffensiveCooldowns = new System.Windows.Forms.Button();
+            this.btnSaveAndClose = new System.Windows.Forms.Button();
+            this.btnCancelAndClose = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label34 = new System.Windows.Forms.Label();
+            this.VengeanceCombatInfernalStrikeSingleTarget = new System.Windows.Forms.CheckBox();
+            this.VengeanceCombatInfernalStrikeAoE = new System.Windows.Forms.CheckBox();
+            this.VengeanceCombatInfernalStrikePull = new System.Windows.Forms.CheckBox();
+            this.VengeanceCombatInfernalStrikeGapCloser = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -333,6 +338,30 @@
             this.groupBox9.TabIndex = 1;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Combat";
+            // 
+            // HavocUseFuryOfTheIllidariCooldown
+            // 
+            this.HavocUseFuryOfTheIllidariCooldown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.HavocUseFuryOfTheIllidariCooldown.FormattingEnabled = true;
+            this.HavocUseFuryOfTheIllidariCooldown.Items.AddRange(new object[] {
+            "OnCooldown",
+            "BossElite",
+            "Manual"});
+            this.HavocUseFuryOfTheIllidariCooldown.Location = new System.Drawing.Point(128, 171);
+            this.HavocUseFuryOfTheIllidariCooldown.Name = "HavocUseFuryOfTheIllidariCooldown";
+            this.HavocUseFuryOfTheIllidariCooldown.Size = new System.Drawing.Size(146, 21);
+            this.HavocUseFuryOfTheIllidariCooldown.TabIndex = 29;
+            this.HavocUseFuryOfTheIllidariCooldown.SelectedIndexChanged += new System.EventHandler(this.HavocUseFuryOfTheIllidariCooldown_SelectedIndexChanged);
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(14, 174);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(51, 13);
+            this.label35.TabIndex = 28;
+            this.label35.Text = "Use FoTI";
+            this.toolTip1.SetToolTip(this.label35, "Use Fury of the Illidari; Ancient weapon ability");
             // 
             // HavocUseMetamorphosisCooldown
             // 
@@ -717,7 +746,7 @@
             this.groupBox8.Controls.Add(this.label21);
             this.groupBox8.Controls.Add(this.VengeanceStunSigilOfMiseryCount);
             this.groupBox8.Controls.Add(this.VengeanceStunSigilOfMisery);
-            this.groupBox8.Location = new System.Drawing.Point(17, 268);
+            this.groupBox8.Location = new System.Drawing.Point(17, 305);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(293, 50);
             this.groupBox8.TabIndex = 5;
@@ -766,7 +795,7 @@
             this.groupBox7.Controls.Add(this.VengeanceInterruptSigilOfMisery);
             this.groupBox7.Controls.Add(this.VengeanceInterruptSigilOfSilence);
             this.groupBox7.Controls.Add(this.VengeanceInterruptConsumeMagic);
-            this.groupBox7.Location = new System.Drawing.Point(17, 168);
+            this.groupBox7.Location = new System.Drawing.Point(17, 205);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(293, 94);
             this.groupBox7.TabIndex = 4;
@@ -808,6 +837,11 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.VengeanceCombatInfernalStrikeGapCloser);
+            this.groupBox6.Controls.Add(this.VengeanceCombatInfernalStrikePull);
+            this.groupBox6.Controls.Add(this.VengeanceCombatInfernalStrikeAoE);
+            this.groupBox6.Controls.Add(this.VengeanceCombatInfernalStrikeSingleTarget);
+            this.groupBox6.Controls.Add(this.label34);
             this.groupBox6.Controls.Add(this.VengeancePreferPullWithFelblade);
             this.groupBox6.Controls.Add(this.label18);
             this.groupBox6.Controls.Add(this.label19);
@@ -815,7 +849,7 @@
             this.groupBox6.Controls.Add(this.VengeanceCombatUseSoulCleave);
             this.groupBox6.Location = new System.Drawing.Point(17, 77);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(293, 85);
+            this.groupBox6.Size = new System.Drawing.Size(293, 128);
             this.groupBox6.TabIndex = 3;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Combat";
@@ -1398,70 +1432,6 @@
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Havoc";
             // 
-            // btnSaveAndClose
-            // 
-            this.btnSaveAndClose.Location = new System.Drawing.Point(429, 491);
-            this.btnSaveAndClose.Name = "btnSaveAndClose";
-            this.btnSaveAndClose.Size = new System.Drawing.Size(67, 23);
-            this.btnSaveAndClose.TabIndex = 1;
-            this.btnSaveAndClose.Text = "Save";
-            this.btnSaveAndClose.UseVisualStyleBackColor = true;
-            this.btnSaveAndClose.Click += new System.EventHandler(this.btnSaveAndClose_Click);
-            // 
-            // btnCancelAndClose
-            // 
-            this.btnCancelAndClose.Location = new System.Drawing.Point(502, 491);
-            this.btnCancelAndClose.Name = "btnCancelAndClose";
-            this.btnCancelAndClose.Size = new System.Drawing.Size(66, 23);
-            this.btnCancelAndClose.TabIndex = 2;
-            this.btnCancelAndClose.Text = "Cancel";
-            this.btnCancelAndClose.UseVisualStyleBackColor = true;
-            this.btnCancelAndClose.Click += new System.EventHandler(this.btnCancelAndClose_Click);
-            // 
-            // btnImport
-            // 
-            this.btnImport.Location = new System.Drawing.Point(7, 488);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(69, 23);
-            this.btnImport.TabIndex = 3;
-            this.btnImport.Text = "Import...";
-            this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
-            // 
-            // btnExport
-            // 
-            this.btnExport.Location = new System.Drawing.Point(82, 488);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(69, 23);
-            this.btnExport.TabIndex = 4;
-            this.btnExport.Text = "Export...";
-            this.btnExport.UseVisualStyleBackColor = true;
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
-            // 
-            // HavocUseFuryOfTheIllidariCooldown
-            // 
-            this.HavocUseFuryOfTheIllidariCooldown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.HavocUseFuryOfTheIllidariCooldown.FormattingEnabled = true;
-            this.HavocUseFuryOfTheIllidariCooldown.Items.AddRange(new object[] {
-            "OnCooldown",
-            "BossElite",
-            "Manual"});
-            this.HavocUseFuryOfTheIllidariCooldown.Location = new System.Drawing.Point(128, 171);
-            this.HavocUseFuryOfTheIllidariCooldown.Name = "HavocUseFuryOfTheIllidariCooldown";
-            this.HavocUseFuryOfTheIllidariCooldown.Size = new System.Drawing.Size(146, 21);
-            this.HavocUseFuryOfTheIllidariCooldown.TabIndex = 29;
-            this.HavocUseFuryOfTheIllidariCooldown.SelectedIndexChanged += new System.EventHandler(this.HavocUseFuryOfTheIllidariCooldown_SelectedIndexChanged);
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(14, 174);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(51, 13);
-            this.label35.TabIndex = 28;
-            this.label35.Text = "Use FoTI";
-            this.toolTip1.SetToolTip(this.label35, "Use Fury of the Illidari; Ancient weapon ability");
-            // 
             // groupBox13
             // 
             this.groupBox13.Controls.Add(this.checkHotkeysHavocOffensiveMetamorphosis);
@@ -1521,6 +1491,99 @@
             this.btnHotkeysHavocOffensiveCooldowns.Click += new System.EventHandler(this.btnHotkeysHavocOffensiveCooldowns_Click);
             this.btnHotkeysHavocOffensiveCooldowns.KeyDown += new System.Windows.Forms.KeyEventHandler(this.btnHotkeysHavocOffensiveCooldowns_KeyDown);
             this.btnHotkeysHavocOffensiveCooldowns.KeyUp += new System.Windows.Forms.KeyEventHandler(this.btnHotkeysHavocOffensiveCooldowns_KeyUp);
+            // 
+            // btnSaveAndClose
+            // 
+            this.btnSaveAndClose.Location = new System.Drawing.Point(429, 491);
+            this.btnSaveAndClose.Name = "btnSaveAndClose";
+            this.btnSaveAndClose.Size = new System.Drawing.Size(67, 23);
+            this.btnSaveAndClose.TabIndex = 1;
+            this.btnSaveAndClose.Text = "Save";
+            this.btnSaveAndClose.UseVisualStyleBackColor = true;
+            this.btnSaveAndClose.Click += new System.EventHandler(this.btnSaveAndClose_Click);
+            // 
+            // btnCancelAndClose
+            // 
+            this.btnCancelAndClose.Location = new System.Drawing.Point(502, 491);
+            this.btnCancelAndClose.Name = "btnCancelAndClose";
+            this.btnCancelAndClose.Size = new System.Drawing.Size(66, 23);
+            this.btnCancelAndClose.TabIndex = 2;
+            this.btnCancelAndClose.Text = "Cancel";
+            this.btnCancelAndClose.UseVisualStyleBackColor = true;
+            this.btnCancelAndClose.Click += new System.EventHandler(this.btnCancelAndClose_Click);
+            // 
+            // btnImport
+            // 
+            this.btnImport.Location = new System.Drawing.Point(7, 488);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(69, 23);
+            this.btnImport.TabIndex = 3;
+            this.btnImport.Text = "Import...";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
+            // btnExport
+            // 
+            this.btnExport.Location = new System.Drawing.Point(82, 488);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(69, 23);
+            this.btnExport.TabIndex = 4;
+            this.btnExport.Text = "Export...";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(15, 67);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(221, 13);
+            this.label34.TabIndex = 14;
+            this.label34.Text = "Use Infernal Strike on (uncheck all to disable)";
+            // 
+            // VengeanceCombatInfernalStrikeSingleTarget
+            // 
+            this.VengeanceCombatInfernalStrikeSingleTarget.AutoSize = true;
+            this.VengeanceCombatInfernalStrikeSingleTarget.Location = new System.Drawing.Point(15, 84);
+            this.VengeanceCombatInfernalStrikeSingleTarget.Name = "VengeanceCombatInfernalStrikeSingleTarget";
+            this.VengeanceCombatInfernalStrikeSingleTarget.Size = new System.Drawing.Size(89, 17);
+            this.VengeanceCombatInfernalStrikeSingleTarget.TabIndex = 15;
+            this.VengeanceCombatInfernalStrikeSingleTarget.Text = "Single Target";
+            this.VengeanceCombatInfernalStrikeSingleTarget.UseVisualStyleBackColor = true;
+            this.VengeanceCombatInfernalStrikeSingleTarget.CheckedChanged += new System.EventHandler(this.VengeanceCombatInfernalStrikeSingleTarget_CheckedChanged);
+            // 
+            // VengeanceCombatInfernalStrikeAoE
+            // 
+            this.VengeanceCombatInfernalStrikeAoE.AutoSize = true;
+            this.VengeanceCombatInfernalStrikeAoE.Location = new System.Drawing.Point(110, 83);
+            this.VengeanceCombatInfernalStrikeAoE.Name = "VengeanceCombatInfernalStrikeAoE";
+            this.VengeanceCombatInfernalStrikeAoE.Size = new System.Drawing.Size(46, 17);
+            this.VengeanceCombatInfernalStrikeAoE.TabIndex = 16;
+            this.VengeanceCombatInfernalStrikeAoE.Text = "AoE";
+            this.VengeanceCombatInfernalStrikeAoE.UseVisualStyleBackColor = true;
+            this.VengeanceCombatInfernalStrikeAoE.CheckedChanged += new System.EventHandler(this.VengeanceCombatInfernalStrikeAoE_CheckedChanged);
+            // 
+            // VengeanceCombatInfernalStrikePull
+            // 
+            this.VengeanceCombatInfernalStrikePull.AutoSize = true;
+            this.VengeanceCombatInfernalStrikePull.Location = new System.Drawing.Point(162, 83);
+            this.VengeanceCombatInfernalStrikePull.Name = "VengeanceCombatInfernalStrikePull";
+            this.VengeanceCombatInfernalStrikePull.Size = new System.Drawing.Size(43, 17);
+            this.VengeanceCombatInfernalStrikePull.TabIndex = 17;
+            this.VengeanceCombatInfernalStrikePull.Text = "Pull";
+            this.VengeanceCombatInfernalStrikePull.UseVisualStyleBackColor = true;
+            this.VengeanceCombatInfernalStrikePull.CheckedChanged += new System.EventHandler(this.VengeanceCombatInfernalStrikePull_CheckedChanged);
+            // 
+            // VengeanceCombatInfernalStrikeGapCloser
+            // 
+            this.VengeanceCombatInfernalStrikeGapCloser.AutoSize = true;
+            this.VengeanceCombatInfernalStrikeGapCloser.Location = new System.Drawing.Point(211, 83);
+            this.VengeanceCombatInfernalStrikeGapCloser.Name = "VengeanceCombatInfernalStrikeGapCloser";
+            this.VengeanceCombatInfernalStrikeGapCloser.Size = new System.Drawing.Size(78, 17);
+            this.VengeanceCombatInfernalStrikeGapCloser.TabIndex = 18;
+            this.VengeanceCombatInfernalStrikeGapCloser.Text = "Gap Closer";
+            this.VengeanceCombatInfernalStrikeGapCloser.UseVisualStyleBackColor = true;
+            this.VengeanceCombatInfernalStrikeGapCloser.CheckedChanged += new System.EventHandler(this.VengeanceCombatInfernalStrikeGapCloser_CheckedChanged);
             // 
             // IllidariSettingsForm
             // 
@@ -1710,5 +1773,10 @@
         private System.Windows.Forms.CheckBox checkHotkeysHavocOffensiveFoTI;
         private System.Windows.Forms.CheckBox checkHotkeysHavocOffensiveAgilityPotion;
         private System.Windows.Forms.Button btnHotkeysHavocOffensiveCooldowns;
+        private System.Windows.Forms.CheckBox VengeanceCombatInfernalStrikeGapCloser;
+        private System.Windows.Forms.CheckBox VengeanceCombatInfernalStrikePull;
+        private System.Windows.Forms.CheckBox VengeanceCombatInfernalStrikeAoE;
+        private System.Windows.Forms.CheckBox VengeanceCombatInfernalStrikeSingleTarget;
+        private System.Windows.Forms.Label label34;
     }
 }

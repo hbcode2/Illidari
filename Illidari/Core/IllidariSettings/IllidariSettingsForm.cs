@@ -116,6 +116,11 @@ namespace Illidari
 
             VengeancePreferPullWithFelblade.Checked = S.VengeancePreferPullWithFelblade;
 
+            VengeanceCombatInfernalStrikeAoE.Checked = S.VengeanceCombatInfernalStrikeAoE;
+            VengeanceCombatInfernalStrikeGapCloser.Checked = S.VengeanceCombatInfernalStrikeGapCloser;
+            VengeanceCombatInfernalStrikePull.Checked = S.VengeanceCombatInfernalStrikePull;
+            VengeanceCombatInfernalStrikeSingleTarget.Checked = S.VengeanceCombatInfernalStrikeSingleTarget;
+
             #endregion
 
             #region Hotkeys load
@@ -881,6 +886,26 @@ namespace Illidari
         private void checkHotkeysHavocOffensiveMetamorphosis_CheckedChanged(object sender, EventArgs e)
         {
             S.HotkeyHavocOffensiveMetamorphosis = checkHotkeysHavocOffensiveMetamorphosis.Checked;
+        }
+
+        private void VengeanceCombatInfernalStrikeSingleTarget_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatInfernalStrikeSingleTarget = VengeanceCombatInfernalStrikeSingleTarget.Checked;
+        }
+
+        private void VengeanceCombatInfernalStrikeAoE_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatInfernalStrikeAoE = VengeanceCombatInfernalStrikeAoE.Checked;
+        }
+
+        private void VengeanceCombatInfernalStrikePull_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatInfernalStrikePull = VengeanceCombatInfernalStrikePull.Checked;
+        }
+
+        private void VengeanceCombatInfernalStrikeGapCloser_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatInfernalStrikeGapCloser = VengeanceCombatInfernalStrikeGapCloser.Checked;
         }
     }
 }

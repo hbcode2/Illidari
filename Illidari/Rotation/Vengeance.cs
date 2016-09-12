@@ -85,7 +85,8 @@ namespace Illidari.Rotation
 
                 // use to engage if you have the charges to do so
                 if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
-                    CurrentTarget.Distance <= infernalStrikeRange
+                    M.IS.VengeanceCombatInfernalStrikePull
+                    && CurrentTarget.Distance <= infernalStrikeRange
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me)
                     && !M.IS.VengeancePreferPullWithFelblade
                 ))
@@ -100,6 +101,7 @@ namespace Illidari.Rotation
                 // now use in case felblade was on cd, but don't check prefer
                 if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
                     CurrentTarget.Distance <= infernalStrikeRange
+                    && M.IS.VengeanceCombatInfernalStrikePull
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me)
                 ))
                 { return true; }
@@ -163,8 +165,8 @@ namespace Illidari.Rotation
 
         public static async Task<bool> GapCloser()
         {
-            if (await S.Cast(SB.ThrowGlaive, C.CombatColor, 
-                CurrentTarget.Distance > 8 
+            if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
+                CurrentTarget.Distance > 8
                 && CurrentTarget.Distance <= 30))
             {
                 glaiveTossTimer.Restart();
@@ -179,7 +181,8 @@ namespace Illidari.Rotation
             { return true; }
 
             if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
-                !CurrentTarget.IsWithinMeleeRangeOf(Me)
+                M.IS.VengeanceCombatInfernalStrikeGapCloser
+                && !CurrentTarget.IsWithinMeleeRangeOf(Me)
                 && CurrentTarget.Distance > 8
                 && CurrentTarget.Distance <= infernalStrikeRange
                 && (S.GetSpellChargeInfo(SB.InfernalStrike).ChargesLeft > 0),
@@ -263,14 +266,14 @@ namespace Illidari.Rotation
             { return true; }
 
             // cast Demon Spikes if we have 
-                if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
-                M.IS.VengeanceAllowDemonSpikes
-                && C.CurrentPower >= 20
-                && Me.HealthPercent <= M.IS.VengeanceDemonSpikesHp
-                && !Me.HasAura(SB.AuraDemonSpikes)
-                && U.activeEnemies(Me.Location, 8f).Any(),
-                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceDemonSpikesHp}")
-            ))
+            if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
+            M.IS.VengeanceAllowDemonSpikes
+            && C.CurrentPower >= 20
+            && Me.HealthPercent <= M.IS.VengeanceDemonSpikesHp
+            && !Me.HasAura(SB.AuraDemonSpikes)
+            && U.activeEnemies(Me.Location, 8f).Any(),
+            string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceDemonSpikesHp}")
+        ))
             { return true; }
 
             if (await S.Cast(SB.SoulBarrier, C.DefensiveColor, T.VengeanceSoulBarrier
@@ -318,7 +321,7 @@ namespace Illidari.Rotation
         public static async Task<bool> SingleTarget()
         {
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
-                !glaiveTossTimer.IsRunning 
+                !glaiveTossTimer.IsRunning
                 || (glaiveTossTimer.IsRunning && glaiveTossTimer.ElapsedMilliseconds > 5000)))
             {
                 glaiveTossTimer.Restart();
@@ -334,7 +337,8 @@ namespace Illidari.Rotation
             // cast infernal strike in melee only if we have max chargets
             // cast on yourself to see 
             if (await S.CastGround(SB.InfernalStrike, Me, C.CombatColor,
-                S.MaxChargesAvailable(SB.InfernalStrike)
+                M.IS.VengeanceCombatInfernalStrikeSingleTarget
+                && S.MaxChargesAvailable(SB.InfernalStrike)
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
                 "ST Max Charges Available"))
             { return true; }
@@ -358,8 +362,9 @@ namespace Illidari.Rotation
             ))
             { return true; }
 
-            if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
-                S.MaxChargesAvailable(SB.InfernalStrike),
+            if (await S.CastGround(SB.InfernalStrike, Me, C.CombatColor,
+                M.IS.VengeanceCombatInfernalStrikeAoE
+                && S.MaxChargesAvailable(SB.InfernalStrike),
                 "AoE Max Charges Available"))
             { return true; }
 

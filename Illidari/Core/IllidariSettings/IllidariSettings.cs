@@ -164,7 +164,14 @@ namespace Illidari.Core.IllidariSettings
 
         [Setting, DefaultValue(false)]
         public bool VengeancePreferPullWithFelblade { get; set; }
-
+        [Setting, DefaultValue(true)]
+        public bool VengeanceCombatInfernalStrikeSingleTarget { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool VengeanceCombatInfernalStrikeAoE { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool VengeanceCombatInfernalStrikePull { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool VengeanceCombatInfernalStrikeGapCloser { get; set; }
         #endregion  
 
         [Setting, DefaultValue(false)]
