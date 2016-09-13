@@ -37,7 +37,7 @@ namespace Illidari.Core.IllidariSettings
 
         #region Resting
 
-        #endregion
+        
         [Setting, DefaultValue(true)]
         public bool GeneralRestingUseBandages { get; set; }
         [Setting, DefaultValue(50)]
@@ -46,6 +46,8 @@ namespace Illidari.Core.IllidariSettings
         public int GeneralRestingRestHpReaches { get; set; }
         [Setting, DefaultValue(30)]
         public int GeneralRestingRestHpSecondsTimeout { get; set; }
+        #endregion
+
         #endregion
 
         #region Havoc
@@ -165,6 +167,12 @@ namespace Illidari.Core.IllidariSettings
         [Setting, DefaultValue(65)]
         public int VengeanceSoulCarverHp { get; set; }
 
+
+        [Setting, DefaultValue(true)]
+        public bool VengeanceAllowFelDevastation { get; set; }
+        [Setting, DefaultValue(60)]
+        public int VengeanceFelDevastationHp { get; set; }
+
         #endregion
 
         #region Combat
@@ -223,6 +231,12 @@ namespace Illidari.Core.IllidariSettings
         public bool HotkeyVengeanceDefensiveSoulCarver { get; set; }
         [Setting, DefaultValue(true)]
         public bool HotkeyVengeanceDefensiveEmpowerWards { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool HotkeyVengeanceDefensiveFelDevastation { get; set; }
+        [Setting, DefaultValue(1)] // default Alt = 1
+        public int HotkeyGeneralRotationOnlyModifier { get; set; }
+        [Setting, DefaultValue("R")]
+        public string HotkeyGeneralRotationOnlyKey { get; set; }
 
         [Setting, DefaultValue(1)] // default Alt = 1
         public int HotkeyHavocOffensiveModifier { get; set; }

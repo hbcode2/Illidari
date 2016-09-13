@@ -261,7 +261,7 @@ namespace Illidari
 
         private bool GetInterruptTarget()
         {
-            if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowInterrupt)
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowInterrupt && !HK.RotationOnlyOn)
             {
                 // consume magic
                 if (IS.VengeanceAllowInterruptConsumeMagic && !Core.Spell.OnCooldown(Core.Helpers.Spell_Book.ConsumeMagic))
@@ -285,7 +285,7 @@ namespace Illidari
         
         private bool GetTauntTarget()
         {
-            if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowTaunt)
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowTaunt && !HK.RotationOnlyOn)
             {
                 U.enemiesToTauntAnnex(50f);
 
@@ -310,9 +310,8 @@ namespace Illidari
 
         private bool GetNewTarget()
         {
-            if (!Me.CurrentTarget.IsValidCombatUnit())
+            if (!Me.CurrentTarget.IsValidCombatUnit() && !HK.RotationOnlyOn)
             {
-                //L.debugLog("Need a new target");
                 var newUnits = U.activeEnemies(Me.Location, 50f).OrderBy(u => u.Distance).ThenBy(u => u.HealthPercent);
                 L.debugLog("Number of new units: " + newUnits.Count());
                 if (newUnits != null)
@@ -324,7 +323,6 @@ namespace Illidari
                         newUnit.Target();
                         return true;
                     }
-                    //L.infoLog(string.Format($"New Target: {Me.CurrentTarget.SafeName}.{Me.CurrentTarget.Guid}"));
                 }
             }
             return false;

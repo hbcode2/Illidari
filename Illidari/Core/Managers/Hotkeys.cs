@@ -16,6 +16,7 @@ namespace Illidari.Core.Managers
 {
     class Hotkeys
     {
+        public static bool RotationOnlyOn { get; set; }
         public static bool VengeanceAoEOn { get; set; }
         public static bool VengeanceDefensiveOn { get; set; }
         public static bool HavocAoEOn { get; set; }
@@ -40,6 +41,15 @@ namespace Illidari.Core.Managers
                     VengeanceAoEOn = !VengeanceAoEOn;
                     HavocAoEOn = !HavocAoEOn;
                     StyxWoW.Overlay.AddToast((VengeanceAoEOn ? "AoE Mode: Enabled!" : "AoE Mode: Disabled!"), 2000);
+                });
+            }
+
+            if (!string.IsNullOrEmpty(M.IS.HotkeyGeneralRotationOnlyKey) && M.IS.HotkeyGeneralRotationOnlyModifier > 0)
+            {
+                HotkeysManager.Register("RotationOnly", (Keys)converter.ConvertFromString(M.IS.HotkeyGeneralRotationOnlyKey), (ModifierKeys)M.IS.HotkeyGeneralRotationOnlyModifier, ret =>
+                {
+                    RotationOnlyOn = !RotationOnlyOn;
+                    StyxWoW.Overlay.AddToast((RotationOnlyOn ? "Rotation Only: Enabled!" : "Rotation Only: Disabled!"), 2000);
                 });
             }
 

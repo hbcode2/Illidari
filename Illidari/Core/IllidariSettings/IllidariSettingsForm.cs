@@ -19,8 +19,8 @@ namespace Illidari
         private bool _isLoading = true;
         private IllidariSettings S = new IllidariSettings();
         private IllidariSettings originalSettings = Main.IS;
-        //private IllidariSettings S => S;
 
+        #region Initialization
         public IllidariSettingsForm()
         {
             _isLoading = true;
@@ -136,39 +136,17 @@ namespace Illidari
             checkHotkeysVengeanceDefensiveSoulBarrier.Checked = S.HotkeyVengeanceDefensiveSoulBarrier;
             checkHotkeysVengeanceDefensiveSoulCarver.Checked = S.HotkeyVengeanceDefensiveSoulCarver;
             checkHotkeysVengeanceDefensiveSoulCleave.Checked = S.HotkeyVengeanceDefensiveSoulCleave;
+            checkHotkeysVengeanceDefensiveFelDevastation.Checked = S.HotkeyVengeanceDefensiveFelDevastation;
 
             LoadButtonText(S.HotkeyHavocOffensiveModifier, S.HotkeyHavocOffensiveKey, btnHotkeysHavocOffensiveCooldowns);
             checkHotkeysHavocOffensiveAgilityPotion.Checked = S.HotkeyHavocOffensiveAgilityPotion;
             checkHotkeysHavocOffensiveFoTI.Checked = S.HotkeyHavocOffensiveFoTI;
             checkHotkeysHavocOffensiveMetamorphosis.Checked = S.HotkeyHavocOffensiveMetamorphosis;
 
+            LoadButtonText(S.HotkeyGeneralRotationOnlyModifier, S.HotkeyGeneralRotationOnlyKey, btnHotkeysGeneralRotationOnly);
+            
             #endregion
 
-
-        }
-        private void LoadButtonText(int modifierKey, string key, Button btn)
-        {
-            if (modifierKey <= 0 || string.IsNullOrEmpty(key)) { btn.Text = "Click to Set"; return; }
-
-            bool shift = false;
-            bool alt = false;
-            bool ctrl = false;
-
-            // singles
-            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt) { alt = true; shift = false; ctrl = false; }
-            if (modifierKey == (int)Styx.Common.ModifierKeys.Shift) { alt = false; shift = true; ctrl = false; }
-            if (modifierKey == (int)Styx.Common.ModifierKeys.Control) { alt = false; shift = false; ctrl = true; }
-
-            // doubles
-            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Control) { alt = true; shift = false; ctrl = true; }
-            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Shift) { alt = true; shift = true; ctrl = false; }
-            if (modifierKey == (int)Styx.Common.ModifierKeys.Control + (int)Styx.Common.ModifierKeys.Shift) { alt = false; shift = true; ctrl = true; }
-
-            // one triple
-            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Control + (int)Styx.Common.ModifierKeys.Shift) { alt = true; shift = true; ctrl = true; }
-            //MessageBox.Show("shift:" + shift.ToString() + ", alt:" + alt.ToString() + ", ctrl:" + ctrl.ToString());
-            string btnText = GetKeyModifierText(alt, shift, ctrl, key);
-            btn.Text = btnText;
         }
 
         private void IllidariSettingsForm_Load(object sender, EventArgs e)
@@ -182,7 +160,8 @@ namespace Illidari
 
             _isLoading = false;
         }
-
+        #endregion
+        
         #region General Setting events
         private void GeneralEnableDebug_CheckedChanged(object sender, EventArgs e)
         {
@@ -240,11 +219,25 @@ namespace Illidari
                 Core.Utilities.Log.infoLog(string.Format($"[BestPotion]: You do not have a suitable potion."), Core.Helpers.Common.InfoColor);
             }
         }
+        private void GeneralRestingRestHp_ValueChanged(object sender, EventArgs e)
+        {
+            S.GeneralRestingRestHp = (int)GeneralRestingRestHp.Value;
+        }
+
+        private void GeneralRestingUseBandages_CheckedChanged(object sender, EventArgs e)
+        {
+            S.GeneralRestingUseBandages = GeneralRestingUseBandages.Checked;
+        }
 
 
         #endregion
 
         #region Save, Cancel, Export and Import events
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Coming Soon!");
+        }
         private void btnSaveAndClose_Click(object sender, EventArgs e)
         {
             Dictionary<string, object> oldProperties = GetPropertiesOfSettings(Main.IS);
@@ -585,10 +578,39 @@ namespace Illidari
             VengeanceSoulCarverHp.Enabled = VengeanceUseSoulCarver.Checked;
         }
 
+        private void VengeanceUseFelDevastation_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceAllowFelDevastation = VengeanceUseFelDevastation.Checked;
+        }
 
+        private void VengeanceFelDevastationHp_ValueChanged(object sender, EventArgs e)
+        {
+            S.VengeanceFelDevastationHp = (int)VengeanceFelDevastationHp.Value;
+        }
 
+        private void VengeanceCombatInfernalStrikeSingleTarget_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatInfernalStrikeSingleTarget = VengeanceCombatInfernalStrikeSingleTarget.Checked;
+        }
+
+        private void VengeanceCombatInfernalStrikeAoE_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatInfernalStrikeAoE = VengeanceCombatInfernalStrikeAoE.Checked;
+        }
+
+        private void VengeanceCombatInfernalStrikePull_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatInfernalStrikePull = VengeanceCombatInfernalStrikePull.Checked;
+        }
+
+        private void VengeanceCombatInfernalStrikeGapCloser_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatInfernalStrikeGapCloser = VengeanceCombatInfernalStrikeGapCloser.Checked;
+        }
 
         #endregion
+
+        #region Hotkeys
 
         #region Hotkey Methods
 
@@ -597,6 +619,32 @@ namespace Illidari
         private bool altPressed = false;
         private bool shiftPressed = false;
         private string keyPressed = "";
+
+        private void LoadButtonText(int modifierKey, string key, Button btn)
+        {
+            if (modifierKey <= 0 || string.IsNullOrEmpty(key)) { btn.Text = "Click to Set"; return; }
+
+            bool shift = false;
+            bool alt = false;
+            bool ctrl = false;
+
+            // singles
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt) { alt = true; shift = false; ctrl = false; }
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Shift) { alt = false; shift = true; ctrl = false; }
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Control) { alt = false; shift = false; ctrl = true; }
+
+            // doubles
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Control) { alt = true; shift = false; ctrl = true; }
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Shift) { alt = true; shift = true; ctrl = false; }
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Control + (int)Styx.Common.ModifierKeys.Shift) { alt = false; shift = true; ctrl = true; }
+
+            // one triple
+            if (modifierKey == (int)Styx.Common.ModifierKeys.Alt + (int)Styx.Common.ModifierKeys.Control + (int)Styx.Common.ModifierKeys.Shift) { alt = true; shift = true; ctrl = true; }
+            //MessageBox.Show("shift:" + shift.ToString() + ", alt:" + alt.ToString() + ", ctrl:" + ctrl.ToString());
+            string btnText = GetKeyModifierText(alt, shift, ctrl, key);
+            btn.Text = btnText;
+        }
+
         private void CheckIfKeyPressed(KeyEventArgs e)
         {
             if (captureKeyPress)
@@ -613,7 +661,8 @@ namespace Illidari
             VengeanceAoe,
             VengeanceDefensive,
             HavocAoe,
-            HavocOffensive
+            HavocOffensive,
+            GeneralRotationOnly
         }
         private void ClearButtonHotkey(Button btn, KeybindTypes kbType)
         {
@@ -843,15 +892,39 @@ namespace Illidari
         {
             S.HotkeyVengeanceDefensiveEmpowerWards = checkHotkeysVengeanceDefensiveEmpowerWards.Checked;
         }
+        private void checkHotkeysVengeanceDefensiveFelDevastation_CheckedChanged(object sender, EventArgs e)
+        {
+            S.HotkeyVengeanceDefensiveFelDevastation = checkHotkeysVengeanceDefensiveFelDevastation.Checked;
+        }
 
         #endregion
 
-
-        private void btnImport_Click(object sender, EventArgs e)
+        #region Hotkey - General - Rotation Only
+        private void btnHotkeysGeneralRotationOnly_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Coming Soon!");
+            captureKeyPress = true;
+            btnHotkeysGeneralRotationOnly.Text = "";
         }
 
+        private void btnHotkeysGeneralRotationOnly_KeyDown(object sender, KeyEventArgs e)
+        {
+            CheckIfKeyPressed(e);
+            btnHotkeysGeneralRotationOnly.Text = GetKeyModifierText();
+        }
+
+        private void btnHotkeysGeneralRotationOnly_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) { ClearButtonHotkey(btnHotkeysGeneralRotationOnly, KeybindTypes.GeneralRotationOnly); }
+            if (DidPressCorrectKey())
+            {
+                S.HotkeyGeneralRotationOnlyKey = keyPressed;
+                S.HotkeyGeneralRotationOnlyModifier = GetKeyModifierPressed();
+            }
+            ResetKeys();
+        }
+        #endregion
+
+        #region Hotkey - Havoc - Offensive
         private void btnHotkeysHavocOffensiveCooldowns_Click(object sender, EventArgs e)
         {
             captureKeyPress = true;
@@ -889,35 +962,9 @@ namespace Illidari
         {
             S.HotkeyHavocOffensiveMetamorphosis = checkHotkeysHavocOffensiveMetamorphosis.Checked;
         }
+        #endregion
 
-        private void VengeanceCombatInfernalStrikeSingleTarget_CheckedChanged(object sender, EventArgs e)
-        {
-            S.VengeanceCombatInfernalStrikeSingleTarget = VengeanceCombatInfernalStrikeSingleTarget.Checked;
-        }
-
-        private void VengeanceCombatInfernalStrikeAoE_CheckedChanged(object sender, EventArgs e)
-        {
-            S.VengeanceCombatInfernalStrikeAoE = VengeanceCombatInfernalStrikeAoE.Checked;
-        }
-
-        private void VengeanceCombatInfernalStrikePull_CheckedChanged(object sender, EventArgs e)
-        {
-            S.VengeanceCombatInfernalStrikePull = VengeanceCombatInfernalStrikePull.Checked;
-        }
-
-        private void VengeanceCombatInfernalStrikeGapCloser_CheckedChanged(object sender, EventArgs e)
-        {
-            S.VengeanceCombatInfernalStrikeGapCloser = VengeanceCombatInfernalStrikeGapCloser.Checked;
-        }
-
-        private void GeneralRestingRestHp_ValueChanged(object sender, EventArgs e)
-        {
-            S.GeneralRestingRestHp = (int)GeneralRestingRestHp.Value;
-        }
-
-        private void GeneralRestingUseBandages_CheckedChanged(object sender, EventArgs e)
-        {
-            S.GeneralRestingUseBandages = GeneralRestingUseBandages.Checked;
-        }
+        #endregion
+        
     }
 }

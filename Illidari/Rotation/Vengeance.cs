@@ -68,19 +68,9 @@ namespace Illidari.Rotation
         {
             if (CurrentTarget.IsValidCombatUnit())
             {
-                if (!CurrentTarget.IsWithinMeleeRangeOf(Me) && M.IS.GeneralMovement)
-                {
-                    //L.infoLog("Tried to pull");
-                    if (await C.EnsureMeleeRange(CurrentTarget)) { return true; }
-                }
+                await C.EnsureMeleeRange(CurrentTarget);
+                await C.FaceTarget(CurrentTarget);
 
-                if (M.IS.GeneralFacing)
-                {
-                    // check to see if we need to face target
-                    await C.FaceTarget(CurrentTarget);
-                }
-
-                // throw a glaive first
                 if (await S.Cast(SB.ThrowGlaive, C.CombatColor, CurrentTarget.Distance <= 30)) { glaiveTossTimer.Restart(); return true; }
 
                 // use to engage if you have the charges to do so
@@ -89,13 +79,13 @@ namespace Illidari.Rotation
                     && CurrentTarget.Distance <= infernalStrikeRange
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me)
                     && !M.IS.VengeancePreferPullWithFelblade
-                ))
+                , "Pull"))
                 { return true; }
 
                 // need to change this to check to see if we want to pull with Fel Blade or Infernal Strike (or which we prefer)
                 if (await S.Cast(SB.FelBlade, C.CombatColor, T.VengeanceFelblade
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me)
-                    && CurrentTarget.Distance <= 15))
+                    && CurrentTarget.Distance <= 15, "Pull"))
                 { return true; }
 
                 // now use in case felblade was on cd, but don't check prefer
@@ -103,7 +93,7 @@ namespace Illidari.Rotation
                     CurrentTarget.Distance <= infernalStrikeRange
                     && M.IS.VengeanceCombatInfernalStrikePull
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me)
-                ))
+                , "Pull"))
                 { return true; }
             }
             return false;
@@ -115,36 +105,17 @@ namespace Illidari.Rotation
             // we are playing manual, i am not alive, or I am mounted or on taxi, do not continue
             if (HK.manualOn || !Me.IsAlive || (Me.OnTaxi))
                 return true;
-            // if I 
 
+            // face taret, ensure melee, interrupt and taunt do not need to return as they are off of global cooldown.
+            await C.FaceTarget(CurrentTarget);
+            await C.EnsureMeleeRange(CurrentTarget);
+            await InterruptTarget();
+            if (await S.GCD(SB.Torment, C.CombatColor, !CurrentTarget.IsTargetingMeOrPet && M.IS.VengeanceAllowTaunt,
+                string.Format($"CT:{CurrentTarget.SafeName} not targeting me. Taunting!")))
+            { return true; }
 
-            if (M.IS.GeneralFacing)
-            {
-                // check to see if we need to face target
-                await C.FaceTarget(CurrentTarget);
-            }
-
-            if (M.IS.GeneralMovement)
-            {
-                // ensure we are in melee range and not too close
-                await C.EnsureMeleeRange(CurrentTarget);
-            }
-
-            if (M.IS.VengeanceAllowInterrupt)
-            {
-                await InterruptTarget();
-            }
-
-            if (M.IS.VengeanceAllowTaunt)
-            {
-                await S.GCD(SB.Torment, C.CombatColor,
-                    !CurrentTarget.IsTargetingMeOrPet,
-                    string.Format($"CT:{CurrentTarget.SafeName} not targeting me. Taunting!"));
-            }
             if (CurrentTarget.IsValidCombatUnit())
             {
-
-
                 if (await ActiveMitigation()) { return true; }
 
                 if (await GapCloser()) { return true; }
@@ -344,12 +315,12 @@ namespace Illidari.Rotation
                 "ST Max Charges Available"))
             { return true; }
 
-            if (await S.Cast(SB.ImmolationAura, C.CombatColor, true, "ST")) { return true; }
-            if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, T.VengeanceConcentratedSigils, "ST - Contentrated Sigils")) { return true; }
+            if (await S.Cast(SB.ImmolationAura, C.CombatColor, CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
+            if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, T.VengeanceConcentratedSigils && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST - Contentrated Sigils")) { return true; }
             if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils, "ST")) { return true; }
-            if (await S.Cast(SB.FelEruption, C.CombatColor, T.VengeanceFelEruption, "ST")) { return true; }
-            if (await S.Cast(SB.Fracture, C.CombatColor, T.VengeanceFracture, "ST")) { return true; }
-            if (await S.Cast(SB.Shear, C.CombatColor, true, "ST")) { return true; }
+            if (await S.Cast(SB.FelEruption, C.CombatColor, T.VengeanceFelEruption && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
+            if (await S.Cast(SB.Fracture, C.CombatColor, T.VengeanceFracture && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
+            if (await S.Cast(SB.Shear, C.CombatColor, CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
 
 
             return true;
@@ -383,6 +354,7 @@ namespace Illidari.Rotation
         #region Interrupt and Stun
         public static async Task<bool> InterruptTarget()
         {
+            if (!M.IS.VengeanceAllowInterrupt) { return false; }
             // use consume magic at 20 yards first
             //WoWUnit interruptTarget = GetInterruptTarget(20f);
             //L.debugLog(string.Format($"Interrupt target 20yd: {CurrentTarget.SafeName}"));
