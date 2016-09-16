@@ -148,5 +148,21 @@ namespace Illidari
             // return Math.Max(5f, atTarget.CombatReach + 1.3333334f + unit.CombatReach);
             return Math.Max(5f, atTarget.CombatReach + 1.3333334f);
         }
+        public static bool IsTrainingDummyBoss(this WoWUnit unit)
+        {
+            List<string> trainingDummyNames = new List<string>();
+            trainingDummyNames.Add("Imprisoned Centurion");
+            trainingDummyNames.Add("Imprisoned Weaver");
+
+            return (trainingDummyNames.Contains(unit.SafeName));
+        }
+        public static bool IsTrainingDummyElite(this WoWUnit unit)
+        {
+            List<string> trainingDummyNames = new List<string>();
+            trainingDummyNames.Add("Imprisoned Centurion");
+            trainingDummyNames.Add("Imprisoned Weaver");
+
+            return (trainingDummyNames.Contains(unit.SafeName));
+        }
     }
 }

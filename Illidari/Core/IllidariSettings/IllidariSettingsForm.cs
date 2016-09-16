@@ -254,6 +254,7 @@ namespace Illidari
             string[] havocPotionsHp = HavocPotionsHpList.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             S.HavocHealthPotionListSetting = String.Join("|", havocPotionsHp);
             S.Save();
+            Main.IS.Load();
 
             Dictionary<string, object> newProperties = GetPropertiesOfSettings(S);
 
@@ -278,9 +279,13 @@ namespace Illidari
                 Core.Utilities.Log.debugLog(string.Format($"{changedItem.Key.Key}: from '{changedItem.Key.Value}' to '{changedItem.Value.Value}'"));
             }
 
-            Main.IS = new IllidariSettings();
+            //Main.IS = new IllidariSettings();
 
-
+            //Dictionary<string, object> props = GetPropertiesOfSettings(Main.IS);
+            //foreach (var item in props)
+            //{
+            //    Core.Utilities.Log.debugLog(string.Format($"{item.Key}:{item.Value}"));
+            //}
 
             this.Close();
         }
@@ -469,7 +474,16 @@ namespace Illidari
         #endregion
 
         #region Vengeance Events
+        private void VengeanceCombatThrowGlaive_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatThrowGlaive = VengeanceCombatThrowGlaive.Checked;
+            VengeanceCombatThrowGlaiveSeconds.Enabled = VengeanceCombatThrowGlaive.Checked;
+        }
 
+        private void VengeanceCombatThrowGlaiveSeconds_ValueChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatThrowGlaiveSeconds = (int)VengeanceCombatThrowGlaiveSeconds.Value;
+        }
         private void VengeanceMetamorphosisHp_ValueChanged(object sender, EventArgs e)
         {
             S.VengeanceMetamorphosisHp = (int)VengeanceMetamorphosisHp.Value;
@@ -974,15 +988,6 @@ namespace Illidari
 
         #endregion
 
-        private void VengeanceCombatThrowGlaive_CheckedChanged(object sender, EventArgs e)
-        {
-            S.VengeanceCombatThrowGlaive = VengeanceCombatThrowGlaive.Checked;
-            VengeanceCombatThrowGlaiveSeconds.Enabled = VengeanceCombatThrowGlaive.Checked;
-        }
-
-        private void VengeanceCombatThrowGlaiveSeconds_ValueChanged(object sender, EventArgs e)
-        {
-            S.VengeanceCombatThrowGlaiveSeconds = (int)VengeanceCombatThrowGlaiveSeconds.Value;
-        }
+       
     }
 }

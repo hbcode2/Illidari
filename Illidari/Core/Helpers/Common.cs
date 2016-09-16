@@ -35,11 +35,11 @@ namespace Illidari.Core.Helpers
             if (Me.IsWithinMeleeRangeOf(target)) { return await CommonCoroutines.StopMoving(); }
             if (!Me.IsWithinMeleeRangeOf(target))
             {
-                //if (await Spell.Cast(Spell_Book.Glide, CombatColor, ShouldGlideForVengefulRetreat, "May have jumped too far back.  Gliding back in."))
-                //{
-                //    fallingTimeout.Reset();
-                //    return true;
-                //}
+                if (await Spell.Cast(Spell_Book.Glide, CombatColor, ShouldGlideForVengefulRetreat, "May have jumped too far back.  Gliding back in."))
+                {
+                    fallingTimeout.Reset();
+                    return true;
+                }
 
                 await CommonCoroutines.MoveTo(target.RelativeLocation, target.SafeName);
             }
@@ -89,6 +89,11 @@ namespace Illidari.Core.Helpers
             if (Spell.lastSpellCast == Spell_Book.VengefulRetreat && fallingTimeout.IsRunning && fallingTimeout.ElapsedMilliseconds > 1000)
             {
                 ShouldGlideForVengefulRetreat = true;
+            }
+            // if we already hit glide (or anything else), let's mark it false
+            if (Spell.lastSpellCast != Spell_Book.VengefulRetreat)
+            {
+                ShouldGlideForVengefulRetreat = false;
             }
         }
 
