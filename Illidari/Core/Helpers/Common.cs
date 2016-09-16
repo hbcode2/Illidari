@@ -96,8 +96,54 @@ namespace Illidari.Core.Helpers
                 ShouldGlideForVengefulRetreat = false;
             }
         }
-
-
+        public static async Task<bool> SpecSelectorRotation()
+        {
+            if (Me.Specialization == WoWSpec.DemonHunterHavoc)
+            {
+                return await Rotation.Havoc.RotationSelector();
+            }
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance)
+            {
+                return await Rotation.Vengeance.RotationSelector();
+            }
+            return false;
+        }
+        public static async Task<bool> SpecSelectorPrecombatBuffBahvior()
+        {
+            if (Me.Specialization == WoWSpec.DemonHunterHavoc)
+            {
+                return await Rotation.Havoc.PreCombatBuffing();
+            }
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance)
+            {
+                return await Rotation.Vengeance.PreCombatBuffing();
+            }
+            return false;
+        }
+        public static async Task<bool> SpecSelectorCombatBuffBehavior()
+        {
+            if (Me.Specialization == WoWSpec.DemonHunterHavoc)
+            {
+                return await Rotation.Havoc.CombatBuffing();
+            }
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance)
+            {
+                return await Rotation.Vengeance.CombatBuffing();
+            }
+            return false;
+        }
+        public static async Task<bool> SpecSelectorPullBehavior()
+        {
+            if (Me.Specialization == WoWSpec.DemonHunterHavoc)
+            {
+                return await Rotation.Havoc.Pull();
+            }
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance)
+            {
+                return await Rotation.Vengeance.Pull();
+            }
+            return false;
+        }
         public static uint luaGetPower()
         {
             try

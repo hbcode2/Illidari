@@ -379,7 +379,7 @@ namespace Illidari.Rotation
         /// <returns></returns>
         public static async Task<bool> OpeningRotationSingleTarget()
         {
-            L.debugLog("UseRotation:" + (!useOpenRotation).ToString() + ", FelRushOnPull:" + (M.IS.HavocFelRushOnPull).ToString() + ", UseMetaCd:" + UseMetamorphosisCD(false).ToString() + ", FRMaxCharges:" + S.MaxChargesAvailable(SB.FelRush).ToString() + ", FRChargesNoFelMastery:" + (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 && !T.HavocFelMastery).ToString() + ", MetaCD:" + (!S.OnCooldown(SB.MetamorphosisSpell)).ToString());
+            //L.debugLog("UseRotation:" + (!useOpenRotation).ToString() + ", FelRushOnPull:" + (M.IS.HavocFelRushOnPull).ToString() + ", UseMetaCd:" + UseMetamorphosisCD(false).ToString() + ", FRMaxCharges:" + S.MaxChargesAvailable(SB.FelRush).ToString() + ", FRChargesNoFelMastery:" + (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 && !T.HavocFelMastery).ToString() + ", MetaCD:" + (!S.OnCooldown(SB.MetamorphosisSpell)).ToString());
 
             if ((useOpenRotation && (openRotationTimeout.ElapsedMilliseconds > 5000 && openingRotationSkillsUsed != OpenerSteps.FuryBuilder) || openRotationTimeout.ElapsedMilliseconds > 10000 && openingRotationSkillsUsed == OpenerSteps.FuryBuilder))
             {

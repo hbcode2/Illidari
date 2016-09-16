@@ -23,72 +23,48 @@ using C = Illidari.Core.Helpers.Common;
 using R = Illidari.Rotation.Resting;
 using System.Diagnostics;
 using System.Reflection;
+using Styx.CommonBot;
 #endregion
 
 namespace Illidari
 {
     public class Main : CombatRoutine
     {
+
         public static Core.IllidariSettings.IllidariSettings IS;
         private static readonly Version version = new Version(09, 15, 2016);
         public override string Name { get { return string.Format($"{CRName} v{version}"); } }
         public override WoWClass Class { get { return WoWClass.DemonHunter; } }
         public static string CRName { get { return "Illidari"; } }
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
-        
+
         #region Implementations
         public override Composite PreCombatBuffBehavior
         {
             get
             {
-                // if (DateTime.Now.Second % 5 == 0)
-                //L.debugLog("Calling PreCombatBuffBehavior");
-                if (Me.Specialization == WoWSpec.DemonHunterHavoc)
-                {
-                    return new ActionRunCoroutine(ctx => H.PreCombatBuffing());
-                }
-                return new ActionRunCoroutine(ctx => V.PreCombatBuffing());
+                return new ActionRunCoroutine(ctx => C.SpecSelectorPrecombatBuffBahvior());
             }
         }
         public override Composite CombatBuffBehavior
         {
             get
             {
-                //if (DateTime.Now.Second % 5 == 0)
-                // L.debugLog("Calling CombatBuffBehavior");
-                if (Me.Specialization == WoWSpec.DemonHunterHavoc)
-                {
-                    return new ActionRunCoroutine(ctx => H.CombatBuffing());
-                }
-                return new ActionRunCoroutine(ctx => V.CombatBuffing());
+                return new ActionRunCoroutine(ctx => C.SpecSelectorCombatBuffBehavior());
             }
         }
         public override Composite CombatBehavior
         {
             get
             {
-                // if (DateTime.Now.Second % 5 == 0)
-                //L.debugLog("Calling CombatBehavior");
-                if (Me.Specialization == WoWSpec.DemonHunterHavoc)
-                {
-                    return new ActionRunCoroutine(ctx => H.RotationSelector());
-                }
-
-                return new ActionRunCoroutine(ctx => V.RotationSelector());
-
+                return new ActionRunCoroutine(ctx => C.SpecSelectorRotation());
             }
         }
         public override Composite PullBehavior
         {
             get
             {
-                //if (DateTime.Now.Second % 5 == 0)
-                //L.debugLog("Calling PullBehavior");
-                if (Me.Specialization == WoWSpec.DemonHunterHavoc)
-                {
-                    return new ActionRunCoroutine(ctx => H.Pull());
-                }
-                return new ActionRunCoroutine(ctx => V.Pull());
+                return new ActionRunCoroutine(ctx => C.SpecSelectorPullBehavior());
             }
         }
         public override Composite RestBehavior
@@ -175,6 +151,24 @@ namespace Illidari
 
             HK.registerHotkeys();
 
+            BotEvents.OnBotStarted += BotEvents_OnBotStarted;
+            BotEvents.OnBotStopped += BotEvents_OnBotStopped;
+
+        }
+
+        private void BotEvents_OnBotStopped(EventArgs args)
+        {
+            HK.removeHotkeys();
+            TM.removeTalEvents();
+        }
+
+        private void BotEvents_OnBotStarted(EventArgs args)
+        {
+            Logging.Write(Me.Specialization.ToString());
+            TM.removeTalEvents();
+            TM.initTalents();
+
+            HK.registerHotkeys();
         }
 
         public override bool WantButton { get { return true; } }

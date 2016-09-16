@@ -123,10 +123,10 @@ namespace Illidari.Core
         /// <returns></returns>
         public static async Task<bool> Cast(int Spell, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "", bool sleep = true)
         {
-            if (Spell == Helpers.Spell_Book.Glide)
-            {
-                L.debugLog("Glide: " + reqs.ToString());
-            }
+            //if (Spell == Helpers.Spell_Book.Glide)
+            //{
+            //    L.debugLog("Glide: " + reqs.ToString());
+            //}
 
             if (!currentTarget.IsValidCombatUnit())
                 return false;

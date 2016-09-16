@@ -222,6 +222,11 @@ namespace Illidari.Core.Managers
             }
 
         }
+        public static void removeTalEvents()
+        {
+            Lua.Events.DetachEvent("PLAYER_LEVEL_UP", playerLeveledUp);
+            Lua.Events.DetachEvent("ACTIVE_TALENT_GROUP_CHANGED", activeTalentGroupChanged);
+        }
         private static void characterPointsChanged(object sender, LuaEventArgs args)
         {
             L.infoLog("CHARACTER_POINTS_CHANGED - Event triggered: " + args.EventName, C.InfoColor);
@@ -360,6 +365,11 @@ namespace Illidari.Core.Managers
         {
             L.infoLog("------------------", C.InfoColor);
             L.infoLog("Talents changed...", C.InfoColor);
+            initTalents();
+            printTalents();
+        }
+        public static void UpdateTalents()
+        {
             initTalents();
             printTalents();
         }
