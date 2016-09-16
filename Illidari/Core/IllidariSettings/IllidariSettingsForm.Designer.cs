@@ -182,6 +182,15 @@
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.VengeanceCombatThrowGlaive = new System.Windows.Forms.CheckBox();
+            this.label45 = new System.Windows.Forms.Label();
+            this.VengeanceCombatThrowGlaiveSeconds = new System.Windows.Forms.NumericUpDown();
+            this.label46 = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label47 = new System.Windows.Forms.Label();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.label48 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox16.SuspendLayout();
@@ -223,6 +232,8 @@
             this.groupBox12.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox13.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceCombatThrowGlaiveSeconds)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -960,7 +971,7 @@
             this.groupBox8.Controls.Add(this.label21);
             this.groupBox8.Controls.Add(this.VengeanceStunSigilOfMiseryCount);
             this.groupBox8.Controls.Add(this.VengeanceStunSigilOfMisery);
-            this.groupBox8.Location = new System.Drawing.Point(17, 305);
+            this.groupBox8.Location = new System.Drawing.Point(17, 333);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(293, 50);
             this.groupBox8.TabIndex = 5;
@@ -1009,7 +1020,7 @@
             this.groupBox7.Controls.Add(this.VengeanceInterruptSigilOfMisery);
             this.groupBox7.Controls.Add(this.VengeanceInterruptSigilOfSilence);
             this.groupBox7.Controls.Add(this.VengeanceInterruptConsumeMagic);
-            this.groupBox7.Location = new System.Drawing.Point(17, 205);
+            this.groupBox7.Location = new System.Drawing.Point(17, 233);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(293, 94);
             this.groupBox7.TabIndex = 4;
@@ -1051,6 +1062,10 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.label46);
+            this.groupBox6.Controls.Add(this.VengeanceCombatThrowGlaiveSeconds);
+            this.groupBox6.Controls.Add(this.label45);
+            this.groupBox6.Controls.Add(this.VengeanceCombatThrowGlaive);
             this.groupBox6.Controls.Add(this.VengeanceCombatInfernalStrikeGapCloser);
             this.groupBox6.Controls.Add(this.VengeanceCombatInfernalStrikePull);
             this.groupBox6.Controls.Add(this.VengeanceCombatInfernalStrikeAoE);
@@ -1063,7 +1078,7 @@
             this.groupBox6.Controls.Add(this.VengeanceCombatUseSoulCleave);
             this.groupBox6.Location = new System.Drawing.Point(17, 77);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(293, 128);
+            this.groupBox6.Size = new System.Drawing.Size(293, 151);
             this.groupBox6.TabIndex = 3;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Combat";
@@ -1171,6 +1186,11 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.button4);
+            this.groupBox5.Controls.Add(this.textBox1);
+            this.groupBox5.Controls.Add(this.label47);
+            this.groupBox5.Controls.Add(this.numericUpDown2);
+            this.groupBox5.Controls.Add(this.label48);
             this.groupBox5.Controls.Add(this.label43);
             this.groupBox5.Controls.Add(this.label44);
             this.groupBox5.Controls.Add(this.VengeanceUseFelDevastation);
@@ -1202,7 +1222,7 @@
             this.groupBox5.Controls.Add(this.VengeanceUseDemonSpikes);
             this.groupBox5.Location = new System.Drawing.Point(316, 14);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(254, 214);
+            this.groupBox5.Size = new System.Drawing.Size(254, 313);
             this.groupBox5.TabIndex = 2;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Mitigation";
@@ -1876,6 +1896,92 @@
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
+            // VengeanceCombatThrowGlaive
+            // 
+            this.VengeanceCombatThrowGlaive.AutoSize = true;
+            this.VengeanceCombatThrowGlaive.Location = new System.Drawing.Point(15, 107);
+            this.VengeanceCombatThrowGlaive.Name = "VengeanceCombatThrowGlaive";
+            this.VengeanceCombatThrowGlaive.Size = new System.Drawing.Size(89, 17);
+            this.VengeanceCombatThrowGlaive.TabIndex = 19;
+            this.VengeanceCombatThrowGlaive.Text = "Throw Glaive";
+            this.VengeanceCombatThrowGlaive.UseVisualStyleBackColor = true;
+            this.VengeanceCombatThrowGlaive.CheckedChanged += new System.EventHandler(this.VengeanceCombatThrowGlaive_CheckedChanged);
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(98, 108);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(36, 13);
+            this.label45.TabIndex = 20;
+            this.label45.Text = "every ";
+            // 
+            // VengeanceCombatThrowGlaiveSeconds
+            // 
+            this.VengeanceCombatThrowGlaiveSeconds.Location = new System.Drawing.Point(130, 105);
+            this.VengeanceCombatThrowGlaiveSeconds.Name = "VengeanceCombatThrowGlaiveSeconds";
+            this.VengeanceCombatThrowGlaiveSeconds.Size = new System.Drawing.Size(45, 20);
+            this.VengeanceCombatThrowGlaiveSeconds.TabIndex = 21;
+            this.VengeanceCombatThrowGlaiveSeconds.ValueChanged += new System.EventHandler(this.VengeanceCombatThrowGlaiveSeconds_ValueChanged);
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(177, 108);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(107, 13);
+            this.label46.TabIndex = 22;
+            this.label46.Text = "seconds (0 = disable)";
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(217, 217);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(27, 23);
+            this.button4.TabIndex = 33;
+            this.button4.Text = "...";
+            this.toolTip1.SetToolTip(this.button4, "From Bags...");
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Visible = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(20, 218);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(192, 83);
+            this.textBox1.TabIndex = 32;
+            this.textBox1.Visible = false;
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(215, 198);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(33, 13);
+            this.label47.TabIndex = 31;
+            this.label47.Text = "% HP";
+            this.label47.Visible = false;
+            // 
+            // numericUpDown2
+            // 
+            this.numericUpDown2.Location = new System.Drawing.Point(158, 195);
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(54, 20);
+            this.numericUpDown2.TabIndex = 30;
+            this.toolTip1.SetToolTip(this.numericUpDown2, "Use HP Potion if HP drops below X% in the list below");
+            this.numericUpDown2.Visible = false;
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(12, 198);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(103, 13);
+            this.label48.TabIndex = 29;
+            this.label48.Text = "Use Potion from list: ";
+            this.label48.Visible = false;
+            // 
             // IllidariSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1944,6 +2050,8 @@
             this.groupBox10.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.VengeanceCombatThrowGlaiveSeconds)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2103,5 +2211,14 @@
         private System.Windows.Forms.Label label44;
         private System.Windows.Forms.CheckBox VengeanceUseFelDevastation;
         private System.Windows.Forms.NumericUpDown VengeanceFelDevastationHp;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.NumericUpDown VengeanceCombatThrowGlaiveSeconds;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.CheckBox VengeanceCombatThrowGlaive;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.Label label48;
     }
 }

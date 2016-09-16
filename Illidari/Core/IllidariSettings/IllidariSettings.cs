@@ -191,6 +191,10 @@ namespace Illidari.Core.IllidariSettings
         public bool VengeanceCombatInfernalStrikePull { get; set; }
         [Setting, DefaultValue(true)]
         public bool VengeanceCombatInfernalStrikeGapCloser { get; set; }
+        [Setting, DefaultValue(false)]
+        public bool VengeanceCombatThrowGlaive { get; set; }
+        [Setting, DefaultValue(5)]
+        public int VengeanceCombatThrowGlaiveSeconds { get; set; }
         #endregion  
 
         [Setting, DefaultValue(false)]

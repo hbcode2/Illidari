@@ -51,6 +51,14 @@ namespace Illidari.Core
             }
             return false;
         }
+        public static int GetCharges(int spell)
+        {
+            SpellFindResults Results;
+            SpellManager.FindSpell(spell, out Results);
+            int charges = Lua.GetReturnVal<int>("return GetSpellCharges(" + spell + ")", 0);
+            return charges;
+        }
+
         public static SpellChargeInfo GetSpellChargeInfo(int Spell)
         {
             try
@@ -113,13 +121,18 @@ namespace Illidari.Core
         /// <param name="Spell"></param>
         /// <param name="reqs"></param>
         /// <returns></returns>
-        public static async Task<bool> Cast(int Spell, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "")
+        public static async Task<bool> Cast(int Spell, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "", bool sleep = true)
         {
+            if (Spell == Helpers.Spell_Book.Glide)
+            {
+                L.debugLog("Glide: " + reqs.ToString());
+            }
 
             if (!currentTarget.IsValidCombatUnit())
                 return false;
             if (!reqs)
             {
+                
                 //L.combatLog("Trying to cast: " + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) ? "" : " - " + addLog));
                 return false;
             }
@@ -130,7 +143,15 @@ namespace Illidari.Core
                 return false;
             lastSpellCast = Spell;
             L.combatLog("^" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !Main.IS.GeneralDebug ? "" : " - " + addLog), newColor);
-            await CommonCoroutines.SleepForLagDuration();
+            if (sleep)
+            {
+                await CommonCoroutines.SleepForLagDuration();
+            }
+            else
+            {
+                await Coroutine.Yield();
+            }
+            
             return true;
         }
 
@@ -140,7 +161,7 @@ namespace Illidari.Core
         /// <param name="Spell">The spell you wish to cast.</param>
         /// <param name="reqs">The requirements to cast the spell.</param>
         /// <returns></returns>
-        public static async Task<bool> GCD(int Spell, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "")
+        public static async Task<bool> GCD(int Spell, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "", bool sleep = true)
         {
 
             if (!reqs)
@@ -156,7 +177,15 @@ namespace Illidari.Core
                 return false;
             lastSpellCast = Spell;
             L.combatLog("*" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !Main.IS.GeneralDebug ? "" : " - " + addLog), newColor);
-            await CommonCoroutines.SleepForLagDuration();
+            if (sleep)
+            {
+                await CommonCoroutines.SleepForLagDuration();
+            }
+            else
+            {
+                await Coroutine.Yield();
+            }
+            
             return true;
         }
 

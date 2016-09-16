@@ -28,9 +28,9 @@ using System.Reflection;
 namespace Illidari
 {
     public class Main : CombatRoutine
-    { 
+    {
         public static Core.IllidariSettings.IllidariSettings IS;
-        private static readonly Version version = new Version(09, 06, 2016);
+        private static readonly Version version = new Version(09, 15, 2016);
         public override string Name { get { return string.Format($"{CRName} v{version}"); } }
         public override WoWClass Class { get { return WoWClass.DemonHunter; } }
         public static string CRName { get { return "Illidari"; } }
@@ -41,8 +41,8 @@ namespace Illidari
         {
             get
             {
-               // if (DateTime.Now.Second % 5 == 0)
-                    //L.debugLog("Calling PreCombatBuffBehavior");
+                // if (DateTime.Now.Second % 5 == 0)
+                //L.debugLog("Calling PreCombatBuffBehavior");
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
                     return new ActionRunCoroutine(ctx => H.PreCombatBuffing());
@@ -55,7 +55,7 @@ namespace Illidari
             get
             {
                 //if (DateTime.Now.Second % 5 == 0)
-                   // L.debugLog("Calling CombatBuffBehavior");
+                // L.debugLog("Calling CombatBuffBehavior");
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
                     return new ActionRunCoroutine(ctx => H.CombatBuffing());
@@ -67,8 +67,8 @@ namespace Illidari
         {
             get
             {
-               // if (DateTime.Now.Second % 5 == 0)
-                    //L.debugLog("Calling CombatBehavior");
+                // if (DateTime.Now.Second % 5 == 0)
+                //L.debugLog("Calling CombatBehavior");
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
                     return new ActionRunCoroutine(ctx => H.RotationSelector());
@@ -83,7 +83,7 @@ namespace Illidari
             get
             {
                 //if (DateTime.Now.Second % 5 == 0)
-                    //L.debugLog("Calling PullBehavior");
+                //L.debugLog("Calling PullBehavior");
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
                     return new ActionRunCoroutine(ctx => H.Pull());
@@ -103,7 +103,7 @@ namespace Illidari
             get
             {
                 //if (DateTime.Now.Second % 5 == 0)
-                   // L.debugLog("Calling MoveToTargetBehavior");
+                // L.debugLog("Calling MoveToTargetBehavior");
                 return new ActionRunCoroutine(ctx => C.EnsureMeleeRange(Me.CurrentTarget));
             }
         }
@@ -112,7 +112,7 @@ namespace Illidari
             get
             {
                 //if (DateTime.Now.Second % 5 == 0)
-                   // L.debugLog("Calling PullBuffBehavior");
+                // L.debugLog("Calling PullBuffBehavior");
                 return base.PullBuffBehavior;
             }
         }
@@ -135,7 +135,7 @@ namespace Illidari
             }
         }
         public override bool NeedCombatBuffs { get { return base.NeedCombatBuffs; } }
-        
+
         #region Hidden Overrides
         public override void Initialize()
         {
@@ -147,8 +147,8 @@ namespace Illidari
             Logging.Write(Colors.Fuchsia, "-- v" + version + " --");
             Logging.Write(Colors.Fuchsia, "-- by SpeshulK926 --");
             Logging.Write(Colors.Fuchsia, "-- A Demon Hunter's Combat Routine --");
-            
-            
+
+
             IS = new Core.IllidariSettings.IllidariSettings();
 
             TM.initTalents();
@@ -175,8 +175,8 @@ namespace Illidari
 
             HK.registerHotkeys();
 
-        } 
-        
+        }
+
         public override bool WantButton { get { return true; } }
 
         public override CapabilityFlags SupportedCapabilities
@@ -213,7 +213,7 @@ namespace Illidari
 
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
-                    if (IS.HavocDefensiveCooldowns) { capabilities += (int)CapabilityFlags.DefensiveCooldowns; }    
+                    if (IS.HavocDefensiveCooldowns) { capabilities += (int)CapabilityFlags.DefensiveCooldowns; }
                     if (IS.HavocOffensiveCooldowns) { capabilities += (int)CapabilityFlags.OffensiveCooldowns; }
                 }
 
@@ -240,22 +240,25 @@ namespace Illidari
                 return;
             if (!Me.Combat)
                 return;
-            
+
             // cache a few things like my fury/pain
             C.Cache();
-            
+
             // grab all enemies within 50 yards to find a valid target
             U.enemyAnnex(50f);
 
-            // grab an interrupt target
-            if (GetInterruptTarget()) { return; }
-            
-            // get a taunt target, if any
-            if (GetTauntTarget()) { return; }
+            // make sure we aren't using fel devastation or something before we try to grab targets for no good reason.
+            if (!Me.IsCasting || !Me.IsChanneling)
+            {
+                // grab an interrupt target
+                if (GetInterruptTarget()) { return; }
 
-            // get a new target, if any
-            if (GetNewTarget()) { return; }
-           
+                // get a taunt target, if any
+                if (GetTauntTarget()) { return; }
+
+                // get a new target, if any
+                if (GetNewTarget()) { return; }
+            }
 
         }
 
@@ -277,12 +280,12 @@ namespace Illidari
                         }
                     }
                 }
-                
+
 
             }
             return false;
         }
-        
+
         private bool GetTauntTarget()
         {
             if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowTaunt && !HK.RotationOnlyOn)

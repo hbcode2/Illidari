@@ -123,6 +123,14 @@ namespace Illidari
             VengeanceCombatInfernalStrikePull.Checked = S.VengeanceCombatInfernalStrikePull;
             VengeanceCombatInfernalStrikeSingleTarget.Checked = S.VengeanceCombatInfernalStrikeSingleTarget;
 
+            VengeanceUseFelDevastation.Checked = S.VengeanceAllowFelDevastation;
+            VengeanceFelDevastationHp.Value = S.VengeanceFelDevastationHp;
+            VengeanceFelDevastationHp.Enabled = S.VengeanceAllowFelDevastation;
+
+            VengeanceCombatThrowGlaive.Checked = S.VengeanceCombatThrowGlaive;
+            VengeanceCombatThrowGlaiveSeconds.Value = S.VengeanceCombatThrowGlaiveSeconds;
+            VengeanceCombatThrowGlaiveSeconds.Enabled = S.VengeanceCombatThrowGlaive;
+
             #endregion
 
             #region Hotkeys load
@@ -965,6 +973,16 @@ namespace Illidari
         #endregion
 
         #endregion
-        
+
+        private void VengeanceCombatThrowGlaive_CheckedChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatThrowGlaive = VengeanceCombatThrowGlaive.Checked;
+            VengeanceCombatThrowGlaiveSeconds.Enabled = VengeanceCombatThrowGlaive.Checked;
+        }
+
+        private void VengeanceCombatThrowGlaiveSeconds_ValueChanged(object sender, EventArgs e)
+        {
+            S.VengeanceCombatThrowGlaiveSeconds = (int)VengeanceCombatThrowGlaiveSeconds.Value;
+        }
     }
 }

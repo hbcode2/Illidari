@@ -263,7 +263,7 @@ namespace Illidari.Core.Managers
             foreach (var arg in args.Args)
             {
                 L.debugLog("Arg[{0}]:{1}", i, arg);
-                i++;
+                i += 1;
             }
         }
         private static void playerLeveledUp(object sender, LuaEventArgs args)

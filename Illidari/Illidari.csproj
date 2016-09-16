@@ -75,6 +75,7 @@
     <Compile Include="Core\Item.cs" />
     <Compile Include="Core\Managers\Hotkeys.cs" />
     <Compile Include="Core\Managers\TalentManager.cs" />
+    <Compile Include="Core\SafeArea.cs" />
     <Compile Include="Core\Spell.cs" />
     <Compile Include="Core\Unit.cs" />
     <Compile Include="Core\Utilities\Log.cs" />

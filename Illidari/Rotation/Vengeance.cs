@@ -194,6 +194,11 @@ namespace Illidari.Rotation
             ))
             { return true; }
 
+            if (await S.Cast(SB.FelDevastation, C.DefensiveColor,
+                HK.VengeanceDefensiveOn
+                && M.IS.HotkeyVengeanceDefensiveFelDevastation,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveFelDevastation:{M.IS.HotkeyVengeanceDefensiveFelDevastation.ToString()}")))
+
             if (Me.HasTankWarglaivesEquipped())
             {
                 if (await S.Cast(SB.SoulCarver, C.DefensiveColor,
@@ -292,12 +297,13 @@ namespace Illidari.Rotation
         public static async Task<bool> SingleTarget()
         {
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
-                !glaiveTossTimer.IsRunning
-                || (glaiveTossTimer.IsRunning && glaiveTossTimer.ElapsedMilliseconds > 5000)))
+                !glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive
+                || (glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive && glaiveTossTimer.ElapsedMilliseconds > M.IS.VengeanceCombatThrowGlaiveSeconds), "ST"))
             {
                 glaiveTossTimer.Restart();
                 return true;
             }
+
             if (await S.Cast(SB.SoulCleave, C.CombatColor,
                 C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
@@ -306,7 +312,7 @@ namespace Illidari.Rotation
             { return true; }
 
             // cast infernal strike in melee only if we have max chargets
-            // cast on yourself to see 
+            // it is off of the gcd, so can be cast any time.
             if (await S.CastGroundOnMe(SB.InfernalStrike, C.CombatColor,
                 M.IS.VengeanceCombatInfernalStrikeSingleTarget
                 && Me.IsWithinMeleeRangeOf(CurrentTarget)
@@ -316,11 +322,16 @@ namespace Illidari.Rotation
             { return true; }
 
             if (await S.Cast(SB.ImmolationAura, C.CombatColor, CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
-            if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, T.VengeanceConcentratedSigils && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST - Contentrated Sigils")) { return true; }
-            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils, "ST")) { return true; }
+            if (await S.Cast(SB.FelBlade, C.CombatColor, T.VengeanceFelblade, "ST")) { return true; }
             if (await S.Cast(SB.FelEruption, C.CombatColor, T.VengeanceFelEruption && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
+            if (await S.Cast(SB.SpiritBomb, C.CombatColor, T.VengeanceSpiritBomb && !CurrentTarget.HasAura(SB.AuraFrailty), "ST")) { return true; }
+            if (await S.Cast(SB.Shear, C.CombatColor, T.VengeanceBladeTurning && Me.HasAura(SB.AuraBladeTurning) && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
             if (await S.Cast(SB.Fracture, C.CombatColor, T.VengeanceFracture && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
+            if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, T.VengeanceConcentratedSigils && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST - Contentrated Sigils")) { return true; }
+            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils && !Me.IsWithinMeleeRangeOf(CurrentTarget), "ST - Not in Melee; Cast on target")) { return true; }
+            if (await S.CastGroundOnMe(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST - In Melee; Cast on self")) { return true; }
             if (await S.Cast(SB.Shear, C.CombatColor, CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
+
 
 
             return true;
@@ -328,9 +339,17 @@ namespace Illidari.Rotation
 
         public static async Task<bool> MultipleTarget()
         {
+            if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
+                !glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive
+                || (glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive && glaiveTossTimer.ElapsedMilliseconds > M.IS.VengeanceCombatThrowGlaiveSeconds), "AoE"))
+            {
+                glaiveTossTimer.Restart();
+                return true;
+            }
+
             if (await S.Cast(SB.SoulCleave, C.CombatColor,
                 C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain,
-                string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
+                string.Format($"AoE: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
             ))
             { return true; }
 
@@ -341,11 +360,15 @@ namespace Illidari.Rotation
                 "AoE Max Charges Available"))
             { return true; }
 
-            if (await S.Cast(SB.ImmolationAura, C.CombatColor, addLog: "AoE")) { return true; }
-            if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, T.VengeanceConcentratedSigils, "AoE - Contentrated Sigils")) { return true; }
-            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils, "AoE")) { return true; }
-            if (await S.Cast(SB.FieryBrand, C.CombatColor, T.VengeanceBurningAlive, addLog: "AoE has Burning Alive Talent")) { return true; }
             if (await S.Cast(SB.FelDevastation, C.CombatColor, T.VengeanceFelDevastation, addLog: "AoE Fel Devastation")) { return true; }
+            if (await S.Cast(SB.ImmolationAura, C.CombatColor, addLog: "AoE")) { return true; }
+            if (await S.Cast(SB.SpiritBomb, C.CombatColor, T.VengeanceSpiritBomb && !CurrentTarget.HasAura(SB.AuraFrailty), "AoE")) { return true; }
+            if (await S.Cast(SB.FelBlade, C.CombatColor, T.VengeanceFelblade, "AoE")) { return true; }
+            if (await S.Cast(SB.Shear, C.CombatColor, T.VengeanceBladeTurning && Me.HasAura(SB.AuraBladeTurning) && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
+            if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, CurrentTarget.IsWithinMeleeRangeOf(Me) && T.VengeanceConcentratedSigils, "AoE - Contentrated Sigils")) { return true; }
+            if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils && !Me.IsWithinMeleeRangeOf(CurrentTarget), "AoE - Not in Melee; Cast on target")) { return true; }
+            if (await S.CastGroundOnMe(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils && Me.IsWithinMeleeRangeOf(CurrentTarget), "AoE - In Melee; Cast on self")) { return true; }
+            if (await S.Cast(SB.FieryBrand, C.CombatColor, T.VengeanceBurningAlive, addLog: "AoE has Burning Alive Talent")) { return true; }
             if (await S.Cast(SB.Shear, C.CombatColor, addLog: "AoE")) { return true; }
 
             return false;
@@ -372,14 +395,14 @@ namespace Illidari.Rotation
             //{
             //    L.debugLog(string.Format($"Interrupt target 30yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell?.Name}"));
             //    // now look for sigil of silence
-            //    if (await S.CastGround(SB.SigilOfSilence, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfSilence,
-            //        string.Format($"Interrupt: {interruptTarget.SafeName}")))
-            //    { return true; }
+            if (await S.CastGround(SB.SigilOfSilence, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfSilence,
+                string.Format($"Interrupt: {CurrentTarget.SafeName}, casting: {CurrentTarget.CastingSpell?.Name}")))
+            { return true; }
 
-            //    // now look for sigil of misery
-            //    if (await S.CastGround(SB.SigilOfMisery, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfMisery,
-            //        string.Format($"Interrupt: {interruptTarget.SafeName}")))
-            //    { return true; }
+            // now look for sigil of misery
+            if (await S.CastGround(SB.SigilOfMisery, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfMisery,
+                string.Format($"Interrupt: {CurrentTarget.SafeName}, casting: {CurrentTarget.CastingSpell?.Name}")))
+            { return true; }
 
             //}
 

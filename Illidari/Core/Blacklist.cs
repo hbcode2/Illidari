@@ -43,7 +43,7 @@ namespace Illidari.Core
         }
         public void AddBlacklistCounter()
         {
-            Count++;
+            Count += 1;
             if (Count >= 3) { DateBlacklisted = DateTime.Now; Utilities.Log.debugLog("Blacklisted Spell: " + WoWSpell.FromId(SpellId)?.Name); }
         }
         public void ClearBlacklist()

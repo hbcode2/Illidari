@@ -12,10 +12,14 @@ namespace Illidari.Core.Helpers
         #region Aura List    
             AuraMetemorphisis = 111,
             AuraDemonSpikes = 203819,
+            AuraFrailty = 224509,
+            AuraBladeTurning = 207709,
+            AuraMomentum = 206476,
+            AuraAnguishOfTheDeceiver = 201473,
         #endregion
 
         #region Spell List        
-            BladeDance = 188499,
+        BladeDance = 188499,
             Blur = 198589,
             ChaosNova = 179057,
             ChaosStrike = 162794,

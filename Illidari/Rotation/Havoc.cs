@@ -19,6 +19,11 @@ using T = Illidari.Core.Managers.TalentManager;
 using L = Illidari.Core.Utilities.Log;
 using C = Illidari.Core.Helpers.Common;
 using M = Illidari.Main;
+using Buddy.Coroutines;
+using System.Numerics;
+using Styx.Helpers;
+using Styx.Pathing;
+using System.Diagnostics;
 
 #endregion
 
@@ -26,8 +31,14 @@ namespace Illidari.Rotation
 {
     class Havoc
     {
+        private static Stopwatch openRotationTimeout = new Stopwatch();
+        public enum OpenerSteps { None, InitialFelRush, FelMasteryFelRush, FuryBuilder, FaceAwayFromTarget, VengefulRetreat, Nemesis, Metamorphosis, ChaosBlades }
         private static bool useOpenRotation = false;
-        private static int openingRotationSkillsUsed = 0;
+        public static OpenerSteps openingRotationSkillsUsed = OpenerSteps.None;
+        private static Vector3 origSpot;
+        private static Vector3 safeSpot;
+        private static float needFacing;
+
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
         private static WoWUnit CurrentTarget { get { return StyxWoW.Me.CurrentTarget; } }
         //private static uint CurrentFury => StyxWoW.Me.GetPowerInfo(WoWPowerType.Fury).Current;
@@ -109,15 +120,18 @@ namespace Illidari.Rotation
         public static async Task<bool> RotationSelector()
         {
             // we are playing manual, i am not alive, or I am mounted or on taxi, do not continue
-            if (HK.manualOn || !Me.IsAlive || (Me.OnTaxi))
+            if (HK.manualOn || !Me.IsAlive || (Me.OnTaxi) || Me.IsCasting || Me.IsChanneling)
                 return true;
             // if I 
 
-
-            if (M.IS.GeneralFacing)
+            // i don't want facing to interfere with vengeful retreat opener.
+            if (openingRotationSkillsUsed != OpenerSteps.FaceAwayFromTarget && openingRotationSkillsUsed != OpenerSteps.VengefulRetreat)
             {
-                // check to see if we need to face target
-                await C.FaceTarget(CurrentTarget);
+                if (M.IS.GeneralFacing)
+                {
+                    // check to see if we need to face target
+                    await C.FaceTarget(CurrentTarget);
+                }
             }
 
             if (M.IS.GeneralMovement)
@@ -128,6 +142,12 @@ namespace Illidari.Rotation
 
             if (CurrentTarget.IsValidCombatUnit())
             {
+
+                if (await OpeningRotationSingleTarget())
+                {
+                    return true;
+                }
+                
                 #region Offensive Hotkey
                 if (HK.HavocOffensiveOn)
                 {
@@ -157,10 +177,7 @@ namespace Illidari.Rotation
                     if (await AoEDashing()) { return true; }
                 }
 
-                if (await OpeningRotationSingleTarget())
-                {
-                    return true;
-                }
+
 
                 // default to single target if nothing else
                 return await SingleTarget();
@@ -283,25 +300,24 @@ namespace Illidari.Rotation
             // use it if we have Prepared talent differently
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
                 M.IS.HavocVengefulReatreatAoe
-                && !S.OnCooldown(SB.FelRush)                                   // we can cast fel rush
-                && C.CurrentPower <= 85                                        // and Fury <= 85
-                && T.HavocPrepared                                          // We took prepared so use 85 or less
-                && (S.CooldownTimeLeft(SB.FelRush) < 500), "AoE"))          // and cooldown timer < 500ms (2nd one)
+                && C.MissingPower > 30
+                && (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 || (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft == 0 && S.CooldownTimeLeft(SB.FelRush) < 1000))
+                && T.HavocPrepared
+                && Me.IsWithinMeleeRangeOf(CurrentTarget), "AoE"))          // and cooldown timer < 500ms (2nd one)
             { return true; }
 
             // use it different if we DO NOT have Prepared talent
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
                M.IS.HavocVengefulReatreatAoe
-               && !S.OnCooldown(SB.FelRush)                                       // we can cast fel rush
-               && C.CurrentPower <= 70                                             // and Fury <= 70
-               && !T.HavocPrepared                                              // We took prepared so use 85 or less
-               && (S.CooldownTimeLeft(SB.FelRush) < 500), "AoE"))               // and cooldown timer < 500ms (2nd one)
+               && (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 || (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft == 0 && S.CooldownTimeLeft(SB.FelRush) < 1000))
+                && !T.HavocPrepared
+                && Me.IsWithinMeleeRangeOf(CurrentTarget), "AoE"))               // and cooldown timer < 500ms (2nd one)
             { return true; }
             #endregion
             if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor,
                 M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.AoE
                     || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly && CurrentTarget.IsBoss)
-                    || (M.IS.HavocUseFuryOfTheIllidariCooldown ==  Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && (CurrentTarget.IsBoss || CurrentTarget.Elite)
+                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && (CurrentTarget.IsBoss || CurrentTarget.Elite)
                     || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown)
                     )
                 )) { return true; }
@@ -323,18 +339,19 @@ namespace Illidari.Rotation
             // use this in combination with vengeful retreat
             if (await S.GCD(SB.FelRush, C.CombatColor,
                 M.IS.HavocFelRushAoe
-                && T.HavocFelMastery                               // we took the talent for fel mastery
-                && C.CurrentPower <= 70                            // make sure we have 70 or less Fury
-                && CurrentTarget.Distance >= 10                 // make sure we aren't too close
-                && CurrentTarget.Distance <= 30, "AoED"))               // make sure we aren't too far
+                && !S.OnCooldown(SB.VengefulRetreat)
+                && T.HavocFelMastery
+                //&& Me.CurrentTarget.Distance >= 10
+                && Me.CurrentTarget.Distance <= 18, "AoED"))               // make sure we aren't too far
             { return true; }
 
             // use to engage
             if (await S.GCD(SB.FelRush, C.CombatColor,
                 M.IS.HavocFelRushAoe
-                && !T.HavocFelMastery      // we took the talent for fel mastery
-                && CurrentTarget.Distance >= 10                 // make sure we aren't too close
-                && CurrentTarget.Distance <= 30, "AoED"))               // make sure we aren't too far
+                && !S.OnCooldown(SB.VengefulRetreat)
+                && T.HavocFelMastery
+                //&& Me.CurrentTarget.Distance >= 10
+                && Me.CurrentTarget.Distance <= 18, "AoED"))               // make sure we aren't too far
             { return true; }
             #endregion
 
@@ -344,57 +361,204 @@ namespace Illidari.Rotation
 
         #region Single Target
 
+        #region Opening Rotation
         /// <summary>
         /// this is the opening rotation for single target. Once activated, it will continue to use these abilities until it has been fulfilled and then reset again.
         /// </summary>
         /// <returns></returns>
         public static async Task<bool> OpeningRotationSingleTarget()
         {
-
-            if (M.IS.HavocFelRushOnPull && M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown
-                && S.MaxChargesAvailable(SB.FelRush)           // make sure we have max charges saved up.
-                && !Me.IsWithinMeleeRangeOf(CurrentTarget)         // make sure we are not in melee range.
-                && !S.OnCooldown(SB.MetamorphosisSpell)
-                && CurrentTarget.Distance < 25)
+            if ((useOpenRotation && (openRotationTimeout.ElapsedMilliseconds > 5000 && openingRotationSkillsUsed != OpenerSteps.FuryBuilder) || openRotationTimeout.ElapsedMilliseconds > 10000 && openingRotationSkillsUsed == OpenerSteps.FuryBuilder))
             {
-                useOpenRotation = true;
+                useOpenRotation = false;
+                openingRotationSkillsUsed = OpenerSteps.None;
+                L.infoLog("Opener Rotation timed out.", C.InfoColor);
+                return false;
             }
+            if (!useOpenRotation && (M.IS.HavocFelRushOnPull && 
+                (M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown // use on cd, so go for opener if available
+                    || (M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly 
+                        && CurrentTarget.IsBoss) // use on boss and target is boss, so use opener
+                    || (M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss 
+                        && (CurrentTarget.IsBoss || CurrentTarget.Elite)) // use on boss or elite and current target is boss or elite so use opener.) 
+                )
+                && (S.MaxChargesAvailable(SB.FelRush)           // make sure we have max charges saved up.
+                    || (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 && !T.HavocFelMastery) // also check for 1 charge if no fel mastery.
+                )
+                && !S.OnCooldown(SB.MetamorphosisSpell)         // make sure metamorphosis is not on cd.
+                && CurrentTarget.Distance < 25))                 // make sure we aren't too far away.
+            {
+                L.infoLog("Ready for Havoc Single Target Opener: " + openingRotationSkillsUsed, C.HavocOpenerColor);
+                useOpenRotation = true;
+                openingRotationSkillsUsed = OpenerSteps.InitialFelRush;
+                openRotationTimeout.Restart();
+                return true;
+            }
+
             if (useOpenRotation)
             {
-                L.infoLog("Ready for Havoc Single Target Opener: " + openingRotationSkillsUsed, C.InfoColor);
-                if (openingRotationSkillsUsed == 0)
+                //L.debugLog(openingRotationSkillsUsed.ToString());
+                if (openingRotationSkillsUsed == OpenerSteps.InitialFelRush)
                 {
+
                     // we haven't used an ability yet for opener, let's fel rush
-                    if (await S.GCD(SB.FelRush, C.CombatColor, true, "Opener 1"))
+                    if (await S.GCD(SB.FelRush, C.HavocOpenerColor, CurrentTarget.Distance <= 15 && Me.IsSafelyFacing(CurrentTarget), "Opener 1"))
                     {
-                        openingRotationSkillsUsed++;
+                        openingRotationSkillsUsed = OpenerSteps.FelMasteryFelRush;
+                        openRotationTimeout.Restart();
                         return true;
                     }
                 }
-                if (openingRotationSkillsUsed == 1)
+
+                if (openingRotationSkillsUsed == OpenerSteps.FelMasteryFelRush)
                 {
-                    if (T.HavocFelMastery)
+                    //L.debugLog("Made it to FelMasteryFelRush : HasFelMastery:" + T.HavocFelMastery + ", HasMomentum: " + Me.HasAnyAura("Momentum"));
+                    if (await S.GCD(SB.FelRush, C.HavocOpenerColor,
+                        T.HavocFelMastery && !Me.HasAnyAura("Momentum"), "Opener 2 - Fel Mastery 2nd Fel Rush"))
                     {
-                        await S.GCD(SB.FelRush, C.CombatColor, true, "Opener 2");
+                        openingRotationSkillsUsed = OpenerSteps.FuryBuilder;
+                        openRotationTimeout.Restart();
+                        return true;
                     }
-                    openingRotationSkillsUsed++;
-                    return true;
+                    // if we don't have fel mastery talent, just bump the rotation. 
+                    // really should have it, but just in case someone thinks they know better ;] 
+                    if (!T.HavocFelMastery)
+                    {
+                        L.combatLog("Skipping Opener 2; No Fel Mastery talent", C.HavocOpenerColor);
+                        openingRotationSkillsUsed = OpenerSteps.FuryBuilder;
+                        openRotationTimeout.Restart();
+                        return true;
+                    }
                 }
-                if (openingRotationSkillsUsed == 2)
+
+                if (openingRotationSkillsUsed == OpenerSteps.FuryBuilder)
                 {
-                    if (await S.CastGround(SB.MetamorphosisSpell, C.CombatColor, true, "Opener 3"))
+                    if (await S.GCD(SB.DemonsBite, C.HavocOpenerColor, !T.HavocDemonBlades, "Opener 3, building Fury"))
+                    {
+                        return true;
+                    }
+
+
+                    // if we have demon blades, we want to passively get <=20 missing fury.
+                    if (T.HavocDemonBlades && C.MissingPower > 20)
+                    {
+                        L.combatLog("Opener 3, passively building fury", C.HavocOpenerColor);
+                    }
+                    if (C.MissingPower <= 20)
+                    {
+                        openingRotationSkillsUsed = OpenerSteps.FaceAwayFromTarget;
+                        return true;
+                    }
+                }
+
+                // make sure we have max charges saved up.
+                if (openingRotationSkillsUsed == OpenerSteps.FaceAwayFromTarget)
+                {
+                    // we don't want to be safely facing
+                    if (Me.IsSafelyFacing(CurrentTarget.Location))
+                    {
+                        await FaceAwayFromTarget();
+                        openingRotationSkillsUsed = OpenerSteps.VengefulRetreat;
+                    }
+                }
+                //if (openingRotationSkillsUsed == OpenerSteps.VengefulRetreat && !Me.IsSafelyFacing(CurrentTarget))
+                //{
+                //    // wait until you are safely facing.
+                //    return true;
+                //}
+
+                if (openingRotationSkillsUsed == OpenerSteps.VengefulRetreat && !Me.IsSafelyFacing(CurrentTarget.Location))
+                {
+                    if (await S.Cast(SB.VengefulRetreat, C.HavocOpenerColor, T.HavocPrepared || T.HavocMomentum, "Opener 4"))
+                    {
+                        openingRotationSkillsUsed = OpenerSteps.Nemesis;
+                        return true;
+                    }
+                }
+
+                if (openingRotationSkillsUsed == OpenerSteps.Nemesis)
+                {
+
+                    if (await S.Cast(SB.Nemesis, C.HavocOpenerColor, T.HavocNemesis, "Opener 5"))
+                    {
+                        openingRotationSkillsUsed = OpenerSteps.Metamorphosis;
+                        return true;
+                    }
+                    if (!T.HavocNemesis)
+                    {
+                        L.combatLog("Skip Opener 5 - Nemesis.  No talent selected", C.HavocOpenerColor);
+                        openingRotationSkillsUsed = OpenerSteps.Metamorphosis;
+                        return true;
+                    }
+
+
+                }
+                if (openingRotationSkillsUsed == OpenerSteps.Metamorphosis)
+                {
+                    // if in melee, need to cast on yourself.  If in ranged, cast on target.
+                    if (await S.CastGround(SB.MetamorphosisSpell, C.HavocOpenerColor, !Me.IsWithinMeleeRangeOf(CurrentTarget), "Opener 6 - Cast on Target"))
+                    {
+                        openingRotationSkillsUsed = OpenerSteps.ChaosBlades;
+                        return true;
+                    }
+                    if (await S.CastGroundOnMe(SB.MetamorphosisSpell, C.HavocOpenerColor, Me.IsWithinMeleeRangeOf(CurrentTarget), "Opener 6 - Cast on Me"))
                     {
                         // if we did metamorphosis then that's our last ability we can now continue single target
-                        useOpenRotation = false;
-                        openingRotationSkillsUsed = 0;
+                        openingRotationSkillsUsed = OpenerSteps.ChaosBlades;
+                        return true;
                     }
                 }
-                return true;
+                if (openingRotationSkillsUsed == OpenerSteps.ChaosBlades)
+                {
+                    if (await S.Cast(SB.ChaosBlades, C.HavocOpenerColor, T.HavocChaosBlades, "Opener 7"))
+                    {
+                        useOpenRotation = false;
+                        openingRotationSkillsUsed = OpenerSteps.None;
+                    }
+                    if (!T.HavocChaosBlades)
+                    {
+                        useOpenRotation = false;
+                        openingRotationSkillsUsed = OpenerSteps.None;
+                        return true;
+                    }
+                }
+                await S.Cast(SB.DemonsBite, C.HavocOpenerColor, !T.HavocDemonBlades && Me.IsWithinMeleeRangeOf(CurrentTarget), "Opener, Filler");
             }
-            return false;
+            return useOpenRotation;
         }
+        public static async Task FaceAwayFromTarget()
+        {
+            //Core.SafeArea sa = new Core.SafeArea();
+            //sa.MinScanDistance = 25;
+            //sa.MaxScanDistance = sa.MinScanDistance;
+            //sa.RaysToCheck = 36;
+            //sa.LineOfSightMob = CurrentTarget;
+            //sa.CheckLineOfSightToSafeLocation = true;
+            //sa.CheckSpellLineOfSightToMob = false;
+            //sa.DirectPathOnly = true;
+
+            //safeSpot = sa.FindLocation();
+            //if (safeSpot != Vector3.Zero)
+            //{
+            //    origSpot = new Vector3(Me.Location.X, Me.Location.Y, Me.Location.Z);
+            //    needFacing = Styx.Helpers.WoWMathHelper.CalculateNeededFacing(safeSpot, origSpot);
+            //    needFacing = WoWMathHelper.NormalizeRadian(needFacing);
+            //    float rotation = WoWMathHelper.NormalizeRadian(Math.Abs(needFacing - Me.RenderFacing));
+            //}
+
+            //Me.SetFacing(needFacing);
+            //await Coroutine.Sleep(500);
+            Me.SetFacing(WoWMathHelper.CalculatePointBehind(Me.Location, 36, 5f));
+            await Coroutine.Yield();
+        }
+
+        #endregion
+
         public static async Task<bool> SingleTarget()
         {
+            // we only want to use the single target rotation after the open rotation is finished.
+
+
 
             if (await S.CastGround(SB.MetamorphosisSpell, C.CombatColor,
                 M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown
@@ -403,11 +567,6 @@ namespace Illidari.Rotation
                 ))
             { return true; }
 
-            // chaos strike Fury dump
-            if (await S.Cast(SB.ChaosStrike, C.CombatColor,
-                C.CurrentPower >= 70
-                && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST"))
-            { return true; }
 
 
 
@@ -417,71 +576,75 @@ namespace Illidari.Rotation
             // use it if we have Prepared talent differently
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
                 M.IS.HavocVengefulReatreatSingleTarget
-                && C.CurrentPower <= 85
-                && !S.OnCooldown(SB.FelRush)
-                && S.CooldownTimeLeft(SB.FelRush) < 500
+                && C.MissingPower > 30
+                && (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 || (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft == 0 && S.CooldownTimeLeft(SB.FelRush) < 1000))
                 && T.HavocPrepared
-                && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST1"))
-            { return true; }
+                && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST1", false))
+            { C.fallingTimeout.Restart(); return true; }
 
             // use it if we DO NOT have Prepared talent without Fury check
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
                 M.IS.HavocVengefulReatreatAoe
-                && !S.OnCooldown(SB.FelRush)
-                && S.CooldownTimeLeft(SB.FelRush) < 500
+                && (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 || (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft == 0 && S.CooldownTimeLeft(SB.FelRush) < 1000))
                 && !T.HavocPrepared
-                && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST2"))
-            { return true; }
+                && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST2", false))
+            { C.fallingTimeout.Restart(); return true; }
 
             #endregion
+
+
 
             #region Single-Target Fel Rush
             // use this in combination with vengeful retreat
             if (await S.Cast(SB.FelRush, C.CombatColor,
                 M.IS.HavocFelRushSingleTarget
+                && !S.OnCooldown(SB.VengefulRetreat)
                 && T.HavocFelMastery
-                && Me.CurrentTarget.Distance >= 10
-                && Me.CurrentTarget.Distance <= 30,
+                //&& Me.CurrentTarget.Distance >= 10
+                && Me.CurrentTarget.Distance <= 18,
                 "ST 1"))
             { return true; }
 
             // use to engage
             if (await S.Cast(SB.FelRush, C.CombatColor,
                 M.IS.HavocFelRushSingleTarget
+                && !S.OnCooldown(SB.VengefulRetreat)
                 && !Me.IsWithinMeleeRangeOf(CurrentTarget)
-                && CurrentTarget.Distance >= 10
-                && CurrentTarget.Distance <= 30,
+                //&& CurrentTarget.Distance >= 10
+                && CurrentTarget.Distance <= 18,
                 "ST 2"))
             { return true; }
             #endregion
 
-            if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor,
-                    (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly && CurrentTarget.IsBoss)
-                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && (CurrentTarget.IsBoss || CurrentTarget.Elite)
-                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown)
-                    )
-                )) { return true; }
-
-            // only cast bite if we don't have DemonBlades.  DB removes the ability of Demon's bite
-            if (await S.Cast(SB.DemonsBite, C.CombatColor,
-                !T.HavocDemonBlades
-                && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST"))
-            { return true; }
+            if (await S.Cast(SB.FelRush, C.CombatColor, M.IS.HavocFelRushSingleTarget && Me.IsWithinMeleeRangeOf(CurrentTarget) 
+                && S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 && !Me.HasAnyTempAura("Momentum"), "ST - Fel Rush for Momentum")) { return true; }
+            if (await S.Cast(SB.EyeBeam, C.CombatColor, T.HavocDemonic && CurrentTarget.Distance <= 10, "ST - Demonic talent")) { return true; }
+            if (await S.Cast(SB.FelEruption, C.CombatColor, T.HavocFelEruption && CurrentTarget.Distance <= 20, "ST")) { return true; }
+            if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor, Me.HasAnyTempAura("Momentum") && Me.IsWithinMeleeRangeOf(CurrentTarget)
+                    && (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly && CurrentTarget.IsBoss)
+                        || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && (CurrentTarget.IsBoss || CurrentTarget.Elite)
+                        || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown)
+                    ),
+                "ST")) { return true; }
+            if (await S.Cast(SB.BladeDance, C.CombatColor, Me.HasAnyTempAura("Momentum") && T.HavocFirstBlood && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST")) { return true; }
+            if (await S.Cast(SB.FelBlade, C.CombatColor, C.MissingPower <= 30 && CurrentTarget.Distance <= 15, "ST")) { return true; }
+            if (await S.Cast(SB.ThrowGlaive, C.CombatColor, Me.HasAnyTempAura("Momentum") && T.HavocBloodlet && CurrentTarget.Distance <= 30, "ST")) { return true; }
+            //if (await S.Cast(SB.FelBarrage, C.CombatColor, Me.HasAnyTempAura("Momentum") && T.HavocFelBarrage && S.GetCharges(SB.FelBarrage) >= 5, "ST")) { return true; }
+            if (await S.Cast(SB.ChaosStrike, C.CombatColor, C.MissingPower <= 30 && Me.HasAnyTempAura("Metamorphosis") && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST")) { return true; }
+            if (await S.Cast(SB.EyeBeam, C.CombatColor, Me.HasAura(SB.AuraAnguishOfTheDeceiver) && CurrentTarget.Distance <= 10, "ST - Has Eye of the Deceiver Trait")) { return true; }
+            if (await S.Cast(SB.ChaosStrike, C.CombatColor, C.MissingPower <= 30 && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST")) { return true; }
+            if (await S.Cast(SB.FelBarrage, C.CombatColor, Me.HasAnyTempAura("Momentum") && T.HavocFelBarrage && S.GetCharges(SB.FelBarrage) >= 4 && CurrentTarget.Distance <=30, "ST")) { return true; }
+            if (await S.Cast(SB.DemonsBite, C.CombatColor, !T.HavocDemonBlades && Me.IsWithinMeleeRangeOf(CurrentTarget) && !S.MaxChargesAvailable(SB.ThrowGlaive), "ST")) { return true; }
 
             // melee range with Demon Blades
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
-                T.HavocDemonBlades
-                && Me.IsWithinMeleeRangeOf(CurrentTarget)
-                && C.CurrentPower < 70, "ST"))
+                Me.IsWithinMeleeRangeOf(CurrentTarget), "ST"))
             { return true; }
 
             // nothing else to do so let's throw a glaive
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
-                T.HavocDemonBlades
-                && !Me.IsWithinMeleeRangeOf(CurrentTarget)
-                && C.CurrentPower < 70, "ST"))
+                !Me.IsWithinMeleeRangeOf(CurrentTarget), "ST"))
             { return true; }
-
             return false;
 
         }
@@ -490,4 +653,5 @@ namespace Illidari.Rotation
         #endregion
 
     }
+
 }

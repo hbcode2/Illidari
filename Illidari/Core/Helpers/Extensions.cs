@@ -1,4 +1,5 @@
-﻿using Styx.WoWInternals.WoWObjects;
+﻿using Styx;
+using Styx.WoWInternals.WoWObjects;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace Illidari
 {
     static class Extensions
     {
+        private static LocalPlayer Me { get { return StyxWoW.Me; } }
+
         public static string AddSpaces(this string data)
         {
             Regex r = new Regex(@"(?!^)(?=[A-Z])");
@@ -68,7 +71,13 @@ namespace Illidari
         /// <returns></returns>
         public static bool HasAnyAura(this WoWUnit unit, params string[] auraNames)
         {
-            var auras = unit.GetAllAuras();
+            var auras = unit.GetAllAuras().Where(a => !a.IsPassive);
+            var hashes = new HashSet<string>(auraNames);
+            return auras.Any(a => hashes.Contains(a.Name));
+        }
+        public static bool HasAnyTempAura(this WoWUnit unit, params string[] auraNames)
+        {
+            var auras = unit.GetAllAuras().Where(a => !a.IsPassive);
             var hashes = new HashSet<string>(auraNames);
             return auras.Any(a => hashes.Contains(a.Name));
         }
@@ -92,6 +101,52 @@ namespace Illidari
             TValue ignored;
             return self.TryRemove(key, out ignored);
         }
+        public static bool IsTrivial(this WoWUnit unit)
+        {
+            if (unit == null)
+                return false;
 
+            if (unit.Elite)
+                return unit.Level <= 10;
+
+            return unit.Level <= 10;
+        }
+        public static float MeleeDistance(this WoWUnit unit)
+        {
+            return Me.MeleeDistance(unit);
+        }
+
+        /// <summary>
+        /// get melee distance between two units
+        /// </summary>
+        /// <param name="unit">unit</param>
+        /// <param name="other">Me if null, otherwise second unit</param>
+        /// <returns></returns>
+        public static float MeleeDistance(this WoWUnit unit, WoWUnit atTarget = null)
+        {
+            // abort if mob null
+            if (unit == null)
+                return 0;
+
+            // when called as SomeUnit.SpellDistance()
+            // .. convert to SomeUnit.SpellDistance(Me)
+            if (atTarget == null)
+                atTarget = StyxWoW.Me;
+
+            // when called as SomeUnit.SpellDistance(Me) then
+            // .. convert to Me.SpellDistance(SomeUnit)
+            if (atTarget.IsMe)
+            {
+                atTarget = unit;
+                unit = StyxWoW.Me;
+            }
+
+            // pvp, then keep it close
+            if (atTarget.IsPlayer && unit.IsPlayer)
+                return 3.5f;
+
+            // return Math.Max(5f, atTarget.CombatReach + 1.3333334f + unit.CombatReach);
+            return Math.Max(5f, atTarget.CombatReach + 1.3333334f);
+        }
     }
 }
