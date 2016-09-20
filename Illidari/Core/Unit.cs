@@ -51,6 +51,8 @@ namespace Illidari.Core
                     continue;
                 if (u.IsNonCombatPet && u.IsCritter)
                     continue;
+                //if ((u.ToPlayer().IsHorde && !Me.IsHorde) || (u.ToPlayer().IsAlliance && !Me.IsAlliance))
+                    //continue;
 
                 // make sure the unit is targeting something we care about.
                 if (u.IsTargetingMeOrPet || u.IsTargetingMyPartyMember || u.IsTargetingMyRaidMember)

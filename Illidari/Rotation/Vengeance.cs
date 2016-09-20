@@ -41,10 +41,15 @@ namespace Illidari.Rotation
             if (HK.manualOn || Me.Combat || !Me.IsAlive || (Me.OnTaxi))
                 return true;
             // check to see if we should use a flask
-            if (await I.UseItem(I.FindBestPrecombatFlask(), !Me.HasAura(SB.FlaskList)))
+            var item = I.FindBestPrecombatFlask();
+            if (item != null)
             {
-                return true;
+                if (await I.UseItem(item, !Me.HasAura(SB.FlaskList)))
+                {
+                    return true;
+                }
             }
+            
             return false;
         }
         #endregion
@@ -57,7 +62,12 @@ namespace Illidari.Rotation
             if (!Me.IsAutoAttacking && CurrentTarget.IsValidCombatUnit()) { Lua.DoString("StartAttack()"); return true; }
             //
             // use potion - Change "true" to configurable
-            return await I.UseItem(I.GetItemByName("Draenic Agility Potion"), true);
+            var potion = I.GetItemByName("Draenic Agility Potion");
+            if (potion != null)
+            {
+                return await I.UseItem(potion, true);
+            }
+            return false;
 
         }
 
@@ -306,6 +316,7 @@ namespace Illidari.Rotation
 
             if (await S.Cast(SB.SoulCleave, C.CombatColor,
                 C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain
+                && (CurrentTarget.HasAura(SB.AuraFrailty) && CurrentTarget.GetAuraById(SB.AuraFrailty).TimeLeft.TotalMilliseconds > 5000)
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
                 string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
             ))
@@ -324,7 +335,7 @@ namespace Illidari.Rotation
             if (await S.Cast(SB.ImmolationAura, C.CombatColor, CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
             if (await S.Cast(SB.FelBlade, C.CombatColor, T.VengeanceFelblade, "ST")) { return true; }
             if (await S.Cast(SB.FelEruption, C.CombatColor, T.VengeanceFelEruption && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
-            if (await S.Cast(SB.SpiritBomb, C.CombatColor, T.VengeanceSpiritBomb && !CurrentTarget.HasAura(SB.AuraFrailty), "ST")) { return true; }
+            if (await S.Cast(SB.SpiritBomb, C.CombatColor, T.VengeanceSpiritBomb && Me.HasAura(SB.AuraSoulFragments) && (!CurrentTarget.HasAura(SB.AuraFrailty) || (CurrentTarget.HasAura(SB.AuraFrailty) && CurrentTarget.GetAuraById(SB.AuraFrailty).TimeLeft.TotalMilliseconds <= 3000)), "ST")) { return true; }
             if (await S.Cast(SB.Shear, C.CombatColor, T.VengeanceBladeTurning && Me.HasAura(SB.AuraBladeTurning) && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
             if (await S.Cast(SB.Fracture, C.CombatColor, T.VengeanceFracture && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
             if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, T.VengeanceConcentratedSigils && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST - Contentrated Sigils")) { return true; }

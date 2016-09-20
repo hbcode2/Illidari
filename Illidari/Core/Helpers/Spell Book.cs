@@ -16,6 +16,7 @@ namespace Illidari.Core.Helpers
             AuraBladeTurning = 207709,
             AuraMomentum = 206476,
             AuraAnguishOfTheDeceiver = 201473,
+            AuraSoulFragments = 203981,
         #endregion
 
         #region Spell List        

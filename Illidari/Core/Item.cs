@@ -53,7 +53,7 @@ namespace Illidari.Core
                     && b.ItemInfo.RequiredLevel <= Me.Level
                     && CanUseItem(b))
                 .OrderBy(b => b.ItemInfo.Level)
-                .ThenByDescending(b => b.ItemInfo.RequiredSkillLevel)
+                //.ThenByDescending(b => b.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
         }
         public static WoWItem FindBestHealingPotion()
@@ -65,8 +65,8 @@ namespace Illidari.Core
                 && hp.ItemInfo.RequiredLevel <= Me.Level
                 && CanUseItem(hp)
                 && Main.IS.HavocHealthPotionList.Contains(hp.ItemInfo.Id))
-                .OrderBy(l => l.ItemInfo.Level)
-                .ThenByDescending(hp => hp.ItemInfo.RequiredSkillLevel)
+                ?.OrderBy(l => l.ItemInfo.Level)
+                ?.ThenByDescending(hp => hp.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
                 
 
@@ -80,8 +80,8 @@ namespace Illidari.Core
                 && (hp.ItemInfo.RequiredSkillId == 0 || Me.GetSkill(hp.ItemInfo.RequiredSkillId).CurrentValue >= hp.ItemInfo.RequiredSkillLevel)
                 && hp.ItemInfo.RequiredLevel <= Me.Level
                 && CanUseItem(hp))
-                .OrderBy(l => l.ItemInfo.Level)
-                .ThenByDescending(hp => hp.ItemInfo.RequiredSkillLevel)
+                ?.OrderBy(l => l.ItemInfo.Level)
+                ?.ThenByDescending(hp => hp.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
 
 
@@ -90,8 +90,8 @@ namespace Illidari.Core
         {
             return Me.CarriedItems
                 .Where(i => i.SafeName == itemName)
-                .OrderBy(b => b.ItemInfo.Level)
-                .ThenByDescending(i => i.ItemInfo.RequiredSkillLevel)
+                ?.OrderBy(b => b.ItemInfo.Level)
+                ?.ThenByDescending(i => i.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
         }
     }

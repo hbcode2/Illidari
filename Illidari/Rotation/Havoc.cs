@@ -36,9 +36,9 @@ namespace Illidari.Rotation
         public enum OpenerSteps { None, InitialFelRush, FelMasteryFelRush, FuryBuilder, FaceAwayFromTarget, VengefulRetreat, Nemesis, Metamorphosis, ChaosBlades }
         private static bool useOpenRotation = false;
         public static OpenerSteps openingRotationSkillsUsed = OpenerSteps.None;
-        private static Vector3 origSpot;
-        private static Vector3 safeSpot;
-        private static float needFacing;
+        //private static Vector3 origSpot;
+        //private static Vector3 safeSpot;
+        //private static float needFacing;
         
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
         private static WoWUnit CurrentTarget { get { return StyxWoW.Me.CurrentTarget; } }
