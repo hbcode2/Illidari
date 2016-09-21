@@ -147,7 +147,7 @@ namespace Illidari.Rotation
         public static async Task<bool> GapCloser()
         {
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
-                CurrentTarget.Distance > 8
+                !Me.IsWithinMeleeRangeOf(CurrentTarget)
                 && CurrentTarget.Distance <= 30))
             {
                 glaiveTossTimer.Restart();
@@ -156,16 +156,14 @@ namespace Illidari.Rotation
             if (await S.Cast(SB.FelBlade, C.CombatColor,
                T.VengeanceFelblade
                && !CurrentTarget.IsWithinMeleeRangeOf(Me)
-               && CurrentTarget.Distance <= 15
-               && CurrentTarget.Distance > 8,
+               && CurrentTarget.MeleeDistance() <= 15,
                "ST Gap Closer"))
             { return true; }
 
             if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
                 M.IS.VengeanceCombatInfernalStrikeGapCloser
                 && !CurrentTarget.IsWithinMeleeRangeOf(Me)
-                && CurrentTarget.Distance > 8
-                && CurrentTarget.Distance <= infernalStrikeRange
+                && CurrentTarget.MeleeDistance() <= infernalStrikeRange
                 && (S.GetSpellChargeInfo(SB.InfernalStrike).ChargesLeft > 0),
                 "ST Gap Closer"))
             { return true; }
@@ -270,15 +268,13 @@ namespace Illidari.Rotation
             { return true; }
 
             // make sure we have tank weapons equipped (for lower level stuff)
-            if (Me.HasTankWarglaivesEquipped())
-            {
-                if (await S.Cast(SB.SoulCarver, C.DefensiveColor,
-                    M.IS.VengeanceAllowSoulCarver
-                    && Me.HealthPercent <= M.IS.VengeanceSoulCarverHp,
-                    string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulCarverHp}")
-                ))
-                { return true; }
-            }
+
+            if (await S.Cast(SB.SoulCarver, C.DefensiveColor,
+                M.IS.VengeanceAllowSoulCarver
+                && Me.HealthPercent <= M.IS.VengeanceSoulCarverHp,
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulCarverHp}")
+            ))
+            { return true; }
 
             if (await S.Cast(SB.SoulCleave, C.DefensiveColor,
                 M.IS.VengeanceAllowSoulCleave
@@ -307,7 +303,7 @@ namespace Illidari.Rotation
         public static async Task<bool> SingleTarget()
         {
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
-                !glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive
+                (!glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive)
                 || (glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive && glaiveTossTimer.ElapsedMilliseconds > M.IS.VengeanceCombatThrowGlaiveSeconds), "ST"))
             {
                 glaiveTossTimer.Restart();
@@ -316,7 +312,8 @@ namespace Illidari.Rotation
 
             if (await S.Cast(SB.SoulCleave, C.CombatColor,
                 C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain
-                && (CurrentTarget.HasAura(SB.AuraFrailty) && CurrentTarget.GetAuraById(SB.AuraFrailty).TimeLeft.TotalMilliseconds > 5000)
+                && ((T.VengeanceSpiritBomb && CurrentTarget.HasAura(SB.AuraFrailty)  && CurrentTarget.GetAuraById(SB.AuraFrailty).TimeLeft.TotalMilliseconds > 5000) 
+                    ||  (!T.VengeanceSpiritBomb))
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
                 string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
             ))

@@ -29,7 +29,7 @@ namespace Illidari
                 SelectedItem = (WoWItem)lvBags.SelectedItems[0].Tag;
                 this.DialogResult = DialogResult.OK;
             }
-            
+
             this.Close();
         }
 
@@ -38,12 +38,15 @@ namespace Illidari
             lvBags.Items.Clear();
             foreach (var item in Me.BagItems.OrderBy(i => i.Name))
             {
-                ListViewItem lvi = new ListViewItem();
-                lvi.Text = item.ItemInfo.Id.ToString();
-                lvi.SubItems.Add(item.SafeName);
-                lvi.SubItems.Add(item.StackCount.ToString());
-                lvi.Tag = item;
-                lvBags.Items.Add(lvi);
+                if (item != null)
+                {
+                    ListViewItem lvi = new ListViewItem();
+                    lvi.Text = item.ItemInfo.Id.ToString();
+                    lvi.SubItems.Add(item.SafeName);
+                    lvi.SubItems.Add(item.StackCount.ToString());
+                    lvi.Tag = item;
+                    lvBags.Items.Add(lvi);
+                }
             }
         }
     }

@@ -34,32 +34,32 @@ namespace Illidari.Core
         }
         public static WoWItem FindBestBandage()
         {
-            return Me.CarriedItems
-                .Where(b => b.ItemInfo.ItemClass == WoWItemClass.Consumable
+            return Me.BagItems
+                ?.Where(b => b.ItemInfo.ItemClass == WoWItemClass.Consumable
                     && b.ItemInfo.ConsumableClass == WoWItemConsumableClass.Bandage
                     && (b.ItemInfo.RequiredSkillId == 0 || Me.GetSkill(b.ItemInfo.RequiredSkillId).CurrentValue >= b.ItemInfo.RequiredSkillLevel)
                     && b.ItemInfo.RequiredLevel <= Me.Level
                     && CanUseItem(b))
-                .OrderBy(b => b.ItemInfo.Level)
-                .ThenByDescending(b => b.ItemInfo.RequiredSkillLevel)
+                ?.OrderBy(b => b.ItemInfo.Level)
+                ?.ThenByDescending(b => b.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
         }
         public static WoWItem FindBestPrecombatFlask()
         {
-            return Me.CarriedItems
-                .Where(b => b.ItemInfo.ItemClass == WoWItemClass.Consumable
+            return Me.BagItems
+                ?.Where(b => b.ItemInfo.ItemClass == WoWItemClass.Consumable
                     && b.ItemInfo.ConsumableClass == WoWItemConsumableClass.Flask
                     && (b.ItemInfo.RequiredSkillId == 0 || Me.GetSkill(b.ItemInfo.RequiredSkillId).CurrentValue >= b.ItemInfo.RequiredSkillLevel)
                     && b.ItemInfo.RequiredLevel <= Me.Level
                     && CanUseItem(b))
-                .OrderBy(b => b.ItemInfo.Level)
+                ?.OrderBy(b => b.ItemInfo.Level)
                 //.ThenByDescending(b => b.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
         }
         public static WoWItem FindBestHealingPotion()
         {
-            return Me.CarriedItems
-                .Where(hp => hp.ItemInfo.ItemClass == WoWItemClass.Consumable
+            return Me.BagItems
+                ?.Where(hp => hp.ItemInfo.ItemClass == WoWItemClass.Consumable
                 && hp.ItemInfo.ConsumableClass == WoWItemConsumableClass.Potion
                 && (hp.ItemInfo.RequiredSkillId == 0 || Me.GetSkill(hp.ItemInfo.RequiredSkillId).CurrentValue >= hp.ItemInfo.RequiredSkillLevel)
                 && hp.ItemInfo.RequiredLevel <= Me.Level
@@ -75,7 +75,7 @@ namespace Illidari.Core
         public static WoWItem FindBestFood()
         {
             return Me.CarriedItems
-                .Where(hp => hp.ItemInfo.ItemClass == WoWItemClass.Consumable
+                ?.Where(hp => hp.ItemInfo.ItemClass == WoWItemClass.Consumable
                 && hp.ItemInfo.ConsumableClass == WoWItemConsumableClass.FoodAndDrink
                 && (hp.ItemInfo.RequiredSkillId == 0 || Me.GetSkill(hp.ItemInfo.RequiredSkillId).CurrentValue >= hp.ItemInfo.RequiredSkillLevel)
                 && hp.ItemInfo.RequiredLevel <= Me.Level
@@ -89,7 +89,7 @@ namespace Illidari.Core
         public static WoWItem GetItemByName(string itemName)
         {
             return Me.CarriedItems
-                .Where(i => i.SafeName == itemName)
+                ?.Where(i => i.SafeName == itemName)
                 ?.OrderBy(b => b.ItemInfo.Level)
                 ?.ThenByDescending(i => i.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
