@@ -32,7 +32,7 @@ namespace Illidari
     {
 
         public static Core.IllidariSettings.IllidariSettings IS;
-        private static readonly Version version = new Version(09, 15, 2016);
+        private static readonly Version version = new Version(09, 21, 2016);
         public override string Name { get { return string.Format($"{CRName} v{version}"); } }
         public override WoWClass Class { get { return WoWClass.DemonHunter; } }
         public static string CRName { get { return "Illidari"; } }
