@@ -164,5 +164,21 @@ namespace Illidari
 
             return (trainingDummyNames.Contains(unit.SafeName));
         }
+        public static WoWPlayer ToPlayer(this WoWUnit unit)
+        {
+            try
+            {
+                var player = (WoWPlayer)unit;
+                if (player != null)
+                {
+                    return player;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return null;
+        }
     }
 }

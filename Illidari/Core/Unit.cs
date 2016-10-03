@@ -49,17 +49,19 @@ namespace Illidari.Core
                     continue;
                 if (u.IsFriendly)
                     continue;
+                if (Main.IS.GeneralIgnoreOpposingFaction && isOpposingFaction(u))
+                    continue;
                 if (u.IsNonCombatPet && u.IsCritter)
                     continue;
                 //if ((u.ToPlayer().IsHorde && !Me.IsHorde) || (u.ToPlayer().IsAlliance && !Me.IsAlliance))
-                    //continue;
+                //continue;
 
                 // make sure the unit is targeting something we care about.
                 if (u.IsTargetingMeOrPet || u.IsTargetingMyPartyMember || u.IsTargetingMyRaidMember)
                 {
                     enemyCount.Add(u);
                 }
-                
+
             }
         }
         public static void enemiesToTauntAnnex(double Range)
@@ -74,6 +76,8 @@ namespace Illidari.Core
                 if (!u.Attackable || !u.CanSelect)
                     continue;
                 if (u.IsFriendly)
+                    continue;
+                if (isOpposingFaction(u) && Main.IS.GeneralIgnoreOpposingFaction)
                     continue;
                 if (u.IsNonCombatPet && u.IsCritter)
                     continue;
@@ -133,9 +137,25 @@ namespace Illidari.Core
                 return 9999;
             }
         }
+        public static bool isOpposingFaction(WoWUnit unit)
+        {
+            if (unit != null)
+            {
+                if (unit.IsAlive && unit.IsHostile && unit.IsPlayer && unit.Attackable)
+                {
+                    WoWPlayer player = unit.ToPlayer();
+                    if ((player != null) && (Me.IsHorde && !player.IsHorde) || (Me.IsAlliance && !player.IsAlliance))
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            return false;
+        }
         #endregion
 
-       
+
 
         #region Unit Evaluation
 

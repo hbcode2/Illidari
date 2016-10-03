@@ -33,6 +33,8 @@ namespace Illidari.Core.IllidariSettings
         public bool GeneralMovement { get; set; }
         [Setting, DefaultValue(true)]
         public bool GeneralTargeting { get; set; }
+        [Setting, DefaultValue(true)]
+        public bool GeneralIgnoreOpposingFaction { get; set; }
         #endregion
 
         #region Resting

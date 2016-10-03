@@ -18,6 +18,7 @@ using L = Illidari.Core.Utilities.Log;
 using C = Illidari.Core.Helpers.Common;
 using M = Illidari.Main;
 using System.Diagnostics;
+using Buddy.Coroutines;
 
 namespace Illidari.Rotation
 {
@@ -41,15 +42,15 @@ namespace Illidari.Rotation
             if (HK.manualOn || Me.Combat || !Me.IsAlive || (Me.OnTaxi))
                 return true;
             // check to see if we should use a flask
-            var item = I.FindBestPrecombatFlask();
-            if (item != null)
-            {
-                if (await I.UseItem(item, !Me.HasAura(SB.FlaskList)))
-                {
-                    return true;
-                }
-            }
-            
+            //var item = I.FindBestPrecombatFlask();
+            //if (item != null)
+            //{
+            //    if (await I.UseItem(item, !Me.HasAura(SB.FlaskList)))
+            //    {
+            //        return true;
+            //    }
+            //}
+            await Coroutine.Yield();
             return false;
         }
         #endregion

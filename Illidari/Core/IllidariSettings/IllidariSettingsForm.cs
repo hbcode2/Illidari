@@ -40,6 +40,7 @@ namespace Illidari
             GeneralEnableTargeting.Checked = S.GeneralTargeting;
             GeneralRestingUseBandages.Checked = S.GeneralRestingUseBandages;
             GeneralRestingRestHp.Value = S.GeneralRestingRestHp;
+            GeneralIgnoreOpposingFaction.Checked = S.GeneralIgnoreOpposingFaction;
             #endregion
 
             #region Havoc Settings load
@@ -984,10 +985,14 @@ namespace Illidari
         {
             S.HotkeyHavocOffensiveMetamorphosis = checkHotkeysHavocOffensiveMetamorphosis.Checked;
         }
-        #endregion
 
         #endregion
 
-       
+        #endregion
+
+        private void GeneralIgnoreOpposingFaction_CheckedChanged(object sender, EventArgs e)
+        {
+            S.GeneralIgnoreOpposingFaction = GeneralIgnoreOpposingFaction.Checked;
+        }
     }
 }

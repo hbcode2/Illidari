@@ -50,10 +50,10 @@ namespace Illidari.Rotation
             if (HK.manualOn || Me.Combat || !Me.IsAlive || (Me.OnTaxi))
                 return true;
             // check to see if we should use a flask
-            if (await I.UseItem(I.FindBestPrecombatFlask(), M.IS.HavocUseAgilityFlask && !Me.HasAura(SB.FlaskList)))
-            {
-                return true;
-            }
+            //if (await I.UseItem(I.FindBestPrecombatFlask(), M.IS.HavocUseAgilityFlask && !Me.HasAura(SB.FlaskList)))
+            //{
+            //    return true;
+            //}
             return false;
         }
         #endregion
@@ -331,7 +331,7 @@ namespace Illidari.Rotation
                 && Me.CurrentTarget.Distance <= 18 && count >= 3 && FelRushAlmostMaxCharge(), "AoE Max Charges", sleep: false))
             { return true; }
 
-            if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor, count >=3 && UseFuryOfIllidariCD(true) && CanUseAbilityWithMomentum())) { return true; }
+            if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor, UseFuryOfIllidariCD(count >= 3) && CanUseAbilityWithMomentum())) { return true; }
             if (await S.Cast(SB.FelBarrage, C.CombatColor, count >= 3 && CanUseAbilityWithMomentum() && T.HavocFelBarrage && S.GetCharges(SB.FelBarrage) >= 4 && CurrentTarget.Distance <= 30, "AoE")) { return true; }
             if (await S.GCD(SB.EyeBeam, C.CombatColor, count >= 3 && CanUseAbilityWithMomentum(), "AoE")) { return true; }
             if (await S.GCD(SB.BladeDance, C.CombatColor, count>=3, "AoE")) { return true; }
@@ -619,6 +619,7 @@ namespace Illidari.Rotation
             { return true; }
             if (await S.Cast(SB.EyeBeam, C.CombatColor, T.HavocDemonic && CurrentTarget.Distance <= 10, "ST - Demonic talent")) { return true; }
             if (await S.Cast(SB.FelEruption, C.CombatColor, T.HavocFelEruption && CurrentTarget.Distance <= 20, "ST")) { return true; }
+            L.debugLog(CanUseAbilityWithMomentum().ToString() + ", " + Me.IsWithinMeleeRangeOf(CurrentTarget).ToString() + ", " + UseFuryOfIllidariCD(false).ToString());
             if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor, CanUseAbilityWithMomentum() && Me.IsWithinMeleeRangeOf(CurrentTarget)
                     && UseFuryOfIllidariCD(false), "ST"))
             { return true; }
@@ -656,7 +657,7 @@ namespace Illidari.Rotation
         static bool CanUseAbilityWithMomentum()
         {
             if (!T.HavocMomentum) { return true; }
-            if (T.HavocMomentum && Me.HasAnyTempAura("Momentum")) { return true; }
+            if (T.HavocMomentum && Me.HasAura(208628)) { return true; }
             return false;
         }
         /// <summary>

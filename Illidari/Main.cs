@@ -235,6 +235,12 @@ namespace Illidari
             if (!Me.Combat)
                 return;
 
+            // if we have an oppsing faction, then clear the target.
+            if (U.isOpposingFaction(Me.CurrentTarget) && IS.GeneralIgnoreOpposingFaction)
+            {
+                Me.ClearTarget();
+            }
+             
             // cache a few things like my fury/pain
             C.Cache();
 
