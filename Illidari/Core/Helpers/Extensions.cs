@@ -1,4 +1,6 @@
-﻿using Styx;
+﻿using Illidari.Core.IllidariSettings;
+using Styx;
+using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 using System;
 using System.Collections.Concurrent;
@@ -8,8 +10,20 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using U = Illidari.Core.Unit;
+using L = Illidari.Core.Utilities.Log;
+
 namespace Illidari
 {
+    public enum CooldownTypes
+    {
+        Manual,
+        EliteBoss,
+        BossOnly,
+        Cooldown,
+        AoE
+    }
+
     static class Extensions
     {
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
@@ -50,7 +64,7 @@ namespace Illidari
                 return 0;
             }
         }
-        public static bool HasTankWarglaivesEquipped (this LocalPlayer player)
+        public static bool HasTankWarglaivesEquipped(this LocalPlayer player)
         {
             WoWItem mh = player.Inventory.Equipped.MainHand;
             WoWItem oh = player.Inventory.Equipped.OffHand;
@@ -179,6 +193,45 @@ namespace Illidari
                 return null;
             }
             return null;
+        }
+
+        public static IEnumerable<WoWUnit> NearbyTargets(this WoWUnit unit)
+        {
+            return U.activeEnemies(unit.Location, 8f);
+        }
+        public static bool ShouldInterrupt(this WoWUnit unit, int minTime, int timeLeft)
+        {
+
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance)
+            {
+                if ((unit.IsCasting || unit.IsCastingHealingSpell) && unit.CanInterruptCurrentSpellCast)
+                {
+                    // if casting, healing or channeling, and can interrupt
+                    //L.debugLog("Unit: " + unit.SafeName + " is casting and can interrupt");
+
+                    double castingForHowLong = new TimeSpan(DateTime.Now.Ticks - unit.CurrentCastStartTime.Ticks).TotalMilliseconds;
+                    L.debugLog("Unit: " + unit.SafeName + " is casting and can interrupt. castingForHowLong: " + castingForHowLong + ", timeLeft: " + unit.CurrentCastTimeLeft.TotalMilliseconds);
+                    if (minTime > 0 && timeLeft > 0)
+                    {
+                        if (castingForHowLong >= minTime && unit.CurrentCastTimeLeft.TotalMilliseconds < timeLeft)
+                        {
+                            L.debugLog("Should interrupt now");
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if ((minTime > 0 && castingForHowLong >= minTime) || (timeLeft > 0 && unit.CurrentCastTimeLeft.TotalMilliseconds < timeLeft))
+                        {
+                            L.debugLog("Should interrupt now");
+                            return true;
+                        }
+                    }
+
+                }
+            }
+            return false;
+
         }
     }
 }

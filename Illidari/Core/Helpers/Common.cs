@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using L = Illidari.Core.Utilities.Log;
 using HK = Illidari.Core.Managers.Hotkeys;
+using Illidari.Core.IllidariSettings;
 
 namespace Illidari.Core.Helpers
 {
@@ -28,7 +29,7 @@ namespace Illidari.Core.Helpers
         public static async Task<bool> EnsureMeleeRange(WoWUnit target)
         {
             if (target == null || Me.IsWithinMeleeRangeOf(target) || !target.IsValidCombatUnit()
-                || Me.IsCasting || Me.IsChanneling || HK.RotationOnlyOn || !Main.IS.GeneralMovement)
+                || Me.IsCasting || Me.IsChanneling || HK.RotationOnlyOn || !GeneralSettings.Instance.GeneralMovement)
             { return false; }
 
             L.infoLog("Getting in melee range", InfoColor);
@@ -50,7 +51,7 @@ namespace Illidari.Core.Helpers
         private static Stopwatch lastTimeFaced = new Stopwatch();
         public static async Task<bool> FaceTarget(WoWUnit target)
         {
-            if (target == null || Me.IsSafelyFacing(target) || !target.IsValidCombatUnit() || HK.RotationOnlyOn || !Main.IS.GeneralFacing) { return false; }
+            if (target == null || Me.IsSafelyFacing(target) || !target.IsValidCombatUnit() || HK.RotationOnlyOn || !GeneralSettings.Instance.GeneralFacing) { return false; }
 
             if (!lastTimeFaced.IsRunning || (target.Guid == lastUnitGuid && lastTimeFaced.ElapsedMilliseconds > 500))
                 L.infoLog("Not facing target; will attempt to", InfoColor);
@@ -60,7 +61,7 @@ namespace Illidari.Core.Helpers
 
 
             lastUnitGuid = target.Guid;
-            if (Me.IsWithinMeleeRangeOf(target) && Me.IsMoving && Main.IS.GeneralMovement && !Managers.Hotkeys.RotationOnlyOn) { return await CommonCoroutines.StopMoving(); }
+            if (Me.IsWithinMeleeRangeOf(target) && Me.IsMoving && GeneralSettings.Instance.GeneralMovement && !Managers.Hotkeys.RotationOnlyOn) { return await CommonCoroutines.StopMoving(); }
             if (!lastTimeFaced.IsRunning) { lastTimeFaced.Start(); } else { lastTimeFaced.Restart(); }
             await Coroutine.Yield();
             return true;

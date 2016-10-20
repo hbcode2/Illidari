@@ -1,4 +1,5 @@
-﻿using Styx;
+﻿using Illidari.Core.IllidariSettings;
+using Styx;
 using Styx.Common;
 using Styx.WoWInternals.WoWObjects;
 using System;
@@ -40,7 +41,7 @@ namespace Illidari.Core.Utilities
         {
             if (Message == lastCombatMSG)
                 return;
-            if (Main.IS.GeneralDebug)
+            if (GeneralSettings.Instance.GeneralDebug)
             {
                 if (CurrentTarget != null)
                 {
@@ -95,7 +96,7 @@ namespace Illidari.Core.Utilities
 
         public static void infoLog(string Message, System.Windows.Media.Color logColor, params object[] args)
         {
-            if (Message == lastInformationMSG || !Main.IS.GeneralDebug) { return; }
+            if (Message == lastInformationMSG || !GeneralSettings.Instance.GeneralDebug) { return; }
 
             Logging.Write(logColor, "[Illidari]: {0}", Message, args);
             lastInformationMSG = Message;

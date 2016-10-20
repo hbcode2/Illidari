@@ -19,11 +19,16 @@ using C = Illidari.Core.Helpers.Common;
 using M = Illidari.Main;
 using System.Diagnostics;
 using Buddy.Coroutines;
+using System.Numerics;
+using Illidari.Core.IllidariSettings;
 
 namespace Illidari.Rotation
 {
     class Vengeance
     {
+        private static VengeanceSettings VS => VengeanceSettings.Instance;
+        private static GeneralSettings GS => GeneralSettings.Instance;
+        private static HotkeySettings HKS => HotkeySettings.Instance;
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
         private static WoWUnit CurrentTarget { get { return StyxWoW.Me.CurrentTarget; } }
         //private static uint CurrentPain => StyxWoW.Me.GetPowerInfo(WoWPowerType.Pain).Current;
@@ -82,14 +87,14 @@ namespace Illidari.Rotation
                 await C.EnsureMeleeRange(CurrentTarget);
                 await C.FaceTarget(CurrentTarget);
 
-                if (await S.Cast(SB.ThrowGlaive, C.CombatColor, CurrentTarget.Distance <= 30)) { glaiveTossTimer.Restart(); return true; }
+                if (await S.Cast(SB.ThrowGlaive, C.CombatColor, CurrentTarget.Distance <= 30, "Pull - GlaiveTimer: " + glaiveTossTimer.ElapsedMilliseconds + "ms")) { glaiveTossTimer.Restart(); return true; }
 
                 // use to engage if you have the charges to do so
                 if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
-                    M.IS.VengeanceCombatInfernalStrikePull
+                    VS.VengeanceCombatInfernalStrikePull
                     && CurrentTarget.Distance <= infernalStrikeRange
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me)
-                    && !M.IS.VengeancePreferPullWithFelblade
+                    && !VS.VengeancePreferPullWithFelblade
                 , "Pull"))
                 { return true; }
 
@@ -102,7 +107,7 @@ namespace Illidari.Rotation
                 // now use in case felblade was on cd, but don't check prefer
                 if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
                     CurrentTarget.Distance <= infernalStrikeRange
-                    && M.IS.VengeanceCombatInfernalStrikePull
+                    && VS.VengeanceCombatInfernalStrikePull
                     && !CurrentTarget.IsWithinMeleeRangeOf(Me)
                 , "Pull"))
                 { return true; }
@@ -121,7 +126,7 @@ namespace Illidari.Rotation
             await C.FaceTarget(CurrentTarget);
             await C.EnsureMeleeRange(CurrentTarget);
             await InterruptTarget();
-            if (await S.GCD(SB.Torment, C.CombatColor, !CurrentTarget.IsTargetingMeOrPet && M.IS.VengeanceAllowTaunt,
+            if (await S.GCD(SB.Torment, C.CombatColor, !CurrentTarget.IsTargetingMeOrPet && VS.VengeanceAllowTaunt,
                 string.Format($"CT:{CurrentTarget.SafeName} not targeting me. Taunting!")))
             { return true; }
 
@@ -149,7 +154,7 @@ namespace Illidari.Rotation
         {
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
                 !Me.IsWithinMeleeRangeOf(CurrentTarget)
-                && CurrentTarget.Distance <= 30))
+                && CurrentTarget.Distance <= 30, "GapCloser - GlaiveTimer: " + glaiveTossTimer.ElapsedMilliseconds + "ms"))
             {
                 glaiveTossTimer.Restart();
                 return true;
@@ -162,7 +167,7 @@ namespace Illidari.Rotation
             { return true; }
 
             if (await S.CastGround(SB.InfernalStrike, C.CombatColor,
-                M.IS.VengeanceCombatInfernalStrikeGapCloser
+                VS.VengeanceCombatInfernalStrikeGapCloser
                 && !CurrentTarget.IsWithinMeleeRangeOf(Me)
                 && CurrentTarget.MeleeDistance() <= infernalStrikeRange
                 && (S.GetSpellChargeInfo(SB.InfernalStrike).ChargesLeft > 0),
@@ -176,126 +181,126 @@ namespace Illidari.Rotation
         {
             WoWUnit stunTarget = GetStunTarget(CurrentTarget, 8f);
             if (await S.CastGround(SB.SigilOfMisery, stunTarget, C.DefensiveColor, stunTarget != null
-                && M.IS.VengeanceAllowStunSigilOfMisery))
+                && VS.VengeanceAllowStunSigilOfMisery))
             { return true; }
 
             #region Defensive Hotkey
             // demon spikes if force defensive is on
             if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
                 HK.VengeanceDefensiveOn
-                && M.IS.HotkeyVengeanceDefensiveDemonSpikes
+                && HKS.HotkeyVengeanceDefensiveDemonSpikes
                 && !Me.HasAura(SB.AuraDemonSpikes),
-                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveDemonSpikes:{M.IS.HotkeyVengeanceDefensiveDemonSpikes.ToString()}")
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveDemonSpikes:{HKS.HotkeyVengeanceDefensiveDemonSpikes.ToString()}")
             ))
             { return true; }
 
             if (await S.Cast(SB.MetamorphosisSpell, C.DefensiveColor,
                 HK.VengeanceDefensiveOn
-                && M.IS.HotkeyVengeanceDefensiveMetamorphosis,
-                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveMetamorphosis:{M.IS.HotkeyVengeanceDefensiveMetamorphosis.ToString()}")
+                && HKS.HotkeyVengeanceDefensiveMetamorphosis,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveMetamorphosis:{HKS.HotkeyVengeanceDefensiveMetamorphosis.ToString()}")
             ))
             { return true; }
 
             if (await S.Cast(SB.SoulBarrier, C.DefensiveColor,
                 HK.VengeanceDefensiveOn
-                && M.IS.HotkeyVengeanceDefensiveSoulBarrier,
-                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulBarrier:{M.IS.HotkeyVengeanceDefensiveSoulBarrier.ToString()}")
+                && HKS.HotkeyVengeanceDefensiveSoulBarrier,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulBarrier:{HKS.HotkeyVengeanceDefensiveSoulBarrier.ToString()}")
             ))
             { return true; }
 
             if (await S.Cast(SB.FelDevastation, C.DefensiveColor,
                 HK.VengeanceDefensiveOn
-                && M.IS.HotkeyVengeanceDefensiveFelDevastation,
-                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveFelDevastation:{M.IS.HotkeyVengeanceDefensiveFelDevastation.ToString()}")))
+                && HKS.HotkeyVengeanceDefensiveFelDevastation,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveFelDevastation:{HKS.HotkeyVengeanceDefensiveFelDevastation.ToString()}")))
 
             if (Me.HasTankWarglaivesEquipped())
             {
                 if (await S.Cast(SB.SoulCarver, C.DefensiveColor,
                     HK.VengeanceDefensiveOn
-                    && M.IS.HotkeyVengeanceDefensiveSoulCarver
+                    && HKS.HotkeyVengeanceDefensiveSoulCarver
                     && Me.IsWithinMeleeRangeOf(CurrentTarget) // must be within melee range or won't work.
                     && Me.IsSafelyFacing(CurrentTarget.Location),
-                    string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulCarver:{M.IS.HotkeyVengeanceDefensiveSoulCarver.ToString()}")
+                    string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulCarver:{HKS.HotkeyVengeanceDefensiveSoulCarver.ToString()}")
                 ))
                 { return true; }
             }
 
             if (await S.Cast(SB.SoulCleave, C.DefensiveColor,
                 HK.VengeanceDefensiveOn
-                && M.IS.HotkeyVengeanceDefensiveSoulCleave
+                && HKS.HotkeyVengeanceDefensiveSoulCleave
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
-                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulCleave:{M.IS.HotkeyVengeanceDefensiveSoulCleave.ToString()}")
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveSoulCleave:{HKS.HotkeyVengeanceDefensiveSoulCleave.ToString()}")
             ))
             { return true; }
 
             if (await S.Cast(SB.EmpowerWards, C.DefensiveColor,
                 HK.VengeanceDefensiveOn
-                && M.IS.HotkeyVengeanceDefensiveEmpowerWards,
-                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveEmpowerWards:{M.IS.HotkeyVengeanceDefensiveEmpowerWards.ToString()}")
+                && HKS.HotkeyVengeanceDefensiveEmpowerWards,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveEmpowerWards:{HKS.HotkeyVengeanceDefensiveEmpowerWards.ToString()}")
             ))
             { return true; }
 
             if (await S.Cast(SB.FieryBrand, C.DefensiveColor,
                 HK.VengeanceDefensiveOn
-                && M.IS.HotkeyVengeanceDefensiveEmpowerWards,
-                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveEmpowerWards:{M.IS.HotkeyVengeanceDefensiveEmpowerWards.ToString()}")))
+                && HKS.HotkeyVengeanceDefensiveEmpowerWards,
+                string.Format($"AM: HK.VengeanceDefensiveOn:{HK.VengeanceDefensiveOn.ToString()}, HotkeyVengeanceDefensiveEmpowerWards:{HKS.HotkeyVengeanceDefensiveEmpowerWards.ToString()}")))
             { return true; }
 
             #endregion
 
             if (await S.Cast(SB.MetamorphosisSpell, C.DefensiveColor,
-                M.IS.VengeanceAllowMetamorphosis
-                && Me.HealthPercent <= M.IS.VengeanceMetamorphosisHp,
-                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceMetamorphosisHp}")
+                VS.VengeanceAllowMetamorphosis
+                && Me.HealthPercent <= VS.VengeanceMetamorphosisHp,
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={VS.VengeanceMetamorphosisHp}")
             ))
             { return true; }
 
             // cast Demon Spikes if we have 
             if (await S.Cast(SB.DemonSpikes, C.DefensiveColor,
-            M.IS.VengeanceAllowDemonSpikes
+            VS.VengeanceAllowDemonSpikes
             && C.CurrentPower >= 20
-            && Me.HealthPercent <= M.IS.VengeanceDemonSpikesHp
+            && Me.HealthPercent <= VS.VengeanceDemonSpikesHp
             && !Me.HasAura(SB.AuraDemonSpikes)
             && U.activeEnemies(Me.Location, 8f).Any(),
-            string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceDemonSpikesHp}")
+            string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={VS.VengeanceDemonSpikesHp}")
         ))
             { return true; }
 
             if (await S.Cast(SB.SoulBarrier, C.DefensiveColor, T.VengeanceSoulBarrier
-                && M.IS.VengeanceAllowSoulBarrier
-                && Me.HealthPercent <= M.IS.VengeanceSoulBarrierHp,
-                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulBarrierHp}")
+                && VS.VengeanceAllowSoulBarrier
+                && Me.HealthPercent <= VS.VengeanceSoulBarrierHp,
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={VS.VengeanceSoulBarrierHp}")
             ))
             { return true; }
 
             // make sure we have tank weapons equipped (for lower level stuff)
 
             if (await S.Cast(SB.SoulCarver, C.DefensiveColor,
-                M.IS.VengeanceAllowSoulCarver
-                && Me.HealthPercent <= M.IS.VengeanceSoulCarverHp,
-                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulCarverHp}")
+                VS.VengeanceAllowSoulCarver
+                && Me.HealthPercent <= VS.VengeanceSoulCarverHp,
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={VS.VengeanceSoulCarverHp}")
             ))
             { return true; }
 
             if (await S.Cast(SB.SoulCleave, C.DefensiveColor,
-                M.IS.VengeanceAllowSoulCleave
+                VS.VengeanceAllowSoulCleave
                 && C.CurrentPower >= 30
-                && Me.CurrentHealth <= M.IS.VengeanceSoulCleaveHp
+                && Me.CurrentHealth <= VS.VengeanceSoulCleaveHp
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
-                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={M.IS.VengeanceSoulCleaveHp}")
+                string.Format($"AM: HP:{Me.HealthPercent.ToString("F0")}<={VS.VengeanceSoulCleaveHp}")
             ))
             { return true; }
 
             if (await S.Cast(SB.EmpowerWards, C.DefensiveColor,
-                M.IS.VengeanceEmpowerWards
+                VS.VengeanceEmpowerWards
                 && U.activeEnemies(Me.Location, 50f).Where(u =>
                     u.IsTargetingMeOrPet && u.IsCasting)
                 .Any()
             )) { return true; }
 
             if (await S.Cast(SB.FieryBrand, C.DefensiveColor,
-                M.IS.VengeanceAllowFieryBrand
-                && Me.HealthPercent <= M.IS.VengeanceFieryBrandHp))
+                VS.VengeanceAllowFieryBrand
+                && Me.HealthPercent <= VS.VengeanceFieryBrandHp))
             { return true; }
 
             return false;
@@ -304,32 +309,33 @@ namespace Illidari.Rotation
         public static async Task<bool> SingleTarget()
         {
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
-                (!glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive)
-                || (glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive && glaiveTossTimer.ElapsedMilliseconds > M.IS.VengeanceCombatThrowGlaiveSeconds), "ST"))
+                (!glaiveTossTimer.IsRunning && VS.VengeanceCombatThrowGlaive)
+                || (glaiveTossTimer.IsRunning && VS.VengeanceCombatThrowGlaive && glaiveTossTimer.ElapsedMilliseconds > VS.VengeanceCombatThrowGlaiveSeconds), "ST - GlaiveTimer: " + glaiveTossTimer.ElapsedMilliseconds + "ms"))
             {
                 glaiveTossTimer.Restart();
                 return true;
             }
 
             if (await S.Cast(SB.SoulCleave, C.CombatColor,
-                C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain
+                C.CurrentPower >= VS.VengeanceCombatSoulCleavePain
                 && ((T.VengeanceSpiritBomb && CurrentTarget.HasAura(SB.AuraFrailty)  && CurrentTarget.GetAuraById(SB.AuraFrailty).TimeLeft.TotalMilliseconds > 5000) 
                     ||  (!T.VengeanceSpiritBomb))
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
-                string.Format($"ST: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
+                string.Format($"ST: CP:{C.CurrentPower}>={VS.VengeanceCombatSoulCleavePain}")
             ))
             { return true; }
 
             // cast infernal strike in melee only if we have max chargets
             // it is off of the gcd, so can be cast any time.
             if (await S.CastGroundOnMe(SB.InfernalStrike, C.CombatColor,
-                M.IS.VengeanceCombatInfernalStrikeSingleTarget
+                VS.VengeanceCombatInfernalStrikeSingleTarget
                 && Me.IsWithinMeleeRangeOf(CurrentTarget)
                 && S.MaxChargesAvailable(SB.InfernalStrike)
                 && CurrentTarget.IsWithinMeleeRangeOf(Me),
                 "ST Max Charges Available"))
             { return true; }
 
+            
             if (await S.Cast(SB.ImmolationAura, C.CombatColor, CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
             if (await S.Cast(SB.FelBlade, C.CombatColor, T.VengeanceFelblade, "ST")) { return true; }
             if (await S.Cast(SB.FelEruption, C.CombatColor, T.VengeanceFelEruption && CurrentTarget.IsWithinMeleeRangeOf(Me), "ST")) { return true; }
@@ -349,21 +355,21 @@ namespace Illidari.Rotation
         public static async Task<bool> MultipleTarget()
         {
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor,
-                !glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive
-                || (glaiveTossTimer.IsRunning && M.IS.VengeanceCombatThrowGlaive && glaiveTossTimer.ElapsedMilliseconds > M.IS.VengeanceCombatThrowGlaiveSeconds), "AoE"))
+                !glaiveTossTimer.IsRunning && VS.VengeanceCombatThrowGlaive
+                || (glaiveTossTimer.IsRunning && VS.VengeanceCombatThrowGlaive && glaiveTossTimer.ElapsedMilliseconds > VS.VengeanceCombatThrowGlaiveSeconds), "AoE - GlaiveTimer: " + glaiveTossTimer.ElapsedMilliseconds + "ms"))
             {
                 glaiveTossTimer.Restart();
                 return true;
             }
 
             if (await S.Cast(SB.SoulCleave, C.CombatColor,
-                C.CurrentPower >= M.IS.VengeanceCombatSoulCleavePain,
-                string.Format($"AoE: CP:{C.CurrentPower}>={M.IS.VengeanceCombatSoulCleavePain}")
+                C.CurrentPower >= VS.VengeanceCombatSoulCleavePain,
+                string.Format($"AoE: CP:{C.CurrentPower}>={VS.VengeanceCombatSoulCleavePain}")
             ))
             { return true; }
 
             if (await S.CastGroundOnMe(SB.InfernalStrike, C.CombatColor,
-                M.IS.VengeanceCombatInfernalStrikeAoE
+                VS.VengeanceCombatInfernalStrikeAoE
                 && Me.IsWithinMeleeRangeOf(CurrentTarget)
                 && S.MaxChargesAvailable(SB.InfernalStrike),
                 "AoE Max Charges Available"))
@@ -377,6 +383,7 @@ namespace Illidari.Rotation
             if (await S.Cast(SB.SigilOfFlameTalented, C.CombatColor, CurrentTarget.IsWithinMeleeRangeOf(Me) && T.VengeanceConcentratedSigils, "AoE - Contentrated Sigils")) { return true; }
             if (await S.CastGround(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils && !Me.IsWithinMeleeRangeOf(CurrentTarget), "AoE - Not in Melee; Cast on target")) { return true; }
             if (await S.CastGroundOnMe(SB.SigilOfFlame, C.CombatColor, !T.VengeanceConcentratedSigils && Me.IsWithinMeleeRangeOf(CurrentTarget), "AoE - In Melee; Cast on self")) { return true; }
+            if (await S.CastGround(SB.SigilOfChains, C.CombatColor, T.VengeanceSigilOfChains && VS.VengeanceCombatSigilOfChains && CurrentTarget.NearbyTargets()?.Count() >= VS.VengeanceCombatSigilOfChainsUnits))
             if (await S.Cast(SB.FieryBrand, C.CombatColor, T.VengeanceBurningAlive, addLog: "AoE has Burning Alive Talent")) { return true; }
             if (await S.Cast(SB.Shear, C.CombatColor, addLog: "AoE")) { return true; }
 
@@ -386,14 +393,14 @@ namespace Illidari.Rotation
         #region Interrupt and Stun
         public static async Task<bool> InterruptTarget()
         {
-            if (!M.IS.VengeanceAllowInterrupt) { return false; }
+            if (!M.VengeanceAllowInterrupt) { return false; }
             // use consume magic at 20 yards first
             //WoWUnit interruptTarget = GetInterruptTarget(20f);
             //L.debugLog(string.Format($"Interrupt target 20yd: {CurrentTarget.SafeName}"));
             if (await S.GCD(SB.ConsumeMagic, C.DefensiveColor,
-                M.IS.VengeanceAllowInterruptConsumeMagic
+                VS.VengeanceAllowInterruptConsumeMagic
                 && CurrentTarget.IsValidCombatUnit()
-                && (CurrentTarget.IsCasting || CurrentTarget.IsCastingHealingSpell),
+                && CurrentTarget.ShouldInterrupt(VS.VengeanceInterruptMinimumTime, VS.VengeanceInterruptTimeLeft),
                 string.Format($"Interrupt: {CurrentTarget.SafeName}, casting: {CurrentTarget.CastingSpell?.Name}")
             ))
             { return true; }
@@ -404,12 +411,14 @@ namespace Illidari.Rotation
             //{
             //    L.debugLog(string.Format($"Interrupt target 30yd: {interruptTarget.SafeName} casting: {interruptTarget.CastingSpell?.Name}"));
             //    // now look for sigil of silence
-            if (await S.CastGround(SB.SigilOfSilence, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfSilence,
+            if (await S.CastGround(SB.SigilOfSilence, C.DefensiveColor, VS.VengeanceAllowInterruptSigilOfSilence 
+                && CurrentTarget.ShouldInterrupt(VS.VengeanceInterruptMinimumTime, VS.VengeanceInterruptTimeLeft),
                 string.Format($"Interrupt: {CurrentTarget.SafeName}, casting: {CurrentTarget.CastingSpell?.Name}")))
             { return true; }
 
             // now look for sigil of misery
-            if (await S.CastGround(SB.SigilOfMisery, C.DefensiveColor, M.IS.VengeanceAllowInterruptSigilOfMisery,
+            if (await S.CastGround(SB.SigilOfMisery, C.DefensiveColor, VS.VengeanceAllowInterruptSigilOfMisery
+                && CurrentTarget.ShouldInterrupt(VS.VengeanceInterruptMinimumTime, VS.VengeanceInterruptTimeLeft),
                 string.Format($"Interrupt: {CurrentTarget.SafeName}, casting: {CurrentTarget.CastingSpell?.Name}")))
             { return true; }
 
@@ -436,7 +445,7 @@ namespace Illidari.Rotation
         private static WoWUnit GetStunTarget(WoWUnit unit, double range)
         {
             var units = U.activeEnemies(unit.Location, 8f);
-            if (units != null && units.Count() >= M.IS.VengeanceStunSigilOfMiseryCount)
+            if (units != null && units.Count() >= VS.VengeanceStunSigilOfMiseryCount)
             {
                 return unit;
             }

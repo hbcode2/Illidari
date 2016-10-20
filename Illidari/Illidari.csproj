@@ -59,6 +59,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -72,6 +73,16 @@
     <Compile Include="Core\Helpers\Common.cs" />
     <Compile Include="Core\Helpers\Extensions.cs" />
     <Compile Include="Core\Helpers\Spell Book.cs" />
+    <Compile Include="Core\IllidariSettings\GeneralSettings.cs" />
+    <Compile Include="Core\IllidariSettings\HavocSettings.cs" />
+    <Compile Include="Core\IllidariSettings\HotkeySettings.cs" />
+    <Compile Include="Core\IllidariSettings\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Core\IllidariSettings\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Core\IllidariSettings\VengeanceSettings.cs" />
     <Compile Include="Core\Item.cs" />
     <Compile Include="Core\Managers\Hotkeys.cs" />
     <Compile Include="Core\Managers\TalentManager.cs" />
@@ -79,32 +90,16 @@
     <Compile Include="Core\Spell.cs" />
     <Compile Include="Core\Unit.cs" />
     <Compile Include="Core\Utilities\Log.cs" />
-    <Compile Include="Core\IllidariSettings\IllidariSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Core\IllidariSettings\IllidariSettingsForm.Designer.cs">
-      <DependentUpon>IllidariSettingsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rotation\Resting.cs" />
     <Compile Include="Rotation\Vengeance.cs" />
     <Compile Include="Rotation\Death.cs" />
     <Compile Include="Rotation\Havoc.cs" />
-    <Compile Include="Core\IllidariSettings\IllidariSettings.cs" />
-    <Compile Include="Core\IllidariSettings\ViewBagsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Core\IllidariSettings\ViewBagsForm.Designer.cs">
-      <DependentUpon>ViewBagsForm.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Core\IllidariSettings\IllidariSettingsForm.resx">
-      <DependentUpon>IllidariSettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Core\IllidariSettings\ViewBagsForm.resx">
-      <DependentUpon>ViewBagsForm.cs</DependentUpon>
+    <EmbeddedResource Include="Core\IllidariSettings\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

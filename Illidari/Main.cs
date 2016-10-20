@@ -24,6 +24,7 @@ using R = Illidari.Rotation.Resting;
 using System.Diagnostics;
 using System.Reflection;
 using Styx.CommonBot;
+using Illidari.Core.IllidariSettings;
 #endregion
 
 namespace Illidari
@@ -31,68 +32,21 @@ namespace Illidari
     public class Main : CombatRoutine
     {
 
-        public static Core.IllidariSettings.IllidariSettings IS;
-        private static readonly Version version = new Version(10, 03, 2016);
+        //public static Core.IllidariSettings.IllidariSettings IS;
+        private static readonly Version version = new Version(10, 16, 2016);
         public override string Name { get { return string.Format($"{CRName} v{version}"); } }
         public override WoWClass Class { get { return WoWClass.DemonHunter; } }
         public static string CRName { get { return "Illidari"; } }
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
 
         #region Implementations
-        public override Composite PreCombatBuffBehavior
-        {
-            get
-            {
-                return new ActionRunCoroutine(ctx => C.SpecSelectorPrecombatBuffBahvior());
-            }
-        }
-        public override Composite CombatBuffBehavior
-        {
-            get
-            {
-                return new ActionRunCoroutine(ctx => C.SpecSelectorCombatBuffBehavior());
-            }
-        }
-        public override Composite CombatBehavior
-        {
-            get
-            {
-                return new ActionRunCoroutine(ctx => C.SpecSelectorRotation());
-            }
-        }
-        public override Composite PullBehavior
-        {
-            get
-            {
-                return new ActionRunCoroutine(ctx => C.SpecSelectorPullBehavior());
-            }
-        }
-        public override Composite RestBehavior
-        {
-            get
-            {
-                return new ActionRunCoroutine(ctx => R.RestBehavior());
-            }
-        }
-        public override Composite MoveToTargetBehavior
-        {
-            get
-            {
-                //if (DateTime.Now.Second % 5 == 0)
-                // L.debugLog("Calling MoveToTargetBehavior");
-                return new ActionRunCoroutine(ctx => C.EnsureMeleeRange(Me.CurrentTarget));
-            }
-        }
-        public override Composite PullBuffBehavior
-        {
-            get
-            {
-                //if (DateTime.Now.Second % 5 == 0)
-                // L.debugLog("Calling PullBuffBehavior");
-                return base.PullBuffBehavior;
-            }
-        }
-
+        public override Composite PreCombatBuffBehavior { get { return new ActionRunCoroutine(ctx => C.SpecSelectorPrecombatBuffBahvior()); } }
+        public override Composite CombatBuffBehavior { get { return new ActionRunCoroutine(ctx => C.SpecSelectorCombatBuffBehavior()); } }
+        public override Composite CombatBehavior { get { return new ActionRunCoroutine(ctx => C.SpecSelectorRotation()); } }
+        public override Composite PullBehavior { get { return new ActionRunCoroutine(ctx => C.SpecSelectorPullBehavior()); } }
+        public override Composite RestBehavior { get { return new ActionRunCoroutine(ctx => R.RestBehavior()); } }
+        public override Composite MoveToTargetBehavior { get { return new ActionRunCoroutine(ctx => C.EnsureMeleeRange(Me.CurrentTarget)); } }
+        public override Composite PullBuffBehavior { get { return base.PullBuffBehavior; } }
         public override Composite DeathBehavior { get { return new ActionRunCoroutine(ctx => D.DeathBehavor()); } }
         public override bool NeedDeath { get { return Me.IsDead; } }
         public override bool NeedRest
@@ -101,11 +55,11 @@ namespace Illidari
             {
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
-                    return Me.HealthPercent < IS.GeneralRestingRestHp;
+                    return Me.HealthPercent < GeneralSettings.Instance.GeneralRestingRestHp;
                 }
                 if (Me.Specialization == WoWSpec.DemonHunterVengeance)
                 {
-                    return Me.HealthPercent < IS.GeneralRestingRestHp;
+                    return Me.HealthPercent < GeneralSettings.Instance.GeneralRestingRestHp;
                 }
                 return false;
             }
@@ -123,31 +77,6 @@ namespace Illidari
             Logging.Write(Colors.Fuchsia, "-- v" + version + " --");
             Logging.Write(Colors.Fuchsia, "-- by SpeshulK926 --");
             Logging.Write(Colors.Fuchsia, "-- A Demon Hunter's Combat Routine --");
-
-
-            IS = new Core.IllidariSettings.IllidariSettings();
-
-            TM.initTalents();
-            Type type = IS.GetType();
-            PropertyInfo[] properties = type.GetProperties();
-
-            foreach (PropertyInfo property in properties)
-            {
-                if (property.Name == "SettingsPath") { continue; }
-                if (property.PropertyType == typeof(List<uint>))
-                {
-                    List<uint> uintList = (List<uint>)property.GetValue(IS, null);
-                    foreach (var uintItem in uintList)
-                    {
-                        L.debugLog(string.Format($"{property.Name}: {uintItem}"));
-                    }
-                }
-                else
-                {
-                    L.debugLog(string.Format($"{property.Name}: {property.GetValue(IS, null)}"));
-                }
-
-            }
 
             HK.registerHotkeys();
 
@@ -201,27 +130,36 @@ namespace Illidari
                 int capabilities = (int)CapabilityFlags.Aoe; // aoe always on
 
                 // generic settings for movement, targeting, and facing.
-                if (IS.GeneralMovement) { capabilities += (int)CapabilityFlags.Movement; }
-                if (IS.GeneralTargeting) { capabilities += (int)CapabilityFlags.Targeting; }
-                if (IS.GeneralFacing) { capabilities += (int)CapabilityFlags.Facing; }
+                if (GeneralSettings.Instance.GeneralMovement) { capabilities += (int)CapabilityFlags.Movement; }
+                if (GeneralSettings.Instance.GeneralTargeting) { capabilities += (int)CapabilityFlags.Targeting; }
+                if (GeneralSettings.Instance.GeneralFacing) { capabilities += (int)CapabilityFlags.Facing; }
 
                 if (Me.Specialization == WoWSpec.DemonHunterHavoc)
                 {
-                    if (IS.HavocDefensiveCooldowns) { capabilities += (int)CapabilityFlags.DefensiveCooldowns; }
-                    if (IS.HavocOffensiveCooldowns) { capabilities += (int)CapabilityFlags.OffensiveCooldowns; }
+                    if (HavocDefensiveCooldowns) { capabilities += (int)CapabilityFlags.DefensiveCooldowns; }
+                    if (HavocOffensiveCooldowns) { capabilities += (int)CapabilityFlags.OffensiveCooldowns; }
                 }
 
                 if (Me.Specialization == WoWSpec.DemonHunterVengeance)
                 {
-                    if (IS.VengeanceAllowTaunt) { capabilities += (int)CapabilityFlags.Taunting; }
-                    if (IS.VengeanceAllowInterrupt) { capabilities += (int)CapabilityFlags.Interrupting; }
+                    if (VengeanceSettings.Instance.VengeanceAllowTaunt) { capabilities += (int)CapabilityFlags.Taunting; }
+                    if (Main.VengeanceAllowInterrupt) { capabilities += (int)CapabilityFlags.Interrupting; }
                     capabilities += (int)CapabilityFlags.GapCloser;
                 }
                 return (CapabilityFlags)capabilities;
             }
         }
 
-        public override void OnButtonPress() { IllidariSettingsForm setForm = new IllidariSettingsForm(); setForm.Show(); }
+        public override void OnButtonPress()
+        {
+            SettingsForm setForm = new SettingsForm();
+            setForm.ShowDialog();
+
+            GeneralSettings.Instance.Save();
+            HavocSettings.Instance.Save();
+            VengeanceSettings.Instance.Save();
+            HotkeySettings.Instance.Save();
+        }
         public override void ShutDown() { HK.removeHotkeys(); }
         #endregion
 
@@ -236,11 +174,11 @@ namespace Illidari
                 return;
 
             // if we have an oppsing faction, then clear the target.
-            if (U.isOpposingFaction(Me.CurrentTarget) && IS.GeneralIgnoreOpposingFaction)
+            if (U.isOpposingFaction(Me.CurrentTarget) && GeneralSettings.Instance.GeneralIgnoreOpposingFaction)
             {
                 Me.ClearTarget();
             }
-             
+
             // cache a few things like my fury/pain
             C.Cache();
 
@@ -264,15 +202,16 @@ namespace Illidari
 
         private bool GetInterruptTarget()
         {
-            if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowInterrupt && !HK.RotationOnlyOn)
+
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance && Main.VengeanceAllowInterrupt && !HK.RotationOnlyOn)
             {
                 // consume magic
-                if (IS.VengeanceAllowInterruptConsumeMagic && !Core.Spell.OnCooldown(Core.Helpers.Spell_Book.ConsumeMagic))
+                if (VengeanceSettings.Instance.VengeanceAllowInterruptConsumeMagic && !Core.Spell.OnCooldown(Core.Helpers.Spell_Book.ConsumeMagic))
                 {
                     var units = U.activeEnemies(Me.Location, 20f); // get all enemies within 20 yards
                     if (units != null)
                     {
-                        var interruptTarget = units.Where(u => (u.IsCasting || u.IsCastingHealingSpell) && u.CanInterruptCurrentSpellCast).OrderBy(d => d.Distance).FirstOrDefault();
+                        var interruptTarget = units.Where(u => u.ShouldInterrupt(VengeanceSettings.Instance.VengeanceInterruptMinimumTime, VengeanceSettings.Instance.VengeanceInterruptTimeLeft)).OrderBy(d => d.Distance).FirstOrDefault();
                         if (interruptTarget != null)
                         {
                             interruptTarget.Target();
@@ -288,7 +227,7 @@ namespace Illidari
 
         private bool GetTauntTarget()
         {
-            if (Me.Specialization == WoWSpec.DemonHunterVengeance && IS.VengeanceAllowTaunt && !HK.RotationOnlyOn)
+            if (Me.Specialization == WoWSpec.DemonHunterVengeance && VengeanceSettings.Instance.VengeanceAllowTaunt && !HK.RotationOnlyOn)
             {
                 U.enemiesToTauntAnnex(50f);
 
@@ -331,8 +270,30 @@ namespace Illidari
             return false;
         }
 
+
         #endregion
 
+        public static bool VengeanceAllowInterrupt
+        {
+            get { return (VengeanceSettings.Instance.VengeanceAllowInterruptConsumeMagic || VengeanceSettings.Instance.VengeanceAllowInterruptSigilOfSilence || VengeanceSettings.Instance.VengeanceAllowInterruptSigilOfMisery); }
+        }
+
+        public static bool HavocDefensiveCooldowns
+        {
+            get
+            {
+                return (HavocSettings.Instance.HavocBlurHp > 0 || HavocSettings.Instance.HavocBlurUnits > 0)
+                    || (HavocSettings.Instance.HavocChaosNovaHp > 0 || HavocSettings.Instance.HavocChaosNovaUnits > 0)
+                    || (HavocSettings.Instance.HavocDarknessHp > 0 || HavocSettings.Instance.HavocDarknessUnits > 0);
+            }
+        }
+        public static bool HavocOffensiveCooldowns
+        {
+            get
+            {
+                return (HavocSettings.Instance.HavocUseMetamorphosisCooldown != CooldownTypes.Manual);
+            }
+        }
         #endregion
     }
 }

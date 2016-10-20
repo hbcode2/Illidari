@@ -1,4 +1,5 @@
 ﻿using Buddy.Coroutines;
+using Illidari.Core.IllidariSettings;
 using Styx;
 using Styx.CommonBot;
 using Styx.CommonBot.Coroutines;
@@ -111,7 +112,7 @@ namespace Illidari.Core
             if (!SpellManager.Cast(Spell, Me))
                 return false;
             lastSpellCast = Spell;
-            L.defensiveLog("~" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !Main.IS.GeneralDebug ? "" : " - " + addLog), newColor);
+            L.defensiveLog("~" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !GeneralSettings.Instance.GeneralDebug ? "" : " - " + addLog), newColor);
             await CommonCoroutines.SleepForLagDuration();
             return true;
         }
@@ -142,7 +143,7 @@ namespace Illidari.Core
             if (!SpellManager.Cast(Spell, currentTarget))
                 return false;
             lastSpellCast = Spell;
-            L.combatLog("^" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !Main.IS.GeneralDebug ? "" : " - " + addLog), newColor);
+            L.combatLog("^" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !GeneralSettings.Instance.GeneralDebug ? "" : " - " + addLog), newColor);
             if (sleep)
             {
                 await CommonCoroutines.SleepForLagDuration();
@@ -152,6 +153,32 @@ namespace Illidari.Core
                 await Coroutine.Yield();
             }
             
+            return true;
+        }
+
+        public static bool Cast2(int Spell, System.Windows.Media.Color newColor, bool reqs = true, string addLog = "", bool sleep = true)
+        {
+            //if (Spell == Helpers.Spell_Book.Glide)
+            //{
+            //    L.debugLog("Glide: " + reqs.ToString());
+            //}
+
+            if (!currentTarget.IsValidCombatUnit())
+                return false;
+            if (!reqs)
+            {
+
+                //L.combatLog("Trying to cast: " + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) ? "" : " - " + addLog));
+                return false;
+            }
+
+            if (!SpellManager.CanCast(WoWSpell.FromId(Spell), currentTarget, false, false, false)) //Should we check for if out currentTarget is moving? *Second false
+                return false;
+            if (!SpellManager.Cast(Spell, currentTarget))
+                return false;
+            lastSpellCast = Spell;
+            L.combatLog("^" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !GeneralSettings.Instance.GeneralDebug ? "" : " - " + addLog), newColor);
+
             return true;
         }
 
@@ -176,7 +203,7 @@ namespace Illidari.Core
             if (!SpellManager.Cast(Spell))
                 return false;
             lastSpellCast = Spell;
-            L.combatLog("*" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !Main.IS.GeneralDebug ? "" : " - " + addLog), newColor);
+            L.combatLog("*" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !GeneralSettings.Instance.GeneralDebug ? "" : " - " + addLog), newColor);
             if (sleep)
             {
                 await CommonCoroutines.SleepForLagDuration();
@@ -210,7 +237,7 @@ namespace Illidari.Core
             if (!SpellManager.Cast(Spell,target))
                 return false;
             lastSpellCast = Spell;
-            L.combatLog("*" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !Main.IS.GeneralDebug ? "" : " - " + addLog), newColor);
+            L.combatLog("*" + WoWSpell.FromId(Spell).Name + (String.IsNullOrEmpty(addLog) || !GeneralSettings.Instance.GeneralDebug ? "" : " - " + addLog), newColor);
             await CommonCoroutines.SleepForRandomReactionTime();
             return true;
         }

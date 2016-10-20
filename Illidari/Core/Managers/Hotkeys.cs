@@ -1,4 +1,5 @@
-﻿using Styx;
+﻿using Illidari.Core.IllidariSettings;
+using Styx;
 using Styx.Common;
 using Styx.WoWInternals.WoWObjects;
 using System;
@@ -34,9 +35,9 @@ namespace Illidari.Core.Managers
             TypeConverter converter = TypeDescriptor.GetConverter(typeof(Keys));
 
             // ++++++++++ General AoE +++++++++++++++
-            if (!string.IsNullOrEmpty(M.IS.HotkeyVengeanceAoeKey) && M.IS.HotkeyVengeanceAoeModifier > 0)
+            if (!string.IsNullOrEmpty(HotkeySettings.Instance.HotkeyVengeanceAoeKey) && HotkeySettings.Instance.HotkeyVengeanceAoeModifier > 0)
             {
-                HotkeysManager.Register("AoEOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceAoeKey), (ModifierKeys)M.IS.HotkeyVengeanceAoeModifier, ret =>
+                HotkeysManager.Register("AoEOn", (Keys)converter.ConvertFromString(HotkeySettings.Instance.HotkeyVengeanceAoeKey), (ModifierKeys)HotkeySettings.Instance.HotkeyVengeanceAoeModifier, ret =>
                 {
                     VengeanceAoEOn = !VengeanceAoEOn;
                     HavocAoEOn = !HavocAoEOn;
@@ -44,9 +45,9 @@ namespace Illidari.Core.Managers
                 });
             }
 
-            if (!string.IsNullOrEmpty(M.IS.HotkeyGeneralRotationOnlyKey) && M.IS.HotkeyGeneralRotationOnlyModifier > 0)
+            if (!string.IsNullOrEmpty(HotkeySettings.Instance.HotkeyGeneralRotationOnlyKey) && HotkeySettings.Instance.HotkeyGeneralRotationOnlyModifier > 0)
             {
-                HotkeysManager.Register("RotationOnly", (Keys)converter.ConvertFromString(M.IS.HotkeyGeneralRotationOnlyKey), (ModifierKeys)M.IS.HotkeyGeneralRotationOnlyModifier, ret =>
+                HotkeysManager.Register("RotationOnly", (Keys)converter.ConvertFromString(HotkeySettings.Instance.HotkeyGeneralRotationOnlyKey), (ModifierKeys)HotkeySettings.Instance.HotkeyGeneralRotationOnlyModifier, ret =>
                 {
                     RotationOnlyOn = !RotationOnlyOn;
                     StyxWoW.Overlay.AddToast((RotationOnlyOn ? "Rotation Only: Enabled!" : "Rotation Only: Disabled!"), 2000);
@@ -57,9 +58,9 @@ namespace Illidari.Core.Managers
             {
                 // ++++++++ VENGEANCE SPEC ONLY ++++++++++
                 
-                if (M.IS.HotkeyVengeanceDefensiveModifier > 0 && !string.IsNullOrEmpty(M.IS.HotkeyVengeanceDefensiveKey))
+                if (HotkeySettings.Instance.HotkeyVengeanceDefensiveModifier > 0 && !string.IsNullOrEmpty(HotkeySettings.Instance.HotkeyVengeanceDefensiveKey))
                 {
-                    HotkeysManager.Register("VengeanceDefensiveOn", (Keys)converter.ConvertFromString(M.IS.HotkeyVengeanceDefensiveKey), (ModifierKeys)M.IS.HotkeyVengeanceDefensiveModifier, ret =>
+                    HotkeysManager.Register("VengeanceDefensiveOn", (Keys)converter.ConvertFromString(HotkeySettings.Instance.HotkeyVengeanceDefensiveKey), (ModifierKeys)HotkeySettings.Instance.HotkeyVengeanceDefensiveModifier, ret =>
                     {
                         VengeanceDefensiveOn = !VengeanceDefensiveOn;
                         StyxWoW.Overlay.AddToast((VengeanceDefensiveOn ? "Defensive Mode: Enabled!" : "Defensive Mode: Disabled!"), 2000);
@@ -70,9 +71,9 @@ namespace Illidari.Core.Managers
 
             if (Me.Specialization == WoWSpec.DemonHunterHavoc)
             {
-                if (M.IS.HotkeyHavocOffensiveModifier > 0 && !string.IsNullOrEmpty(M.IS.HotkeyHavocOffensiveKey))
+                if (HotkeySettings.Instance.HotkeyHavocOffensiveModifier > 0 && !string.IsNullOrEmpty(HotkeySettings.Instance.HotkeyHavocOffensiveKey))
                 {
-                    HotkeysManager.Register("HavocOffensiveOn", (Keys)converter.ConvertFromString(M.IS.HotkeyHavocOffensiveKey), (ModifierKeys)M.IS.HotkeyHavocOffensiveModifier, ret =>
+                    HotkeysManager.Register("HavocOffensiveOn", (Keys)converter.ConvertFromString(HotkeySettings.Instance.HotkeyHavocOffensiveKey), (ModifierKeys)HotkeySettings.Instance.HotkeyHavocOffensiveModifier, ret =>
                     {
                         HavocOffensiveOn = !HavocOffensiveOn;
                         StyxWoW.Overlay.AddToast((HavocOffensiveOn ? "Offensive Cooldowns: Enabled!" : "Offensive Cooldowns: Disabled!"), 2000);

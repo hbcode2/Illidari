@@ -24,6 +24,7 @@ using System.Numerics;
 using Styx.Helpers;
 using Styx.Pathing;
 using System.Diagnostics;
+using Illidari.Core.IllidariSettings;
 
 #endregion
 
@@ -31,15 +32,19 @@ namespace Illidari.Rotation
 {
     class Havoc
     {
+        private static HavocSettings HS => HavocSettings.Instance;
+        private static GeneralSettings GS => GeneralSettings.Instance;
+        private static HotkeySettings HKS => HotkeySettings.Instance;
+
         private static Stopwatch openRotationTimeout = new Stopwatch();
-        private static Stopwatch felRushAfterVengefulRetreat = new Stopwatch();
+        //private static Stopwatch felRushAfterVengefulRetreat = new Stopwatch();
         public enum OpenerSteps { None, InitialFelRush, FelMasteryFelRush, FuryBuilder, FaceAwayFromTarget, VengefulRetreat, Nemesis, Metamorphosis, ChaosBlades }
         private static bool useOpenRotation = false;
         public static OpenerSteps openingRotationSkillsUsed = OpenerSteps.None;
         //private static Vector3 origSpot;
         //private static Vector3 safeSpot;
         //private static float needFacing;
-        
+
         private static LocalPlayer Me { get { return StyxWoW.Me; } }
         private static WoWUnit CurrentTarget { get { return StyxWoW.Me.CurrentTarget; } }
         //private static uint CurrentFury => StyxWoW.Me.GetPowerInfo(WoWPowerType.Fury).Current;
@@ -50,10 +55,11 @@ namespace Illidari.Rotation
             if (HK.manualOn || Me.Combat || !Me.IsAlive || (Me.OnTaxi))
                 return true;
             // check to see if we should use a flask
-            //if (await I.UseItem(I.FindBestPrecombatFlask(), M.IS.HavocUseAgilityFlask && !Me.HasAura(SB.FlaskList)))
+            //if (await I.UseItem(I.FindBestPrecombatFlask(), HS.HavocUseAgilityFlask && !Me.HasAura(SB.FlaskList)))
             //{
             //    return true;
             //}
+            await Coroutine.Yield();
             return false;
         }
         #endregion
@@ -65,12 +71,29 @@ namespace Illidari.Rotation
                 return true;
             if (!Me.IsAutoAttacking && CurrentTarget.IsValidCombatUnit()) { Lua.DoString("StartAttack()"); return true; }
 
-            if (await I.UseItem(I.GetItemByName("Draenic Agility Potion"),
-                M.IS.HavocUseAgilityPotionCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown // use it on cooldown
-                || (M.IS.HavocUseAgilityPotionCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly && Me.CurrentTarget.IsBoss) // use if only is a boss
-                || (M.IS.HavocUseAgilityPotionCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && (Me.CurrentTarget.IsBoss || Me.CurrentTarget.Elite)) // use boss or eltie
+            if (await S.Cast(SB.ChaosBlades, C.CombatColor,
+                HS.HavocUseChaosBlades == CooldownTypes.Cooldown // use it on cooldown
+                || (HS.HavocUseChaosBlades == CooldownTypes.BossOnly && Me.CurrentTarget.IsBoss) // use if only is a boss
+                || (HS.HavocUseChaosBlades == CooldownTypes.EliteBoss && (Me.CurrentTarget.IsBoss || Me.CurrentTarget.Elite)) // use boss or elite
+
             ))
             { return true; }
+
+            if (await S.Cast(SB.Nemesis, C.CombatColor,
+                HS.HavocUseNemesis == CooldownTypes.Cooldown // use it on cooldown
+                || (HS.HavocUseNemesis == CooldownTypes.BossOnly && Me.CurrentTarget.IsBoss) // use if only is a boss
+                || (HS.HavocUseNemesis == CooldownTypes.EliteBoss && (Me.CurrentTarget.IsBoss || Me.CurrentTarget.Elite)) // use boss or elite
+
+            ))
+            { return true; }
+
+
+            //if (await I.UseItem(I.GetItemByName("Draenic Agility Potion"),
+            //    HS.HavocUseAgilityPotionCooldown == CooldownTypes.Cooldown // use it on cooldown
+            //    || (HS.HavocUseAgilityPotionCooldown == CooldownTypes.BossOnly && Me.CurrentTarget.IsBoss) // use if only is a boss
+            //    || (HS.HavocUseAgilityPotionCooldown == CooldownTypes.EliteBoss && (Me.CurrentTarget.IsBoss || Me.CurrentTarget.Elite)) // use boss or eltie
+            //))
+            //{ return true; }
 
             return false;
         }
@@ -82,13 +105,13 @@ namespace Illidari.Rotation
         {
             if (CurrentTarget.IsValidCombatUnit())
             {
-                if (!CurrentTarget.IsWithinMeleeRangeOf(Me) && M.IS.GeneralMovement)
+                if (!CurrentTarget.IsWithinMeleeRangeOf(Me) && GS.GeneralMovement)
                 {
                     //L.infoLog("Tried to pull");
                     await C.EnsureMeleeRange(CurrentTarget);
                 }
 
-                if (M.IS.GeneralFacing)
+                if (GS.GeneralFacing)
                 {
                     // check to see if we need to face target
                     await C.FaceTarget(CurrentTarget);
@@ -107,7 +130,7 @@ namespace Illidari.Rotation
 
                 // use to engage
                 return await S.GCD(SB.FelRush, C.CombatColor, CurrentTarget.Distance <= 20
-                    && M.IS.HavocFelRushOnPull);
+                    && HS.HavocFelRushOnPull);
 
             }
 
@@ -128,14 +151,14 @@ namespace Illidari.Rotation
             // i don't want facing to interfere with vengeful retreat opener.
             if (openingRotationSkillsUsed != OpenerSteps.FaceAwayFromTarget && openingRotationSkillsUsed != OpenerSteps.VengefulRetreat)
             {
-                if (M.IS.GeneralFacing)
+                if (GS.GeneralFacing)
                 {
                     // check to see if we need to face target
                     await C.FaceTarget(CurrentTarget);
                 }
             }
 
-            if (M.IS.GeneralMovement)
+            if (GS.GeneralMovement)
             {
                 // ensure we are in melee range and not too close
                 await C.EnsureMeleeRange(CurrentTarget);
@@ -153,15 +176,23 @@ namespace Illidari.Rotation
                 if (HK.HavocOffensiveOn)
                 {
                     // we have offensive cooldowns enabled, let's use them if they are available first.
-                    if (await I.UseItem(I.GetItemByName("Draenic Agility Potion"), M.IS.HotkeyHavocOffensiveAgilityPotion))
+                    if (await I.UseItem(I.GetItemByID(HS.HavocHealthPotionID), HKS.HotkeyHavocOffensiveAgilityPotion))
                     {
                         return true;
                     }
-                    if (await S.Cast(SB.MetamorphosisSpell, C.CombatColor, M.IS.HotkeyHavocOffensiveMetamorphosis))
+                    if (await S.Cast(SB.MetamorphosisSpell, C.CombatColor, HKS.HotkeyHavocOffensiveMetamorphosis))
                     {
                         return true;
                     }
-                    if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor, M.IS.HotkeyHavocOffensiveFoTI))
+                    if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor, HKS.HotkeyHavocOffensiveFoTI))
+                    {
+                        return true;
+                    }
+                    if (await S.Cast(SB.Nemesis, C.CombatColor, HKS.HotkeyHavocOffensiveNemesis))
+                    {
+                        return true;
+                    }
+                    if (await S.Cast(SB.ChaosBlades, C.CombatColor, HKS.HotkeyHavocOffensiveChaosBlades))
                     {
                         return true;
                     }
@@ -194,96 +225,66 @@ namespace Illidari.Rotation
             // cache number of active enemies in combat and just use that for use/logging
             int enemiesInMelee = U.activeEnemies(Me.Location, 8f).Count();
 
-            if (await I.UseItem(I.FindBestHealingPotion(), Me.HealthPercent < M.IS.HavocHealthPotionHp))
+            //if (await I.UseItem(I.FindBestHealingPotion(), Me.HealthPercent < HS.HavocHealthPotionHp))
+            //{
+            //    return true;
+            //}
+
+            #region Blur
+
+            if (await S.Buff(SB.Blur, C.DefensiveColor,
+                HS.HavocBlurUnits > 0
+            && (enemiesInMelee >= HS.HavocBlurUnits),
+             string.Format($"Units:{enemiesInMelee}>={HS.HavocBlurUnits}")))
+            {
+                return true;
+            }
+            if (await S.Buff(SB.Blur, C.DefensiveColor,
+                HS.HavocBlurHp > 0
+                && Me.HealthPercent < HS.HavocBlurHp,
+                string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{HS.HavocBlurHp}")))
             {
                 return true;
             }
 
-            #region Blur
-            if (M.IS.HavocBlurUnits > 0 && M.IS.HavocBlurHp > 0 && M.IS.HavocBlurOperator.ToUpper() == "AND")
-            {
-                if (await S.Buff(SB.Blur, C.DefensiveColor,
-                    Me.HealthPercent < M.IS.HavocBlurHp
-                    && enemiesInMelee >= M.IS.HavocBlurUnits,
-                    string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{M.IS.HavocBlurHp} AND Units:{enemiesInMelee}>={M.IS.HavocBlurUnits}")))
-                { return true; }
-            }
-            else
-            {
-                if (await S.Buff(SB.Blur, C.DefensiveColor,
-                    M.IS.HavocBlurUnits > 0
-                && (enemiesInMelee >= M.IS.HavocBlurUnits),
-                 string.Format($"Units:{enemiesInMelee}>={M.IS.HavocBlurUnits}")))
-                {
-                    return true;
-                }
-                if (await S.Buff(SB.Blur, C.DefensiveColor,
-                    M.IS.HavocBlurHp > 0
-                    && Me.HealthPercent < M.IS.HavocBlurHp,
-                    string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{M.IS.HavocBlurHp}")))
-                {
-                    return true;
-                }
-
-            }
 
             #endregion
 
             #region Darkness
-            if (M.IS.HavocDarknessUnits > 0 && M.IS.HavocDarknessHp > 0 && M.IS.HavocDarknessOperator.ToUpper() == "AND")
+
+            if (await S.Buff(SB.Darkness, C.DefensiveColor,
+                HS.HavocDarknessUnits > 0
+            && (enemiesInMelee >= HS.HavocDarknessUnits),
+             string.Format($"Units:{enemiesInMelee}>={HS.HavocDarknessUnits}")))
             {
-                if (await S.Buff(SB.Darkness, C.DefensiveColor,
-                    Me.HealthPercent < M.IS.HavocDarknessHp
-                    && enemiesInMelee >= M.IS.HavocDarknessUnits,
-                    string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{M.IS.HavocDarknessHp} AND Units:{enemiesInMelee}>={M.IS.HavocDarknessUnits}")))
-                { return true; }
+                return true;
             }
-            else
+            if (await S.Buff(SB.Darkness, C.DefensiveColor,
+                HS.HavocDarknessHp > 0
+                && Me.HealthPercent < HS.HavocDarknessHp,
+                string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{HS.HavocDarknessHp}")))
             {
-                if (await S.Buff(SB.Darkness, C.DefensiveColor,
-                    M.IS.HavocDarknessUnits > 0
-                && (enemiesInMelee >= M.IS.HavocDarknessUnits),
-                 string.Format($"Units:{enemiesInMelee}>={M.IS.HavocDarknessUnits}")))
-                {
-                    return true;
-                }
-                if (await S.Buff(SB.Darkness, C.DefensiveColor,
-                    M.IS.HavocDarknessHp > 0
-                    && Me.HealthPercent < M.IS.HavocDarknessHp,
-                    string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{M.IS.HavocDarknessHp}")))
-                {
-                    return true;
-                }
+                return true;
             }
 
 
             #endregion
 
             #region Chaos Nova
-            if (M.IS.HavocChaosNovaUnits > 0 && M.IS.HavocChaosNovaHp > 0 && M.IS.HavocChaosNovaOperator.ToUpper() == "AND")
+
+            if (await S.Buff(SB.ChaosNova, C.DefensiveColor,
+                HS.HavocChaosNovaUnits > 0
+            && (enemiesInMelee >= HS.HavocChaosNovaUnits),
+             string.Format($"Units:{enemiesInMelee}>={HS.HavocChaosNovaUnits}")))
             {
-                if (await S.Buff(SB.ChaosNova, C.DefensiveColor,
-                    Me.HealthPercent < M.IS.HavocChaosNovaHp
-                    && enemiesInMelee >= M.IS.HavocChaosNovaUnits,
-                    string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{M.IS.HavocChaosNovaHp} AND Units:{enemiesInMelee}>={M.IS.HavocChaosNovaUnits}")))
-                { return true; }
+                return true;
             }
-            else
+            if (await S.Buff(SB.ChaosNova, C.DefensiveColor,
+                HS.HavocChaosNovaHp > 0
+                && Me.HealthPercent < HS.HavocChaosNovaHp,
+                string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{HS.HavocChaosNovaHp}")))
             {
-                if (await S.Buff(SB.ChaosNova, C.DefensiveColor,
-                    M.IS.HavocChaosNovaUnits > 0
-                && (enemiesInMelee >= M.IS.HavocChaosNovaUnits),
-                 string.Format($"Units:{enemiesInMelee}>={M.IS.HavocChaosNovaUnits}")))
-                {
-                    return true;
-                }
-                if (await S.Buff(SB.ChaosNova, C.DefensiveColor,
-                    M.IS.HavocChaosNovaHp > 0
-                    && Me.HealthPercent < M.IS.HavocChaosNovaHp,
-                    string.Format($"HP:{Me.HealthPercent.ToString("F0")}<{M.IS.HavocChaosNovaHp}")))
-                {
-                    return true;
-                }
+                return true;
             }
 
             #endregion
@@ -296,11 +297,11 @@ namespace Illidari.Rotation
         public static async Task<bool> AoE(int count)
         {
             // use metamorphosis in aoe mode
-            if (await S.CastGround(SB.MetamorphosisSpell, C.CombatColor, UseMetamorphosisCD(true))) { return true; } 
+            if (await S.CastGround(SB.MetamorphosisSpell, C.CombatColor, UseMetamorphosisCD(true))) { return true; }
 
             // initial Fel Rush with Fel Mastery talent, near the cap, almost 2 charges at > 3 targets or trigger momentum
             if (await S.GCD(SB.FelRush, C.CombatColor,
-                M.IS.HavocFelRushAoe
+                HS.HavocFelRushAoe
                 && Me.CurrentTarget.Distance <= 18
                 && ((T.HavocFelMastery && !S.OnCooldown(SB.VengefulRetreat) && C.MissingPower <= 30 && count >= 3)
                     || (NeedMomentum())
@@ -309,7 +310,7 @@ namespace Illidari.Rotation
 
             #region Multi-Target Vengeful Retreat
             // use it if we have Prepared talent differently
-            if (await S.GCD(SB.VengefulRetreat, C.CombatColor, M.IS.HavocVengefulReatreatAoe
+            if (await S.GCD(SB.VengefulRetreat, C.CombatColor, HS.HavocVengefulReatreatAoe
                 && C.MissingPower > 45
                 && FelRushCheckCharge(true)
                 && T.HavocPrepared
@@ -318,7 +319,7 @@ namespace Illidari.Rotation
 
             // use it different if we DO NOT have Prepared talent
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
-                M.IS.HavocVengefulReatreatAoe
+                HS.HavocVengefulReatreatAoe
                 && FelRushCheckCharge(true)
                 && !T.HavocPrepared
                 && Me.IsWithinMeleeRangeOf(CurrentTarget), "AoE"))               // and cooldown timer < 500ms (2nd one)
@@ -327,14 +328,14 @@ namespace Illidari.Rotation
 
             // Fel Rush if we almost hitting max charges with 3 or more
             if (await S.GCD(SB.FelRush, C.CombatColor,
-                M.IS.HavocFelRushAoe
+                HS.HavocFelRushAoe
                 && Me.CurrentTarget.Distance <= 18 && count >= 3 && FelRushAlmostMaxCharge(), "AoE Max Charges", sleep: false))
             { return true; }
 
             if (await S.Cast(SB.FuryOfTheIllidari, C.CombatColor, UseFuryOfIllidariCD(count >= 3) && CanUseAbilityWithMomentum())) { return true; }
             if (await S.Cast(SB.FelBarrage, C.CombatColor, count >= 3 && CanUseAbilityWithMomentum() && T.HavocFelBarrage && S.GetCharges(SB.FelBarrage) >= 4 && CurrentTarget.Distance <= 30, "AoE")) { return true; }
             if (await S.GCD(SB.EyeBeam, C.CombatColor, count >= 3 && CanUseAbilityWithMomentum(), "AoE")) { return true; }
-            if (await S.GCD(SB.BladeDance, C.CombatColor, count>=3, "AoE")) { return true; }
+            if (await S.GCD(SB.BladeDance, C.CombatColor, count >= 3, "AoE")) { return true; }
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor, count >= 3 && CanUseAbilityWithMomentum() && T.HavocBloodlet && CurrentTarget.Distance <= 30, "AoE")) { return true; }
             if (await S.Cast(SB.ChaosStrike, C.CombatColor, T.HavocChaosCleave && count <= 3, "AoE")) { return true; }
             if (await S.Cast(SB.ThrowGlaive, C.CombatColor, count >= 3 && CurrentTarget.Distance <= 30, "AoE")) { return true; }
@@ -351,7 +352,7 @@ namespace Illidari.Rotation
             #region Multi-Target Fel Rush
             // use this in combination with vengeful retreat
             if (await S.GCD(SB.FelRush, C.CombatColor,
-                M.IS.HavocFelRushAoe
+                HS.HavocFelRushAoe
                 && !S.OnCooldown(SB.VengefulRetreat)
                 && T.HavocFelMastery
                 && Me.CurrentTarget.Distance <= 18, "AoED", sleep: false))
@@ -359,7 +360,7 @@ namespace Illidari.Rotation
 
             // use to engage
             if (await S.GCD(SB.FelRush, C.CombatColor,
-                M.IS.HavocFelRushAoe
+                HS.HavocFelRushAoe
                 && !S.OnCooldown(SB.VengefulRetreat)
                 && T.HavocFelMastery
                 && Me.CurrentTarget.Distance <= 18, "AoED", sleep: false))
@@ -379,7 +380,7 @@ namespace Illidari.Rotation
         /// <returns></returns>
         public static async Task<bool> OpeningRotationSingleTarget()
         {
-            //L.debugLog("UseRotation:" + (!useOpenRotation).ToString() + ", FelRushOnPull:" + (M.IS.HavocFelRushOnPull).ToString() + ", UseMetaCd:" + UseMetamorphosisCD(false).ToString() + ", FRMaxCharges:" + S.MaxChargesAvailable(SB.FelRush).ToString() + ", FRChargesNoFelMastery:" + (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 && !T.HavocFelMastery).ToString() + ", MetaCD:" + (!S.OnCooldown(SB.MetamorphosisSpell)).ToString());
+            //L.debugLog("UseRotation:" + (!useOpenRotation).ToString() + ", FelRushOnPull:" + (HS.HavocFelRushOnPull).ToString() + ", UseMetaCd:" + UseMetamorphosisCD(false).ToString() + ", FRMaxCharges:" + S.MaxChargesAvailable(SB.FelRush).ToString() + ", FRChargesNoFelMastery:" + (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 && !T.HavocFelMastery).ToString() + ", MetaCD:" + (!S.OnCooldown(SB.MetamorphosisSpell)).ToString());
 
             if ((useOpenRotation && (openRotationTimeout.ElapsedMilliseconds > 5000 && openingRotationSkillsUsed != OpenerSteps.FuryBuilder) || openRotationTimeout.ElapsedMilliseconds > 10000 && openingRotationSkillsUsed == OpenerSteps.FuryBuilder))
             {
@@ -389,9 +390,9 @@ namespace Illidari.Rotation
                 return false;
             }
 
-            
 
-            if (!useOpenRotation && (M.IS.HavocFelRushOnPull && UseMetamorphosisCD(false)
+
+            if (!useOpenRotation && (HS.HavocFelRushOnPull && UseMetamorphosisCD(false)
                 && (S.MaxChargesAvailable(SB.FelRush)           // make sure we have max charges saved up.
                     || (S.GetSpellChargeInfo(SB.FelRush).ChargesLeft >= 1 && !T.HavocFelMastery) // also check for 1 charge if no fel mastery.
                 )
@@ -564,56 +565,106 @@ namespace Illidari.Rotation
 
         #endregion
 
+        public static async Task<bool> VengefulRush(bool aoe = false)
+        {
+            if (!aoe)
+            {
+                // single target
+
+                if (HS.HavocVengefulReatreatSingleTarget && HS.HavocFelRushSingleTarget)
+                {
+                    // make sure we can even use this
+                    if (!S.OnCooldown(SB.VengefulRetreat) && FelRushCheckCharge(true))
+                    {
+                        // Vengeful is ready and FelRush is ready (or almost)
+                        await S.Cast(SB.VengefulRetreat, C.CombatColor, addLog: "VengefulRush", sleep: false);
+                        await Coroutine.Sleep(100);
+                        await Coroutine.Sleep(Styx.CommonBot.SpellManager.GlobalCooldownLeft);
+                        await S.Cast(SB.FelRush, C.CombatColor, addLog: "VengefulRush", sleep: false);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                // aoe
+                if (HS.HavocVengefulReatreatAoe && HS.HavocFelRushAoe)
+                {
+                    // make sure we can even use this
+                }
+            }
+            return false;
+        }
+        public static async Task<bool> RushST()
+        {
+            if (!Me.IsWithinMeleeRangeOf(CurrentTarget)){ return false; }
+            // only use if we have FelRush available and Vengeful Retreat is not available
+            if (!S.OnCooldown(SB.FelRush) && S.OnCooldown(SB.VengefulRetreat))
+            {
+                WoWMovement.Move(WoWMovement.MovementDirection.Backwards, 500);
+                WoWMovement.Move(WoWMovement.MovementDirection.JumpAscend, 500);
+                S.Cast2(SB.FelRush, C.CombatColor, HS.HavocFelRushSingleTarget, "RushST");
+                await Coroutine.Yield();
+                return true;
+            }
+            return false;
+        }
         public static async Task<bool> SingleTarget()
         {
             // we only want to use the single target rotation after the open rotation is finished.
             if (await S.CastGround(SB.MetamorphosisSpell, C.CombatColor, UseMetamorphosisCD(false))) { return true; }
 
+            if (await RushST()) { return true; }
+
             #region Single-Target Vengeful Retreat
 
 
-            // use it if we have Prepared talent differently
+            //use it if we have Prepared talent differently
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
-                M.IS.HavocVengefulReatreatSingleTarget
+                HS.HavocVengefulReatreatSingleTarget
                 && C.MissingPower > 30
                 && (FelRushCheckCharge(true))
                 && T.HavocPrepared
                 && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST1", sleep: false))
-            { felRushAfterVengefulRetreat.Restart(); C.fallingTimeout.Restart(); return true; }
+            //{ felRushAfterVengefulRetreat.Restart(); C.fallingTimeout.Restart(); return true; }
+            { return true; }
 
             // use it if we DO NOT have Prepared talent without Fury check
             if (await S.GCD(SB.VengefulRetreat, C.CombatColor,
-                M.IS.HavocVengefulReatreatAoe
+                HS.HavocVengefulReatreatAoe
                 && (FelRushCheckCharge(true))
                 && !T.HavocPrepared
                 && Me.IsWithinMeleeRangeOf(CurrentTarget), "ST2", sleep: false))
-            { felRushAfterVengefulRetreat.Restart();  C.fallingTimeout.Restart(); return true; }
+            //{ felRushAfterVengefulRetreat.Restart(); C.fallingTimeout.Restart(); return true; }
+            { return true; }
+
 
             #endregion
-
-
 
             #region Single-Target Fel Rush
             // use this in combination with vengeful retreat
-            if (await S.Cast(SB.FelRush, C.CombatColor, M.IS.HavocFelRushSingleTarget && S.OnCooldown(SB.VengefulRetreat) 
-                && felRushAfterVengefulRetreat.ElapsedMilliseconds <= 2000
-                && T.HavocFelMastery 
-                && Me.CurrentTarget.Distance <= 18 
-                && C.MissingPower <= 30, 
-            "ST 1"))
-            { felRushAfterVengefulRetreat.Reset(); return true; }
+            //if (await S.Cast(SB.FelRush, C.CombatColor, HS.HavocFelRushSingleTarget && S.OnCooldown(SB.VengefulRetreat)
+            //    //&& felRushAfterVengefulRetreat.ElapsedMilliseconds <= 2000
+            //    && T.HavocFelMastery
+            //    && Me.CurrentTarget.Distance <= 18
+            //    && C.MissingPower <= 30,
+            //"ST 1"))
+            //{ felRushAfterVengefulRetreat.Reset(); return true; }
+            //{ return true; }
 
             // use to engage
-            if (await S.Cast(SB.FelRush, C.CombatColor, M.IS.HavocFelRushSingleTarget 
+            if (await S.Cast(SB.FelRush, C.CombatColor, HS.HavocFelRushSingleTarget
                 && !Me.IsWithinMeleeRangeOf(CurrentTarget) && CurrentTarget.Distance <= 18, "ST 2"))
-            { felRushAfterVengefulRetreat.Reset(); return true; }
+            //{ felRushAfterVengefulRetreat.Reset(); return true; }
+            { return true; }
             #endregion
 
             // if we have used vengeful retreat, don't do anything else until we fel rush
-            if (felRushAfterVengefulRetreat.IsRunning && felRushAfterVengefulRetreat.ElapsedMilliseconds <= 2000) { return true; }
+            //if (felRushAfterVengefulRetreat.IsRunning && felRushAfterVengefulRetreat.ElapsedMilliseconds <= 2000) { return true; }
 
             // fel rush, almost max charges and needs momentum
-            if (await S.Cast(SB.FelRush, C.CombatColor, M.IS.HavocFelRushSingleTarget && Me.IsWithinMeleeRangeOf(CurrentTarget)
+            if (await S.Cast(SB.FelRush, C.CombatColor, HS.HavocFelRushSingleTarget && Me.IsWithinMeleeRangeOf(CurrentTarget)
                 && FelRushAlmostMaxCharge()
                 && NeedMomentum(true), "ST - Fel Rush for Momentum"))
             { return true; }
@@ -698,21 +749,21 @@ namespace Illidari.Rotation
         }
         static bool UseFuryOfIllidariCD(bool aoe)
         {
-            return (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.AoE && aoe)
-                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly && CurrentTarget.IsBoss)
-                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && (CurrentTarget.IsBoss || CurrentTarget.Elite))
-                    || (M.IS.HavocUseFuryOfTheIllidariCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown);
+            return (HS.HavocUseFuryOfTheIllidariCooldown == CooldownTypes.AoE && aoe)
+                    || (HS.HavocUseFuryOfTheIllidariCooldown == CooldownTypes.BossOnly && CurrentTarget.IsBoss)
+                    || (HS.HavocUseFuryOfTheIllidariCooldown == CooldownTypes.EliteBoss && (CurrentTarget.IsBoss || CurrentTarget.Elite))
+                    || (HS.HavocUseFuryOfTheIllidariCooldown == CooldownTypes.Cooldown);
         }
         static bool UseMetamorphosisCD(bool aoe)
         {
-            return (M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.AoE && aoe)
-                || M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.Cooldown
-                || (M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.BossOnly && (CurrentTarget.IsBoss || CurrentTarget.IsTrainingDummyBoss()))
-                || (M.IS.HavocUseMetamorphosisCooldown == Core.IllidariSettings.IllidariSettings.CooldownTypes.EliteBoss && ((CurrentTarget.IsBoss || CurrentTarget.IsTrainingDummyBoss()) || (CurrentTarget.Elite || CurrentTarget.IsTrainingDummyElite()))
+            return (HS.HavocUseMetamorphosisCooldown == CooldownTypes.AoE && aoe)
+                || HS.HavocUseMetamorphosisCooldown == CooldownTypes.Cooldown
+                || (HS.HavocUseMetamorphosisCooldown == CooldownTypes.BossOnly && (CurrentTarget.IsBoss || CurrentTarget.IsTrainingDummyBoss()))
+                || (HS.HavocUseMetamorphosisCooldown == CooldownTypes.EliteBoss && ((CurrentTarget.IsBoss || CurrentTarget.IsTrainingDummyBoss()) || (CurrentTarget.Elite || CurrentTarget.IsTrainingDummyElite()))
             );
         }
 
-       
+
         #endregion
 
     }

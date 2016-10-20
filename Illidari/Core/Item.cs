@@ -1,4 +1,6 @@
-﻿using Styx;
+﻿using Illidari.Core.IllidariSettings;
+using Styx;
+using Styx.CommonBot;
 using Styx.CommonBot.Coroutines;
 using Styx.CommonBot.Frames;
 using Styx.WoWInternals.WoWObjects;
@@ -23,7 +25,7 @@ namespace Illidari.Core
             if (!reqs) { return false; }
             if (!CanUseItem(item)) { return false; }
 
-            L.useItemLog(string.Format($"/use {item.Name}" + (String.IsNullOrEmpty(log) || !Main.IS.GeneralDebug ? "" : " - " + log)), Core.Helpers.Common.ItemColor);
+            L.useItemLog(string.Format($"/use {item.Name}" + (String.IsNullOrEmpty(log) || !GeneralSettings.Instance.GeneralDebug ? "" : " - " + log)), Core.Helpers.Common.ItemColor);
             item.Use();
             await CommonCoroutines.SleepForLagDuration();
             return true;
@@ -56,7 +58,7 @@ namespace Illidari.Core
                 //.ThenByDescending(b => b.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
         }
-        public static WoWItem FindBestHealingPotion()
+        public static WoWItem FindBestHealingPotion(WoWSpec spec)
         {
             return Me.BagItems
                 ?.Where(hp => hp.ItemInfo.ItemClass == WoWItemClass.Consumable
@@ -64,7 +66,7 @@ namespace Illidari.Core
                 && (hp.ItemInfo.RequiredSkillId == 0 || Me.GetSkill(hp.ItemInfo.RequiredSkillId).CurrentValue >= hp.ItemInfo.RequiredSkillLevel)
                 && hp.ItemInfo.RequiredLevel <= Me.Level
                 && CanUseItem(hp)
-                && Main.IS.HavocHealthPotionList.Contains(hp.ItemInfo.Id))
+                && (spec == WoWSpec.DemonHunterHavoc && hp.ItemInfo.Id == HavocSettings.Instance.HavocHealthPotionID))
                 ?.OrderBy(l => l.ItemInfo.Level)
                 ?.ThenByDescending(hp => hp.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
@@ -73,15 +75,16 @@ namespace Illidari.Core
         }
 
         public static WoWItem FindBestFood()
-        {
+        {            
+            Me.CarriedItems.Where(m => m.ItemInfo.Id == 89614).FirstOrDefault()?.GetItemName();
             return Me.CarriedItems
-                ?.Where(hp => hp.ItemInfo.ItemClass == WoWItemClass.Consumable
+                .Where(hp => hp.ItemInfo.ItemClass == WoWItemClass.Consumable
                 && hp.ItemInfo.ConsumableClass == WoWItemConsumableClass.FoodAndDrink
                 && (hp.ItemInfo.RequiredSkillId == 0 || Me.GetSkill(hp.ItemInfo.RequiredSkillId).CurrentValue >= hp.ItemInfo.RequiredSkillLevel)
                 && hp.ItemInfo.RequiredLevel <= Me.Level
                 && CanUseItem(hp))
-                ?.OrderBy(l => l.ItemInfo.Level)
-                ?.ThenByDescending(hp => hp.ItemInfo.RequiredSkillLevel)
+                .OrderBy(l => l.ItemInfo.Level)
+                .ThenByDescending(hp => hp.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();
 
 
@@ -90,6 +93,14 @@ namespace Illidari.Core
         {
             return Me.CarriedItems
                 ?.Where(i => i.SafeName == itemName)
+                ?.OrderBy(b => b.ItemInfo.Level)
+                ?.ThenByDescending(i => i.ItemInfo.RequiredSkillLevel)
+                .FirstOrDefault();
+        }
+        public static WoWItem GetItemByID(uint itemID)
+        {
+            return Me.CarriedItems
+                ?.Where(i => i.ItemInfo.Id == itemID)
                 ?.OrderBy(b => b.ItemInfo.Level)
                 ?.ThenByDescending(i => i.ItemInfo.RequiredSkillLevel)
                 .FirstOrDefault();

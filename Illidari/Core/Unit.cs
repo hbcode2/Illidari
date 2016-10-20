@@ -14,6 +14,7 @@ using Styx.Common;
 #region [Method] - Class Redundancy
 using L = Illidari.Core.Utilities.Log;
 using SB = Illidari.Core.Helpers.Spell_Book;
+using Illidari.Core.IllidariSettings;
 #endregion
 
 namespace Illidari.Core
@@ -49,7 +50,7 @@ namespace Illidari.Core
                     continue;
                 if (u.IsFriendly)
                     continue;
-                if (Main.IS.GeneralIgnoreOpposingFaction && isOpposingFaction(u))
+                if (GeneralSettings.Instance.GeneralIgnoreOpposingFaction && isOpposingFaction(u))
                     continue;
                 if (u.IsNonCombatPet && u.IsCritter)
                     continue;
@@ -77,7 +78,7 @@ namespace Illidari.Core
                     continue;
                 if (u.IsFriendly)
                     continue;
-                if (isOpposingFaction(u) && Main.IS.GeneralIgnoreOpposingFaction)
+                if (isOpposingFaction(u) && GeneralSettings.Instance.GeneralIgnoreOpposingFaction)
                     continue;
                 if (u.IsNonCombatPet && u.IsCritter)
                     continue;
